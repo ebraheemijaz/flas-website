@@ -1,0 +1,144 @@
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+    <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>
+        Admin
+    </title>
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
+    <!--     Fonts and icons     -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons">
+    <!-- CSS Files -->
+    <link href="{{ url_for('static', filename='css/material-kit.css') }}" rel="stylesheet" />
+    <style>
+        .verysatisfied {
+            color: #026523;
+            font-size: 175px;
+        }
+
+        .satisfied {
+            color: #fda700;
+            font-size: 175px;
+        }
+
+        .dissatisfied {
+            color: #c42423;
+            font-size: 175px;
+        }
+        .header-filter::before { 
+background:white}
+    </style>
+</head>
+
+<body class="login-page sidebar-collapse">
+    <div id= "smiley"class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Air_France_Logo.svg/2000px-Air_France_Logo.svg.png" style="
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 50%;
+                            ">
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <h5 class="card-title">
+                                        <strong>Question:</strong>
+                                        {{ data["question"] }}
+                                    </h5>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-4 text-center" onclick="feedback(100)">
+                                            <i class="img-raised rounded-circle img-fluid material-icons verysatisfied">
+                                                sentiment_very_satisfied
+                                            </i>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 text-center" onclick="feedback(66)">
+                                            <i class="img-raised rounded-circle img-fluid material-icons satisfied">
+                                                sentiment_satisfied
+                                            </i>
+                                    </div>
+                                    <div class="col-md-4 col-sm-4 text-center" onclick="feedback(33)">
+                                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied">
+                                                sentiment_very_dissatisfied
+                                            </i>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+    <div id= "thank_you" class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                    <div class="col-md-12">
+                        <div class="card">
+                                <div> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Air_France_Logo.svg/2000px-Air_France_Logo.svg.png" style="
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 50%;
+                                ">
+                                </div>
+                            <div class="card-body">
+
+                                <h1 class="title 
+                       text-center" style="
+        color: black;
+    ">
+                                    Thank you</h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+<script>
+    function feedback(type){
+        var myParam = window.location.href.split("/")
+        id = myParam[myParam.length-1]
+        data = {"id":id, "rating":type}
+        console.log(JSON.stringify(data))
+        // $.ajax({
+        //     type: "POST",
+        //     url: '/update_rating',
+        //     data: JSON.stringify(data),
+        //     success: function (response) {
+        //         alert("Data added successfully");
+        //     },
+        // });
+        $.post("/update_rating", {"id":id, "rating":type})
+        
+        document.getElementById("smiley").style.display = "none"
+        document.getElementById("thank_you").style.display = ""
+        setTimeout(function()
+            { 
+                document.getElementById("smiley").style.display = ""
+                document.getElementById("thank_you").style.display = "none" 
+            }, 3000);
+        
+    }
+</script>
+<script src="{{ url_for('static', filename='js/core/jquery.min.js') }}"></script>
+</body>
+
+</html>
