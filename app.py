@@ -1,5 +1,5 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template
-import html,json
+import json
 import sqlite3
 import random,string
 
