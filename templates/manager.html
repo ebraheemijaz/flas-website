@@ -482,7 +482,14 @@
             height: "75%",
             width: "75%"
           });
-        }}
+          if (i == 0){
+            document.getElementById('myChart' + i+"-wrapper").style.marginLeft = "41px"
+          }
+          if (! document.getElementById('myChart' + i+"-license-text") == null){
+            document.getElementById('myChart' + i+"-license-text").style.display = "none"
+          }
+        }
+        }
         );
 
       }
