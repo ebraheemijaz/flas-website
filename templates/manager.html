@@ -367,10 +367,12 @@
       document.getElementById("all_charts").style.display = ""
 
       $.get('/get_store_graphs/' + id, function (responseText) {
+        document.getElementById("all_charts").innerHTML = ""
         all_store = JSON.parse(responseText);
         all_month_data = all_store["data"]
         name = all_store["name"]
         for (i=0;i<all_month_data.length;i++){
+          console.log(all_month_data[i])
           monthandyear = Object.keys(all_month_data[i])[0]
           month = monthandyear.split(",")[0]
           year = monthandyear.split(",")[1]
@@ -430,7 +432,7 @@
               "values": [rating]
             }]
           };
-
+          
           $('#all_charts').append(`<div class="col-md-4">
                   <div class="card">
                     <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
