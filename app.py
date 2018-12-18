@@ -1,11 +1,13 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template
+from flask import Flask, session, redirect, url_for, escape, request, render_template, Response
 import json
 import sqlite3
 import random,string
+from flask_socketio import SocketIO
+from dateutil import parser
 
 app = Flask(__name__)
 app.secret_key = "any random string"
-
+socketio = SocketIO(app)
 
 @app.route('/logout')
 def logout():
@@ -41,20 +43,29 @@ def index():
         data = {}
         conn = sqlite3.connect('database.db')
         all_users = []
-        all_stores = []
 
         user_records = conn.execute("SELECT * from users WHERE type != 0")
         have_user_record = user_records.fetchall()
         if have_user_record:
             all_users = have_user_record
-        store_records = conn.execute("SELECT * from stores")
+       
+        
+        # feedback_record = conn.execute("select * from user_feedback")
+        # all_record_feedback = feedback_record.fetchall()
+        # if all_record_feedback:
+        #     all_feedback = all_record_feedback
+        data={"users": all_users, "total_users":len(all_users)}
+        return render_template("admin.html", data=data)
+    if type_user == "1":
+        all_stores = []
+        conn = sqlite3.connect('database.db')
+        store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
         have_store_recrod =  store_records.fetchall()
         if have_store_recrod:
             all_stores = have_store_recrod
-        data={"users": all_users, "stores":all_stores, "total_stores":len(all_stores), "total_users":len(all_users)}
-        return render_template("admin.html", data=data)
-    if type_user == "1":
-        return render_template("owner.html")
+
+        data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id']}
+        return render_template("manager.html",data=data)
 
 @app.route('/addowner' , methods = ['POST'])
 def addowner():
@@ -88,15 +99,41 @@ def addstore():
     conn.commit()
     return redirect(url_for('index'))
 
-@app.route('/get_stores_info' , methods = ['GET'])
-def get_stores_info():
-    data = []
-    user_id = session['id']
+@app.route('/get_store_graphs/<storeid>' , methods = ['GET'])
+def get_store_graphs(storeid):
     conn = sqlite3.connect('database.db')
-    record = conn.execute("select storename, feedback from stores INNER join store_added on stores.id = store_added.store_id WHERE store_added.user_id = " + str(user_id))
-    all_record = record.fetchall()
-    if all_record:
-        data = [{"name":x[0], "rating":x[1]} for x in all_record]
+    all_feedback = conn.execute("SELECT time, rating from user_feedback where id = '"+storeid+"'")
+    all_feedback_records = all_feedback.fetchall()
+    final_data = {}
+    for each in all_feedback_records:
+         dt = parser.parse(each[0])
+         month_name = dt.strftime("%B") + "," + str(dt.year)
+         if month_name not in final_data.keys():
+            final_data[month_name] = {}
+            final_data[month_name]["33"] = 0
+            final_data[month_name]["66"] = 0
+            final_data[month_name]["100"] = 0
+         if each[1] == 33:
+             value = final_data[month_name].get("33")
+             if not value:
+                 value = 0
+             final_data[month_name]["33"] = value + 1
+         elif each[1] == 66:
+             value = final_data[month_name].get("66")
+             if not value:
+                 value = 0
+             final_data[month_name]["66"] = value + 1
+         elif each[1] == 100:
+             value = final_data[month_name].get("100")
+             if not value:
+                 value = 0
+             final_data[month_name]["100"] = value + 1
+
+    graph_data = []
+    for x in final_data:
+        graph_data.append({x:final_data[x]})
+    
+    data = {"data":graph_data, "name":"storename"}
     return json.dumps(data)
 
 @app.route('/store/<storeid>' , methods = ['GET'])
@@ -115,15 +152,137 @@ def get_store(storeid):
 def update_rating():
     rating = request.form.get('rating')
     id = request.form.get('id')
+    f_time = request.form.get('f_time')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("select feedback from stores WHERE id = '" + id+"'")
-    all_record = record.fetchall()
-    if all_record:
-        feedback = all_record[0][0]
-        feedback = ( feedback + int(rating) ) / 2 
-        conn.execute("update stores set feedback = "+str(feedback)+" where id = '" + id + "'")
-        conn.commit()
+    conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','-','-','-','"+f_time+"', "+rating+")")
+    conn.commit()
+    rating_record = conn.execute("SELECT avg(rating) from user_feedback where id = '"+id+"'")
+    record = rating_record.fetchall()
+    if record:
+        rating = record[0][0]
+    else:
+        rating = 0
+    conn.execute("UPDATE stores set feedback = "+str(rating)+ " where id = '"+id+"'")
+    conn.commit()
     return "done"
+
+@app.route('/addfeedback' , methods = ['POST'])
+def addfeedback():
+    email = request.form.get('inputEmail4')
+    tel = request.form.get('inputPassword4')
+    comment = request.form.get('exampleFormControlTextarea1')
+    id = request.form.get('id')
+    f_time = request.form.get('f_time')
+    rating = request.form.get('rating')
+    conn = sqlite3.connect('database.db')
+    record = conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','"+email+"','"+tel+"','"+comment+"', '"+f_time+"',"+rating+")")
+    conn.commit()
+    return "done"
+
+@app.route('/delete_account' , methods = ['POST'])
+def delete_account():
+    id = request.form.get('id')
+    conn = sqlite3.connect('database.db')
+    record = conn.execute("DELETE FROM users where username = '" + id + "'")
+    conn.commit()
+    return "done"
+
+@app.route('/changeaccount' , methods = ['POST'])
+def changeaccount():
+    username = request.form.get('id')
+    conn = sqlite3.connect('database.db')
+    records = conn.execute("Select * from users where username = '" + username + "'")
+    user = records.fetchall()
+    if user:
+        session['id'] = user[0][0]
+        session['type'] = user[0][-1]
+    return redirect(url_for('index'))
+
+@app.route('/update_question' , methods = ['POST'])
+def update_question():
+    question = request.form.get('question')
+    question_id = request.form.get('question_id')
+    conn = sqlite3.connect('database.db')
+    conn.execute("UPDATE stores set question = '"+question+"' where id = '"+question_id+"'")
+    conn.commit()
+    return redirect(url_for('index'))
+
+@app.route('/delete_question' , methods = ['POST'])
+def delete_question():
+    id = request.form.get('id')
+    conn = sqlite3.connect('database.db')
+    record = conn.execute("UPDATE stores set question = '' where id  = '" + id + "'")
+    conn.commit()
+    return "done"
+
+@app.route('/getfeedback' , methods = ['POST'])
+def getfeedback():
+    id = request.form.get('id')
+    conn = sqlite3.connect('database.db')
+    record = conn.execute("SELECT * from user_feedback where id  = '"+id+"'")
+    feedback = record.fetchall()
+    return json.dumps(feedback)
+
+@app.route('/updateadmin' , methods = ['POST'])
+def updateadmin():
+    logo_file= request.files.get('logo')
+    password = request.form.get("Password")
+    if logo_file:
+        import os
+        extention = logo_file.filename.split(".")[-1]
+        # logo_file.save(os.getcwd()+"\\static\\img\\logo1."+extention)
+        logo_file.save(os.getcwd()+"\\static\\img\\logo1.png")
+    if password:
+        conn = sqlite3.connect('database.db')
+        record = conn.execute("UPDATE users set password = '"+password+"' where type = 0")
+        conn.commit()
+    return redirect(url_for('index'))
+
+@app.route('/updatemanger' , methods = ['POST'])
+def updatemanger():
+    id = request.form.get('id')
+    logo_file= request.files.get('logo')
+    password = request.form.get("Password")
+    if logo_file:
+        import os
+        # extention = logo_file.filename.split(".")[-1]
+        # logo_file.save(os.getcwd()+"\\static\\img\\logo1."+extention)
+        logo_file.save(os.getcwd()+"\\static\\img\\logom.png")
+    if password:
+        conn = sqlite3.connect('database.db')
+        record = conn.execute("UPDATE users set password = '"+password+"' where id = '"+id+"'")
+        conn.commit()
+    return redirect(url_for('index'))
+
+
+def messageReceived(methods=['GET', 'POST']):
+    print('message was received!!!')
+
+
+connected_stores = []
+
+@socketio.on('connect')
+def connect():
+    socketio.emit('getallonlinestoresres', connected_stores, callback=messageReceived)
+
+@socketio.on('storeconnected')
+def addonlinestore(json, methods=['GET', 'POST']):
+    print('Client connected', request.sid)
+    connected_stores.append(request.sid+","+json['id'])
+    print(connected_stores)
+    socketio.emit('getallonlinestoresres', connected_stores, callback=messageReceived)
+
+@socketio.on('disconnect')
+def test_disconnect():
+    print('Client disconnected', request.sid)
+    print('Client disconnected')
+    for x in connected_stores:
+        if request.sid in x:
+            connected_stores.remove(x)
+    socketio.emit('disgetallonlinestoresres', request.sid, callback=messageReceived)
+    
+
+
 
 if __name__ =="__main__":
     app.run(debug=True)

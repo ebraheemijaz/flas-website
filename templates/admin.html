@@ -44,7 +44,8 @@
     .sidebar[data-color="purple"] li.active>a {
       background-color: #0089ec;
     }
-    .nbtn{
+
+    .nbtn {
       background-color: #0089ec !important;
       float: right;
     }
@@ -64,8 +65,8 @@
         Tip 2: you can also add an image using data-image tag
     -->
       <div class="logo">
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" style="width: 50%;">
+        <a href="" class="simple-text logo-normal">
+          <img src="static/img/logo1.png" style="width: 50%;">
         </a>
       </div>
       <div class="sidebar-wrapper">
@@ -73,7 +74,7 @@
           <li class="nav-item active  ">
             <a class="nav-link" href="./">
               <i class="material-icons">dashboard</i>
-              <p>Dashboard</p>
+              <p>Profile</p>
             </a>
           </li>
           <li class="nav-item ">
@@ -92,30 +93,11 @@
     height: 30px;
     text-align: center;
     padding-top: 1px;
-              ">{{ data["total_users"] }}</span></p>
+              ">{{
+                  data["total_users"] }}</span></p>
             </a>
           </li>
-          
-          <li class="nav-item ">
-            <a class="nav-link" onclick=sideclick(1)>
-              <i class="material-icons">person</i>
-              <p>STORES<span style="
-                   display: inline;
-    float: right;
-    background: #0089ec;
-    /* padding: 3px; */
-    border-radius: 50%;
-    /* padding: 4px; */
-    /* margin-block-end: auto; */
-    color: white;
-    width: 30px;
-    height: 30px;
-    text-align: center;
-    padding-top: 1px;
-            ">{{ data["total_stores"] }}</span></p>
-            </a>
-          </li>
-          
+
           <li class="nav-item ">
             <a class="nav-link" href="./logout">
               <i class="material-icons">content_paste</i>
@@ -137,7 +119,43 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="container-fluid">
-          <div class="row" id="all_owners">
+          <div class="row" id="Profile">
+            <div class="col-md-12">
+              <div class="card" style="height: 100%">
+                <div class="card-body">
+                    <form action="/updateadmin" method="POST" enctype=multipart/form-data>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">ID</label>
+                        <input type="email" class="form-control" readonly
+                          placeholder="admin">
+                      </div>
+                      <div class="form-group">
+                          <label for="exampleInputEmail1">Password</label>
+                          <input type="text" class="form-control" name="Password" 
+                            placeholder="Password">
+                        </div>
+                      
+                      
+                        <div class="form-group">
+                          <img src="static/img/logo1.png"  style="width:30%;" alt="Raised Image" class="img-raised rounded img-fluid">
+                    </div>
+
+                    <label for="exampleInputEmail1">logo (.png file)</label>
+                    <br>
+                    <input type="file" name="logo">
+                          
+                        
+                  <br>
+                  <button style="float: right; background: #0089ec; " type="submit" class="btn btn-primary">UPdate</button>
+                </form>
+                  
+                </div>
+              </div>
+            </div>
+            
+          </div>
+
+          <div class="row" style="display: none;" id="all_owners">
             <div class="col-md-12">
               <div class="card" style="
                 height: 166px;
@@ -154,97 +172,53 @@
               </div>
             </div>
             <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <thead class=" text-primary">
-                              <tr>
-                              <th> Name </th>
-                              <th> ID </th>
-                              <th> Password </th>
-                            </tr></thead>
-                            <tbody>
-                                  {% for item in data["users"] %}
-                                  <tr>
-                                  <td>{{ item[1] }}</td>
-                                  <td>{{ item[2] }}</td>
-                                  <td>{{ item[3] }}</td>
-                                  </tr>
-                                  {% endfor %}
-                              
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                </div>
-            </div>
-          </div>
-          <div class="row" id="all_stores">
-            <div class="col-md-12">
-                <div class="card" style="
-                  height: 245px;
-              ">
-                  <div class="card-body">
-                    <form method="POST" action="/addstore">
-                      <div class="form-group">
-                        <label>Store Name</label>
-                        <input type="managersname" class="form-control" name="storename" placeholder="Enter Store Name">
-                      </div>
-                      <div class="form-group">
-                        <label>Question</label>
-                        <input type="text" class="form-control" name="question" placeholder="Enter Question">
-                      </div>
-                      <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
-                    </form>
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary">
+                        <tr>
+                          <th> Name </th>
+                          <th> ID </th>
+                          <th> Password </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in data["users"] %}
+                        <tr>
+                          <td>{{ item[1] }}</td>
+                          <td>{{ item[2] }}</td>
+                          <td>{{ item[3] }}</td>
+                          <td>
+                            <i class="material-icons" onclick = deleteowner("{{ item[2] }}")>delete_outline</i>
+                            <i class="material-icons" onclick = changeaccount("{{ item[2] }}")>search</i>
+                          </td>
+
+                        </tr>
+                        {% endfor %}
+
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                          <table class="table">
-                            <thead class=" text-primary">
-                              <tr><th>ID </th>
-                              <th> Name </th>
-                              <th> FeedBack </th>
-                              <th> Question </th>
-                              <th> link </th>
-                            </tr></thead>
-                            <tbody>
-                                  {% for item in data["stores"] %}
-                                  <tr>
-                                  <td>{{ item[0] }}</td>
-                                  <td>{{ item[1] }} </td>
-                                  <td>{{ item[2] }} </td>
-                                  <td>{{ item[3] }} </td>
-                                  <td><a href="/store/{{item[0]}}" >link</a>  </td>
-                                  </tr>
-                                  {% endfor %}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                </div>
             </div>
           </div>
-          
         </div>
       </div>
       <footer class="footer">
         <div class="container-fluid">
           <div class="row">
-            <div class="col-md-12" >
-                <script type="text/javascript">
-                  function googleTranslateElementInit() {
-                    new google.translate.TranslateElement({pageLanguage: 'en'}, 'google_translate_element');
-                  }
-                  </script>
-                  
-                  <script type="text/javascript" src="http://www.translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-                
-                <div id="google_translate_element"></div>
+            <div class="col-md-12">
+              <script type="text/javascript">
+                function googleTranslateElementInit() {
+                  new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
+                }
+              </script>
+
+              <script type="text/javascript" src="http://www.translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+              <div id="google_translate_element"></div>
               <p style="float:right;">developed by wj7 marketing digital.com</p>
             </div>
           </div>
@@ -265,90 +239,7 @@
     ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3edaf6d"];
   </script>
   <script>
-    all_store = []
-    $.get('/get_stores_info', function(responseText) {
-      all_store = JSON.parse(responseText);
-      for (i = 0; i < all_store.length; i++) { 
-        rating = all_store[i]["rating"]
-        name = all_store[i]["name"]
-        myConfig = {
-      "type": "gauge",
-      "scale-r": {
-        "aperture": 200,
-        "values": "0:100:33",
-        "center": {
-          "size": 5,
-          "background-color": "#66CCFF #FFCCFF",
-          "border-color": "none"
-        },
-        "ring": {
-          "size": 60,
-          "rules": [{
-            "rule": "%v >= 0 && %v <= 20",
-            "background-color": "red"
-          }, {
-            "rule": "%v >= 20 && %v <= 40",
-            "background-color": "yellow"
-          }, {
-            "rule": "%v >= 40 && %v <= 60",
-            "background-color": "yellow"
-          }, {
-            "rule": "%v >= 60 && %v <= 80",
-            "background-color": "green"
-          }, {
-            "rule": "%v >= 80 && %v <=100",
-            "background-color": "blue"
-          }]
-        },
-        "labels": ["0", "Poor", "Fair", "Good", "Great", "100"], //Scale Labels
-        "item": { //Scale Label Styling
-          "font-color": "purple",
-          "font-family": "Georgia, serif",
-          "font-size": 1,
-          "font-weight": "bold", //or "normal"
-          "font-style": "normal", //or "italic"
-          "offset-r": 0,
-          "angle": "auto"
-        }
-      },
-      "plot": {
-        "csize": "5%",
-        "size": "100%",
-        "background-color": "#000000"
-      },
-      "series": [{
-        "values": [rating]
-      }]
-    };
-        
-        $('#all_stores').append(`<div class="col-md-4">
-                <div class="card">
-                  <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
-                    <h4 class="card-title">`+name+`</h4>
-                  </div>
-                  <div class="card-body">
-                      <div id='myChart`+i+`'></div>
-                  </div>
-                </div>
-              </div>`)
-        zingchart.render({
-          id: 'myChart'+i,
-          data: myConfig,
-          height: "75%",
-          width: "75%"
-        });
-      }
-    }); 
-    
-    
-
-    
-
-  </script>
-
-  <script>
     function sideclick(num) {
-      document.getElementById("all_stores").style.display = "none"
       document.getElementById("all_owners").style.display = "none"
 
       all_nav_item = document.getElementsByClassName("nav-item")
@@ -359,15 +250,28 @@
       if (num == 0) {
         document.getElementById("page_title").innerHTML = "OWNER"
         document.getElementById("all_owners").style.display = ""
-      }
-      if (num == 1) {
-        document.getElementById("page_title").innerHTML = "MANAGER"
-        document.getElementById("all_stores").style.display = ""
+        document.getElementById("Profile").style.display = "none"
       }
     }
     
+    function deleteowner(id){
+      data = {"id":id}
+      console.log(JSON.stringify(data))
+      $.post("/delete_account", data, function(data,status,xhr){
+        location.reload();
+      })
+    }
+    function changeaccount(id){
+      data = {"id":id}
+      console.log(JSON.stringify(data))
+      $.post("/changeaccount", data, function(data,status,xhr){
+        location.reload();
+      })
+    }
+
+    
   </script>
- 
+
 
 </body>
 

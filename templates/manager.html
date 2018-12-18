@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <title>
+    Dashboard
+  </title>
+  <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+  <!-- CSS Files -->
+  <link href="{{ url_for('static', filename='css/material-dashboard.css') }}" rel="stylesheet" />
+  <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+  <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+  <style>
+    .card {
+      height: 420px;
+    }
+
+    #chartdiv {
+      width: 400px;
+      height: 200px;
+      margin: 0 auto;
+      border: 1px dotted #ccc;
+    }
+
+    #myChart1-wrapper,
+    #myChart2-wrapper,
+    #myChart3-wrapper {
+      margin-left: 12%
+    }
+
+    #myChart1-license-text,
+    #myChart2-license-text,
+    #myChart3-license-text {
+      display: none
+    }
+
+    .sidebar[data-color="purple"] li.active>a {
+      background-color: #0089ec;
+    }
+
+    .nbtn {
+      background-color: #0089ec !important;
+      float: right;
+    }
+  </style>
+</head>
+<link href="css/jquery.circliful.css" rel="stylesheet" type="text/css" />
+
+<script src="http://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="js/jquery.circliful.min.js"></script>
+
+<body class="">
+  <div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+      <!--
+        Tip 1: You can change the color of the sidebar using: data-color="purple | azure | green | orange | danger"
+
+        Tip 2: you can also add an image using data-image tag
+    -->
+      <div class="logo">
+        <a href="#" class="simple-text logo-normal">
+          <img src="static/img/logom.png" style="width: 50%;">
+        </a>
+      </div>
+      <div class="sidebar-wrapper">
+        <ul class="nav">
+          <li class="nav-item active  ">
+            <a class="nav-link" href="./">
+              <i class="material-icons">dashboard</i>
+              <p>Profile</p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a class="nav-link" onclick=sideclick(0)>
+              <i class="material-icons">person</i>
+              <p>STORES<span style="
+                   display: inline;
+    float: right;
+    background: #0089ec;
+    /* padding: 3px; */
+    border-radius: 50%;
+    /* padding: 4px; */
+    /* margin-block-end: auto; */
+    color: white;
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding-top: 1px;
+            ">{{
+                  data["total_stores"] }}</span></p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a class="nav-link" href="./logout">
+              <i class="material-icons">content_paste</i>
+              <p>logout</p>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main-panel">
+      <!-- Navbar -->
+      <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+        <div class="container-fluid">
+          <div class="navbar-wrapper">
+            <a class="navbar-brand" id="page_title">Dashboard</a>
+          </div>
+        </div>
+      </nav>
+      <!-- End Navbar -->
+      <div class="content">
+        <div class="container-fluid">
+          <div class="row" id="profile">
+            <div class="col-md-12">
+              <div class="card" style="height: 100%">
+                <div class="card-body">
+                  <form action="/updatemanger" method="POST" enctype=multipart/form-data> <input type="text" class="form-control"
+                    name="id" value={{data['id']}} hidden>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Password</label>
+                      <input type="text" class="form-control" name="Password" placeholder="Password">
+                    </div>
+
+
+                    <div class="form-group">
+                      <img src="static/img/logom.png" style="width:30%;" alt="Raised Image" class="img-raised rounded img-fluid">
+                    </div>
+
+                    <label for="exampleInputEmail1">logo (.png file)</label>
+                    <br>
+                    <input type="file" name="logo">
+
+
+                    <br>
+                    <button style="float: right; background: #0089ec; " type="submit" class="btn btn-primary">Update</button>
+                  </form>
+
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="all_stores">
+            <div class="col-md-12">
+              <div class="card" style="
+                  height: 245px;
+              ">
+                <div class="card-body">
+                  <form method="POST" action="/addstore">
+                    <div class="form-group">
+                      <label>Store Name</label>
+                      <input type="managersname" class="form-control" name="storename" placeholder="Enter Store Name">
+                    </div>
+                    <div class="form-group">
+                      <label>Question</label>
+                      <input type="text" class="form-control" name="question" placeholder="Enter Question">
+                    </div>
+                    <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary">
+                        <tr>
+                          <th> Name </th>
+                          <th> FeedBack </th>
+                          <th> status </th>
+                          <th> Question </th>
+                          <th> actions </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for item in data["stores"] %}
+                        <tr>
+                          <td>
+                            <a href="/store/{{item[0]}}" target="_blank">
+                              {{ item[1] }}
+                            </a>
+                          </td>
+                          <td>
+                            {% if item[2] == 0 %}
+                            <svg height="25" width="25">
+                              <circle cx="12" cy="12" r="10" fill="black" />
+                            </svg>
+                            {% endif %}
+                            {% if item[2] > 33 and item[2] <= 66 %} <svg height="25" width="25">
+                              <circle cx="12" cy="12" r="10" fill="yellow" />
+                              </svg>
+                              {% endif %}
+                              {% if item[2] > 66 %}
+                              <svg height="25" width="25">
+                                <circle cx="12" cy="12" r="10" fill="green" />
+                              </svg>
+                              {% endif %}
+                              {% if item[2] >= 1 and item[2] <= 33 %} <svg height="25" width="25">
+                                <circle cx="12" cy="12" r="10" fill="red" />
+                                </svg>
+                                {% endif %}
+                          </td>
+                          <td id="{{item[0]}}">offline</td>
+                          {% if item[3] == '' %}
+                          <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>No question </td>
+                          {% endif %}
+                          {% if item[3] != '' %}
+                          <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>{{ item[3] }} </td>
+                          {% endif %}
+                          <td>
+                            <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
+                            <i class="material-icons" onclick=show_chart("{{item[0]}}")>insert_chart</i>
+                            <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row" id="all_charts">
+
+          </div>
+        </div>
+      </div>
+      <div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="card text-center">
+              <div class="card-body">
+                <form action="/update_question" method="POST">
+                  <div class="form-group">
+                    <label for="inputAddress">Question</label>
+                    <input type="text" class="form-control" name="question" id="question" placeholder="Question">
+                    <input type="text" class="form-control" name="question_id" id="question_id" hidden>
+                    <br>
+                    <button class="btn btn-primary">Update</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade bd-example-modal-lg" id="modalcomment" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="card text-center">
+              <div class="card-body" style="
+                  overflow: scroll;
+              ">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <tr>
+                      <th> Email </th>
+                      <th> Contact </th>
+                      <th> Time </th>
+                      <th> Comment </th>
+                    </tr>
+                  </thead>
+                  <tbody id="allfeedback">
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-md-12">
+              <div id="google_translate_element"></div>
+              <p style="float:right;">developed by wj7 marketing digital.com</p>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  </div>
+
+
+  <script src="{{ url_for('static', filename='js/core/jquery.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/core/bootstrap-material-design.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plugins/jquery.validate.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/material-dashboard.js') }}" type="text/javascript"></script>
+
+  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+  <script>
+    zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
+    ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3edaf6d"];
+  </script>
+
+  <script>
+    document.getElementById("all_stores").style.display = "none"
+    document.getElementById("profile").style.display = ""
+  </script>
+  <script>
+
+    function delete_question(id) {
+      data = { "id": id }
+      console.log(JSON.stringify(data))
+      $.post("/delete_question", data, function (data, status, xhr) {
+        location.reload();
+      })
+    }
+    function openmodal(question, id) {
+      document.getElementById("question").value = question
+      document.getElementById("question_id").value = id
+      $('#modal').modal(true)
+    }
+
+    function openmodalcomment(id) {
+      $('#allfeedback').html('')
+      data = { "id": id }
+      console.log(JSON.stringify(data))
+      $.post("/getfeedback", data, function (data, status, xhr) {
+        all_rows = JSON.parse(data)
+        for (i = 0; i < all_rows.length; i++) {
+          color = ""
+          if (all_rows[i][5] == 33) {
+            color = "red"
+          }
+          if (all_rows[i][5] == 66) {
+            color = "yellow"
+          }
+          if (all_rows[i][5] == 100) {
+            color = "green"
+          }
+          $('#allfeedback').append(`
+              <tr>
+                <td>`+ all_rows[i][1] + `</td>
+                <td>`+ all_rows[i][2] + `</td>
+                <td style="color: `+ color + `;">` + all_rows[i][4] + `</td>
+                <td>`+ all_rows[i][3] + `</td>
+              </tr>
+          `)
+        }
+      })
+      $('#modalcomment').modal(true)
+    }
+
+    function show_chart(id) {
+      document.getElementById("all_stores").style.display = "none"
+      document.getElementById("page_title").innerHTML = "Visuals"
+      document.getElementById("all_charts").style.display = ""
+
+      $.get('/get_store_graphs/' + id, function (responseText) {
+        all_store = JSON.parse(responseText);
+        all_month_data = all_store["data"]
+        name = all_store["name"]
+        for (i=0;i<all_month_data.length;i++){
+          monthandyear = Object.keys(all_month_data[i])[0]
+          month = monthandyear.split(",")[0]
+          year = monthandyear.split(",")[1]
+          t33 = all_month_data[i][monthandyear]["33"]
+          t66 = all_month_data[i][monthandyear]["66"]
+          t100 = all_month_data[i][monthandyear]["100"]
+          total_res = t33 + t66 + t100
+          rating = ((t33 * 33) + (t66 *66) + (t100 * 100)) / total_res
+          
+          
+          myConfig = {
+            "type": "gauge",
+            "scale-r": {
+              "aperture": 200,
+              "values": "0:100:33",
+              "center": {
+                "size": 5,
+                "background-color": "#66CCFF #FFCCFF",
+                "border-color": "none"
+              },
+              "ring": {
+                "size": 60,
+                "rules": [{
+                  "rule": "%v >= 0 && %v <= 20",
+                  "background-color": "red"
+                }, {
+                  "rule": "%v >= 20 && %v <= 40",
+                  "background-color": "yellow"
+                }, {
+                  "rule": "%v >= 40 && %v <= 60",
+                  "background-color": "yellow"
+                }, {
+                  "rule": "%v >= 60 && %v <= 80",
+                  "background-color": "green"
+                }, {
+                  "rule": "%v >= 80 && %v <=100",
+                  "background-color": "blue"
+                }]
+              },
+              "labels": ["0", "Poor", "Fair", "Good", "Great", "100"], //Scale Labels
+              "item": { //Scale Label Styling
+                "font-color": "purple",
+                "font-family": "Georgia, serif",
+                "font-size": 1,
+                "font-weight": "bold", //or "normal"
+                "font-style": "normal", //or "italic"
+                "offset-r": 0,
+                "angle": "auto"
+              }
+            },
+            "plot": {
+              "csize": "5%",
+              "size": "100%",
+              "background-color": "#000000"
+            },
+            "series": [{
+              "values": [rating]
+            }]
+          };
+
+          $('#all_charts').append(`<div class="col-md-4">
+                  <div class="card">
+                    <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
+                      <h4 class="card-title">`+ name + `</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id='myChart`+ i + `'></div>
+                        <div class="row text-center" style="
+      margin-top: -240px;
+  "><div class="col-md-12"><h4> `+ total_res + ` feedbacks</h4></div>
+      
+      <div class="col-sm-4 col-md-4"><svg height="25" width="25">
+                                            <circle cx="12" cy="12" r="10" fill="red"></circle>
+                                          </svg>
+  <h6>`+ t33 + `    </h6>
+  </div>
+      <div class="col-sm-4 col-md-4"><svg height="25" width="25">
+                                            <circle cx="12" cy="12" r="10" fill="yellow"></circle>
+                                          </svg>
+  <h6>`+ t66 + `    </h6>
+  </div>
+      <div class="col-sm-4 col-md-4"><svg height="25" width="25">
+                                            <circle cx="12" cy="12" r="10" fill="green"></circle>
+                                          </svg>
+      <h6>`+ t100 + `    </h6>
+      
+  </div>
+      
+  </div><div class="row text-center" style="
+      margin-top: -341px;
+  "><div class="col-md-12"><h4>`+year+`</h4><h2 style="
+      margin-top: -20px;
+  ">
+      <strong>`+month+`</strong></h2><h4>`+rating+`%</h4></div>
+      
+      
+      
+      
+      
+  </div>
+                    </div>
+                  </div>
+                </div>`)
+          zingchart.render({
+            id: 'myChart' + i,
+            data: myConfig,
+            height: "75%",
+            width: "75%"
+          });
+        }}
+        );
+
+      }
+    function sideclick(num) {
+      document.getElementById("all_stores").style.display = "none"
+
+      all_nav_item = document.getElementsByClassName("nav-item")
+      for (i = 0; i < all_nav_item.length; i++) {
+        all_nav_item[i].classList.remove("active")
+      }
+      all_nav_item[num + 1].classList.add("active")
+      if (num == 0) {
+        document.getElementById("page_title").innerHTML = "MANAGER"
+        document.getElementById("all_stores").style.display = ""
+        document.getElementById("profile").style.display = "none"
+        document.getElementById("all_charts").style.display = "none"
+      }
+    }
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+  <script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var myParam = window.location.href.split("/")
+    socket.on('connect', function (all_ids) {
+      console.log(all_ids)
+    })
+    socket.on('getallonlinestoresres', function (all_ids) {
+      for (i = 0; i < all_ids.length; i++) {
+        each = all_ids[i]
+        id = each.split(",")[1]
+        class_add = each.split(",")[0]
+        el = document.getElementById(id)
+        el.innerText = "online"
+        el.classList = []
+        el.classList.add(class_add)
+      }
+    })
+    socket.on('disgetallonlinestoresres', function (disconnectid) {
+      console.log(disconnectid)
+      el = document.getElementsByClassName(disconnectid)
+      console.log(el)
+      console.log(el.length)
+      if (el.length >= 1) {
+        document.getElementsByClassName(disconnectid)[0].innerText = "offline"
+      }
+    })
+  </script>
+
+</body>
+
+</html>

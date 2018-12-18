@@ -49,10 +49,10 @@ background:white}
                             </div>
                             <div class="card-body">
                                 <div>
-                                    <h5 class="card-title">
-                                        <strong>Question:</strong>
-                                        {{ data["question"] }}
-                                    </h5>
+                                    <h3 class="card-title text-center">
+                                        <strong>
+                                        {{ data["question"] }}</strong>
+                                    </h3>
                                 </div>
                                 <div class="row">
                                     <div class="col-md-4 col-sm-4 text-center" onclick="feedback(100)">
@@ -102,7 +102,12 @@ background:white}
                        text-center" style="
         color: black;
     ">
-                                    Thank you</h1>
+                                    Thank you
+                                
+                            </br>
+                            <button class="btn btn-primary text-center" style="
+                            
+                        " onclick="showcommentsection()" id= "commentbutton">Comment</button></h1>
                             </div>
                         </div>
                     </div>
@@ -112,33 +117,111 @@ background:white}
         <footer class="footer">
         </footer>
     </div>
+
+    <div id= "comment_section" class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); display:none; background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                    <div class="col-md-12">
+                        <div class="card">
+                                <div> <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Air_France_Logo.svg/2000px-Air_France_Logo.svg.png" style="
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 50%;
+                                ">
+                                </div>
+                                <div class="card-body">
+                                    <br>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <input type="email" name = "email" class="form-control" id="inputEmail4" placeholder="Email">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <input type="tel" name = "tel" class="form-control" id="inputPassword4" placeholder="Contact">
+                                            </div>
+                                        </div>
+    
+                                        <div class="form-group">
+                                            <label for="exampleFormControlTextarea1">Comment</label>
+                                            <textarea class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                        </div> <button onclick="addfeedback()" class="float-right btn btn-primary">Next</button>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
 <script>
-    function feedback(type){
+    document.getElementById("smiley").style.display = ""
+    document.getElementById("thank_you").style.display = "none"
+    rating = 0
+    function addfeedback(){
+        inputEmail4 = document.getElementById("inputEmail4").value 
+        inputPassword4 = document.getElementById("inputPassword4").value 
+        exampleFormControlTextarea1 = document.getElementById("exampleFormControlTextarea1").value 
         var myParam = window.location.href.split("/")
         id = myParam[myParam.length-1]
-        data = {"id":id, "rating":type}
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date+' '+time;
+        data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
-        // $.ajax({
-        //     type: "POST",
-        //     url: '/update_rating',
-        //     data: JSON.stringify(data),
-        //     success: function (response) {
-        //         alert("Data added successfully");
-        //     },
-        // });
-        $.post("/update_rating", {"id":id, "rating":type})
-        
-        document.getElementById("smiley").style.display = "none"
+        $.post("/addfeedback", data)
         document.getElementById("thank_you").style.display = ""
+        document.getElementById("commentbutton").style.display = "none"
+        document.getElementById("comment_section").style.display = "none"
         setTimeout(function()
             { 
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
-            }, 3000);
+                document.getElementById("comment_section").style.display = "none"
+            }, 5000);
+    }
+    function showcommentsection(){
+        clearTimeout(myVar);
+        document.getElementById("thank_you").style.display = "none"
+        document.getElementById("comment_section").style.display = ""
+        document.getElementById("inputEmail4").value = ""
+        document.getElementById("inputPassword4").value = ""
+        document.getElementById("exampleFormControlTextarea1").value = ""
+    }
+    function feedback(type){
+        rating = type
+        document.getElementById("commentbutton").style.display = ""
+        var myParam = window.location.href.split("/")
+        id = myParam[myParam.length-1]
+        data = {"id":id, "rating":type}
+        console.log(JSON.stringify(data))
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date+' '+time;
+        document.getElementById("smiley").style.display = "none"
+        document.getElementById("thank_you").style.display = ""
+        myVar = setTimeout(function()
+            { 
+                document.getElementById("smiley").style.display = ""
+                document.getElementById("thank_you").style.display = "none" 
+                $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime})
+            }, 5000);
         
     }
 </script>
 <script src="{{ url_for('static', filename='js/core/jquery.min.js') }}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+<script type="text/javascript">
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    var myParam = window.location.href.split("/")
+    socket.on( 'connect', function() {
+      socket.emit( 'storeconnected', {
+        id: myParam[myParam.length-1]
+      } )})
+</script>
 </body>
 
 </html>
