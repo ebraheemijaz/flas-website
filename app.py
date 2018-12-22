@@ -96,7 +96,7 @@ def addstore():
     store_id = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(16))
     logo_file= request.files.get('logo')
     file_name = str(d.now().timestamp()) + logo_file.filename 
-    logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+    logo_file.save("static//img//" + file_name)
     conn = sqlite3.connect('database.db')
     name = request.form['storename']
     question = request.form['question']
@@ -236,9 +236,8 @@ def updateadmin():
     logo_file= request.files.get('logo')
     password = request.form.get("Password")
     if logo_file:
-        import os
         file_name = str(d.now().timestamp()) + logo_file.filename 
-        logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+        logo_file.save("static//img//" + file_name)
         conn = sqlite3.connect('database.db')
         record = conn.execute("UPDATE users set pic_link = '"+file_name+"' where type = 0")
         conn.commit()
@@ -255,9 +254,8 @@ def updatemanger():
     logo_file= request.files.get('logo')
     password = request.form.get("Password")
     if logo_file:
-        import os
         file_name = str(d.now().timestamp()) + logo_file.filename 
-        logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+        logo_file.save("static//img//" + file_name)
         conn = sqlite3.connect('database.db')
         record = conn.execute("UPDATE users set pic_link = '"+file_name+"' where id = " + str(id))
         conn.commit()
@@ -298,7 +296,7 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    app.run(debug=True,host= "0.0.0.0", port=5000)
+    app.run(host= "0.0.0.0", port=5000)
 
 # {
 #     'total_users': 1, 
