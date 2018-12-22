@@ -1,9 +1,10 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, Response
-import json
+import json,os
 import sqlite3
 import random,string
 from flask_socketio import SocketIO
 from dateutil import parser
+from datetime import datetime as d
 
 app = Flask(__name__)
 app.secret_key = "any random string"
@@ -25,7 +26,7 @@ def login():
         user = records.fetchall()
         if user:
             session['id'] = user[0][0]
-            session['type'] = user[0][-1]
+            session['type'] = user[0][-2]
             return redirect(url_for('index'))
         else:
             return render_template("login.html")
@@ -44,27 +45,29 @@ def index():
         conn = sqlite3.connect('database.db')
         all_users = []
 
-        user_records = conn.execute("SELECT * from users WHERE type != 0")
+        user_records = conn.execute("SELECT * from users")
         have_user_record = user_records.fetchall()
-        if have_user_record:
-            all_users = have_user_record
-       
-        
-        # feedback_record = conn.execute("select * from user_feedback")
-        # all_record_feedback = feedback_record.fetchall()
-        # if all_record_feedback:
-        #     all_feedback = all_record_feedback
-        data={"users": all_users, "total_users":len(all_users)}
+        admin_user = [x for x in have_user_record if x[4] == '0'][0]
+        other_user = [x for x in have_user_record if x[4] != '0']
+        if other_user:
+            all_users = other_user
+        data={"users": all_users, "total_users":len(all_users), "pic_link": admin_user[-1]}
         return render_template("admin.html", data=data)
     if type_user == "1":
         all_stores = []
         conn = sqlite3.connect('database.db')
         store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
+        user_pic = conn.execute("SELECT pic_link FROM users WHERE id = " + str(id))
+        user_pic = user_pic.fetchone()
+        if user_pic[0] == None:
+            pic_link = ' '
+        else:
+            pic_link = user_pic[0]
         have_store_recrod =  store_records.fetchall()
         if have_store_recrod:
             all_stores = have_store_recrod
 
-        data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id']}
+        data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id'], "pic_link": pic_link}
         return render_template("manager.html",data=data)
 
 @app.route('/addowner' , methods = ['POST'])
@@ -91,10 +94,14 @@ def addmanager():
 def addstore():
     user_id = str(session['id'])
     store_id = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(16))
+    logo_file= request.files.get('logo')
+    file_name = str(d.now().timestamp()) + logo_file.filename 
+    logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+    conn = sqlite3.connect('database.db')
     name = request.form['storename']
     question = request.form['question']
     conn = sqlite3.connect('database.db')
-    conn.execute("INSERT INTO stores (id, storename, question) VALUES ('"+store_id+"','"+name+"','"+question+"')")
+    conn.execute("INSERT INTO stores (id, storename, question, pic_link) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"')")
     conn.execute("INSERT INTO store_added (user_id, store_id) VALUES ('"+user_id+"','"+store_id+"')")
     conn.commit()
     return redirect(url_for('index'))
@@ -139,12 +146,13 @@ def get_store_graphs(storeid):
 @app.route('/store/<storeid>' , methods = ['GET'])
 def get_store(storeid):
     conn = sqlite3.connect('database.db')
-    record = conn.execute("select storename, question from stores WHERE id = '" + storeid+"'")
+    record = conn.execute("select storename, question, pic_link from stores WHERE id = '" + storeid+"'")
     all_stores = record.fetchall()
     if all_stores:
         storename = all_stores[0][0]
         question = all_stores[0][1]
-        return render_template("store.html", data = {"question":question})
+        pic_link = all_stores[0][2]
+        return render_template("store.html", data = {"question":question, "pic_link": pic_link})
     else:
         return "Invalid Store id"
 
@@ -195,7 +203,7 @@ def changeaccount():
     user = records.fetchall()
     if user:
         session['id'] = user[0][0]
-        session['type'] = user[0][-1]
+        session['type'] = user[0][-2]
     return redirect(url_for('index'))
 
 @app.route('/update_question' , methods = ['POST'])
@@ -229,13 +237,16 @@ def updateadmin():
     password = request.form.get("Password")
     if logo_file:
         import os
-        extention = logo_file.filename.split(".")[-1]
-        # logo_file.save(os.getcwd()+"\\static\\img\\logo1."+extention)
-        logo_file.save(os.getcwd()+"\\static\\img\\logo1.png")
+        file_name = str(d.now().timestamp()) + logo_file.filename 
+        logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+        conn = sqlite3.connect('database.db')
+        record = conn.execute("UPDATE users set pic_link = '"+file_name+"' where type = 0")
+        conn.commit()
     if password:
         conn = sqlite3.connect('database.db')
         record = conn.execute("UPDATE users set password = '"+password+"' where type = 0")
         conn.commit()
+        
     return redirect(url_for('index'))
 
 @app.route('/updatemanger' , methods = ['POST'])
@@ -245,9 +256,11 @@ def updatemanger():
     password = request.form.get("Password")
     if logo_file:
         import os
-        # extention = logo_file.filename.split(".")[-1]
-        # logo_file.save(os.getcwd()+"\\static\\img\\logo1."+extention)
-        logo_file.save(os.getcwd()+"\\static\\img\\logom.png")
+        file_name = str(d.now().timestamp()) + logo_file.filename 
+        logo_file.save(os.getcwd()+"\\static\\img\\" + file_name)
+        conn = sqlite3.connect('database.db')
+        record = conn.execute("UPDATE users set pic_link = '"+file_name+"' where id = " + str(id))
+        conn.commit()
     if password:
         conn = sqlite3.connect('database.db')
         record = conn.execute("UPDATE users set password = '"+password+"' where id = '"+id+"'")
