@@ -18,9 +18,9 @@
   <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
   <script src="https://www.amcharts.com/lib/3/pie.js"></script>
   <style>
-    .card {
+    /* .card {
       height: 420px;
-    }
+    } */
 
     #chartdiv {
       width: 400px;
@@ -199,20 +199,22 @@
                           <td>
                             {% if item[2] == 0 %}
                             <svg height="25" width="25">
-                              <circle cx="12" cy="12" r="10" fill="black" />
+                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="black" />
                             </svg>
                             {% endif %}
-                            {% if item[2] > 33 and item[2] <= 66 %} <svg height="25" width="25">
-                              <circle cx="12" cy="12" r="10" fill="yellow" />
+                            {% if item[2] > 33 and item[2] <= 66 %} 
+                            <svg height="25" width="25">
+                              <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="yellow" />
                               </svg>
                               {% endif %}
                               {% if item[2] > 66 %}
                               <svg height="25" width="25">
-                                <circle cx="12" cy="12" r="10" fill="green" />
+                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="green" />
                               </svg>
                               {% endif %}
-                              {% if item[2] >= 1 and item[2] <= 33 %} <svg height="25" width="25">
-                                <circle cx="12" cy="12" r="10" fill="red" />
+                              {% if item[2] >= 1 and item[2] <= 33 %} 
+                              <svg height="25" width="25">
+                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="red" />
                                 </svg>
                                 {% endif %}
                           </td>
@@ -225,7 +227,7 @@
                           {% endif %}
                           <td>
                             <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
-                            <i class="material-icons" onclick=show_chart("{{item[0]}}")>insert_chart</i>
+                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1]}}")>insert_chart</i>
                             <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
                           </td>
                         </tr>
@@ -366,7 +368,7 @@
       $('#modalcomment').modal(true)
     }
 
-    function show_chart(id) {
+    function show_chart(id, store_name) {
       document.getElementById("all_stores").style.display = "none"
       document.getElementById("page_title").innerHTML = "Visuals"
       document.getElementById("all_charts").style.display = ""
@@ -439,9 +441,9 @@
           };
           
           $('#all_charts').append(`<div class="col-md-4">
-                  <div class="card">
+                  <div class="card" style="height:425px;">
                     <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
-                      <h4 class="card-title">`+ name + `</h4>
+                      <h4 class="card-title">`+ store_name + `</h4>
                     </div>
                     <div class="card-body">
                         <div id='myChart`+ i + `'></div>
@@ -471,7 +473,7 @@
   "><div class="col-md-12"><h4>`+year+`</h4><h2 style="
       margin-top: -20px;
   ">
-      <strong>`+month+`</strong></h2><h4>`+rating+`%</h4></div>
+      <strong>`+month+`</strong></h2><h4>`+parseFloat(rating).toFixed(2) +`%</h4></div>
       
       
       
@@ -541,6 +543,22 @@
       if (el.length >= 1) {
         document.getElementsByClassName(disconnectid)[0].innerText = "offline"
       }
+    })
+    socket.on('updatefeedback', function (data) {
+      element = document.getElementById("circle"+data["id"])
+      current_value = data["rating"]
+      if (current_value < 34) {
+        console.log("red")
+        element.setAttribute("fill", "red");
+      } 
+      else if (current_value < 67) {
+        console.log("yello")
+        element.setAttribute("fill", "yellow");
+      } 
+      else if (current_value > 66) {
+        console.log("green")
+        element.setAttribute("fill", "green");
+      } 
     })
   </script>
 

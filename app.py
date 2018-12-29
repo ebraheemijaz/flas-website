@@ -172,6 +172,7 @@ def update_rating():
         rating = 0
     conn.execute("UPDATE stores set feedback = "+str(rating)+ " where id = '"+id+"'")
     conn.commit()
+    socketio.emit('updatefeedback', {"id":id, "rating":rating}, callback=messageReceived)
     return "done"
 
 @app.route('/addfeedback' , methods = ['POST'])
@@ -185,6 +186,15 @@ def addfeedback():
     conn = sqlite3.connect('database.db')
     record = conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','"+email+"','"+tel+"','"+comment+"', '"+f_time+"',"+rating+")")
     conn.commit()
+    rating_record = conn.execute("SELECT avg(rating) from user_feedback where id = '"+id+"'")
+    record = rating_record.fetchall()
+    if record:
+        rating = record[0][0]
+    else:
+        rating = 0
+    conn.execute("UPDATE stores set feedback = "+str(rating)+ " where id = '"+id+"'")
+    conn.commit()
+    socketio.emit('updatefeedback', {"id":id, "rating":rating}, callback=messageReceived)
     return "done"
 
 @app.route('/delete_account' , methods = ['POST'])
@@ -296,7 +306,8 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    app.run(host= "0.0.0.0", port=5000)
+    # app.run(host= "0.0.0.0", debug=True ,port=5000, threaded=True)
+    app.run(host= "0.0.0.0",port=5000, threaded=True)
 
 # {
 #     'total_users': 1, 
