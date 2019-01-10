@@ -229,7 +229,7 @@ def update_question():
 def delete_question():
     id = request.form.get('id')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("UPDATE stores set question = '' where id  = '" + id + "'")
+    record = conn.execute("DELETE from stores where id  = '" + id + "'")
     conn.commit()
     return "done"
 

@@ -21,7 +21,9 @@
     /* .card {
       height: 420px;
     } */
-
+    i , a{
+            cursor: pointer;
+        }
     #chartdiv {
       width: 400px;
       height: 200px;
@@ -227,7 +229,7 @@
                           {% endif %}
                           <td>
                             <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
-                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1]}}")>insert_chart</i>
+                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
                             <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
                           </td>
                         </tr>
@@ -443,7 +445,7 @@
           $('#all_charts').append(`<div class="col-md-4">
                   <div class="card" style="height:425px;">
                     <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
-                      <h4 class="card-title">`+ store_name + `</h4>
+                      <h4 class="card-title">`+ store_name.replace(/_/g, " ") + `</h4>
                     </div>
                     <div class="card-body">
                         <div id='myChart`+ i + `'></div>
