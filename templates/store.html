@@ -15,17 +15,17 @@
     <link href="{{ url_for('static', filename='css/material-kit.css') }}" rel="stylesheet" />
     <style>
         .verysatisfied {
-            color: #026523;
+            color: green;
             font-size: 175px;
         }
 
         .satisfied {
-            color: #fda700;
+            color:orange;
             font-size: 175px;
         }
 
         .dissatisfied {
-            color: #c42423;
+            color:red;
             font-size: 175px;
         }
         .header-filter::before { 
@@ -189,6 +189,24 @@ background:white}
         document.getElementById("inputEmail4").value = ""
         document.getElementById("inputPassword4").value = ""
         document.getElementById("exampleFormControlTextarea1").value = ""
+        inputEmail4 = document.getElementById("inputEmail4").value 
+        inputPassword4 = document.getElementById("inputPassword4").value 
+        exampleFormControlTextarea1 = document.getElementById("exampleFormControlTextarea1").value 
+        var myParam = window.location.href.split("/")
+        id = myParam[myParam.length-1]
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date+' '+time;
+        data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
+        console.log(JSON.stringify(data))
+        $.post("/addfeedback", data)
+        setTimeout(function()
+            { 
+                document.getElementById("smiley").style.display = ""
+                document.getElementById("thank_you").style.display = "none" 
+                document.getElementById("comment_section").style.display = "none"
+            }, 10000);
     }
     function feedback(type){
         rating = type
