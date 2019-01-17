@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="../assets/img/favicon.png">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <title>
-    Dashboard
+    Tablero
   </title>
   <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no' name='viewport' />
   <!--     Fonts and icons     -->
@@ -77,13 +77,14 @@
           <li class="nav-item active  ">
             <a class="nav-link" href="./">
               <i class="material-icons">dashboard</i>
-              <p>Profile</p>
+              <p>
+                Perfil</p>
             </a>
           </li>
           <li class="nav-item ">
             <a class="nav-link" onclick=sideclick(0)>
               <i class="material-icons">person</i>
-              <p>OWNER<span style="
+              <p>PROPIETARIO<span style="
           display: inline;
     float: right;
     background: #0089ec;
@@ -104,7 +105,8 @@
           <li class="nav-item ">
             <a class="nav-link" href="./logout">
               <i class="material-icons">content_paste</i>
-              <p>logout</p>
+              <p>
+                cerrar sesión</p>
             </a>
           </li>
         </ul>
@@ -115,7 +117,7 @@
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
         <div class="container-fluid">
           <div class="navbar-wrapper">
-            <a class="navbar-brand" id="page_title">Dashboard</a>
+            <a class="navbar-brand" id="page_title">Tablero</a>
           </div>
         </div>
       </nav>
@@ -128,7 +130,7 @@
                 <div class="card-body">
                     <form action="/updateadmin" method="POST" enctype=multipart/form-data>
                     <div class="form-group">
-                        <label for="exampleInputEmail1">ID</label>
+                        <label for="exampleInputEmail1">CARNÉ DE IDENTIDAD</label>
                         <input type="email" class="form-control" readonly
                           placeholder="admin">
                       </div>
@@ -149,7 +151,7 @@
                           
                         
                   <br>
-                  <button style="float: right; background: #0089ec; " type="submit" class="btn btn-primary">UPdate</button>
+                  <button style="float: right; background: #0089ec; " type="submit" class="btn btn-primary">Actualizar</button>
                 </form>
                   
                 </div>
@@ -166,10 +168,13 @@
                 <div class="card-body">
                   <form action="/addowner" method="POST">
                     <div class="form-group">
-                      <label>Owner Name</label>
-                      <input type="ownername" class="form-control" name="ownername" placeholder="Enter Owner Name">
+                      <label>
+                        Nombre del dueño</label>
+                      <input type="ownername" class="form-control" name="ownername" placeholder="Enter 
+                      Nombre del dueño">
                     </div>
-                    <button type="submit" class="nbtn btn btn-primary">Add New Owner</button>
+                    <button type="submit" class="nbtn btn btn-primary">Añadir nuevo propietario
+                    </button>
                   </form>
                 </div>
               </div>
@@ -213,16 +218,13 @@
         <div class="container-fluid">
           <div class="row">
             <div class="col-md-12">
-              <script type="text/javascript">
-                function googleTranslateElementInit() {
-                  new google.translate.TranslateElement({ pageLanguage: 'en' }, 'google_translate_element');
-                }
-              </script>
-
-              <script type="text/javascript" src="http://www.translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
-              <div id="google_translate_element"></div>
-              <p style="float:right;">developed by wj7 marketing digital.com</p>
+                <div class="col-md-12">
+                    <img onclick = changelang("sp") style="width: 5%;" src = "static/img/spain.png">
+                    <img onclick = changelang("pg") style="width: 5%;" src = "static/img/portugal.png">
+                    <img onclick = changelang("es") style="width: 5%;" src = "static/img/uk.png">
+                </div>
+              <p style="float:right;">
+                desarrollado por wj7marketingdigital.com</p>
             </div>
           </div>
         </div>
@@ -236,12 +238,12 @@
   <script src="{{ url_for('static', filename='js/plugins/jquery.validate.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/material-dashboard.js') }}" type="text/javascript"></script>
 
-  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
   <script>
-    zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
-    ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3edaf6d"];
-  </script>
-  <script>
+    localStorage.setItem("lang", "es");
+    function changelang(lang) {
+        localStorage.setItem("lang", lang);
+        window.location = "/"+lang;
+    }
     function sideclick(num) {
       document.getElementById("all_owners").style.display = "none"
 

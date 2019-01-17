@@ -306,14 +306,18 @@
       </div>
 
       <footer class="footer">
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-md-12">
-              <div id="google_translate_element"></div>
-              <p style="float:right;">developed by wj7 marketing digital.com</p>
-            </div>
+          <div class="container-fluid">
+              <div class="row">
+                  <div class="col-md-12">
+                      <img onclick = changelang("sp") style="width: 5%;" src = "static/img/spain.png">
+                      <img onclick = changelang("pg") style="width: 5%;" src = "static/img/portugal.png">
+                      <img onclick = changelang("es") style="width: 5%;" src = "static/img/uk.png">
+                  </div>
+                  <div class="col-md-12">
+                      <p style="float:right;">developed by wj7 marketing digital.com</p>
+                  </div>
+              </div>
           </div>
-        </div>
       </footer>
     </div>
   </div>
@@ -335,7 +339,11 @@
     document.getElementById("profile").style.display = ""
   </script>
   <script>
-
+    localStorage.setItem("lang", "es");
+        function changelang(lang) {
+            localStorage.setItem("lang", lang);
+            window.location = "/"+lang;
+        }
     function delete_question(id) {
       data = { "id": id }
       console.log(JSON.stringify(data))

@@ -34,8 +34,9 @@ def login():
         return redirect(url_for('index'))
     return render_template("login.html")
 
-@app.route('/')
-def index():
+@app.route('/', defaults={'lang': 'es'})
+@app.route('/<lang>')
+def index(lang):
     if 'id' not in session:
         return render_template("login.html")
     id = session['id']
@@ -52,7 +53,7 @@ def index():
         if other_user:
             all_users = other_user
         data={"users": all_users, "total_users":len(all_users), "pic_link": admin_user[-1]}
-        return render_template("admin.html", data=data)
+        return render_template(lang + "-admin.html", data=data)
     if type_user == "1":
         all_stores = []
         conn = sqlite3.connect('database.db')
@@ -68,7 +69,7 @@ def index():
             all_stores = have_store_recrod
 
         data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id'], "pic_link": pic_link}
-        return render_template("manager.html",data=data)
+        return render_template(lang + "-manager.html",data=data)
 
 @app.route('/addowner' , methods = ['POST'])
 def addowner():
