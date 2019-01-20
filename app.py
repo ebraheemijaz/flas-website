@@ -238,7 +238,7 @@ def delete_question():
 def getfeedback():
     id = request.form.get('id')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("SELECT * from user_feedback where id  = '"+id+"'")
+    record = conn.execute("SELECT * from user_feedback where id  = '"+id+"' order by time desc")
     feedback = record.fetchall()
     return json.dumps(feedback)
 
