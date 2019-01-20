@@ -21,9 +21,11 @@
     /* .card {
       height: 420px;
     } */
-    i , a{
-            cursor: pointer;
-        }
+    i,
+    a {
+      cursor: pointer;
+    }
+
     #chartdiv {
       width: 400px;
       height: 200px;
@@ -157,169 +159,168 @@
                   height: 300px;
               ">
                 <div class="card-body">
-                  <form method="POST" action="/addstore" enctype=multipart/form-data>
-                    <div class="form-group">
-                      <label>Store Name</label>
-                      <input type="managersname" class="form-control" name="storename" placeholder="Enter Store Name">
-                    </div>
-                    <div class="form-group">
-                      <label>Question</label>
-                      <input type="text" class="form-control" name="question" placeholder="Enter Question">
-                    </div>
-                    <div class="">
-                      <label for="exampleInputEmail1">logo</label>
-                      <br>
-                      <input type="file" name="logo" required>
-                    </div>
-                    <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
-                  </form>
+                  <form method="POST" action="/addstore" enctype=multipart/form-data> <div class="form-group">
+                    <label>Store Name</label>
+                    <input type="managersname" class="form-control" name="storename" placeholder="Enter Store Name">
                 </div>
-              </div>
-            </div>
-            <div class="col-md-12">
-              <div class="card">
-                <div class="card-body">
-                  <div class="table-responsive">
-                    <table class="table">
-                      <thead class=" text-primary">
-                        <tr>
-                          <th> Name </th>
-                          <th> FeedBack </th>
-                          <th> status </th>
-                          <th> Question </th>
-                          <th> actions </th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {% for item in data["stores"] %}
-                        <tr>
-                          <td>
-                            <a href="/store/{{item[0]}}" target="_blank">
-                              {{ item[1] }}
-                            </a>
-                          </td>
-                          <td>
-                            {% if item[2] == 0 %}
-                            <svg height="25" width="25">
-                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="black" />
-                            </svg>
-                            {% endif %}
-                            {% if item[2] > 33 and item[2] <= 66 %} 
-                            <svg height="25" width="25">
-                              <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="orange" />
-                              </svg>
-                              {% endif %}
-                              {% if item[2] > 66 %}
-                              <svg height="25" width="25">
-                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="green" />
-                              </svg>
-                              {% endif %}
-                              {% if item[2] >= 1 and item[2] <= 33 %} 
-                              <svg height="25" width="25">
-                                <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="red" />
-                                </svg>
-                                {% endif %}
-                          </td>
-                          <td id="{{item[0]}}">offline</td>
-                          {% if item[3] == '' %}
-                          <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>No question </td>
-                          {% endif %}
-                          {% if item[3] != '' %}
-                          <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>{{ item[3] }} </td>
-                          {% endif %}
-                          <td>
-                            <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
-                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
-                            <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
-                          </td>
-                        </tr>
-                        {% endfor %}
-                      </tbody>
-                    </table>
-                  </div>
+                <div class="form-group">
+                  <label>Question</label>
+                  <input type="text" class="form-control" name="question" placeholder="Enter Question">
                 </div>
-              </div>
-            </div>
-          </div>
-          <div class="row" id = "refresh_button" style="display:none">
-              <div class="col-md-12">
-                  <div style="float: right;">
-                      <i class="material-icons" onclick=show_chart("refresh","refresh")>
-                        refresh
-                      </i>
-                  </div>
+                <div class="">
+                  <label for="exampleInputEmail1">logo</label>
+                  <br>
+                  <input type="file" name="logo" required>
                 </div>
-          </div>
-          <div class="row" id="all_charts">
-            
-          </div>
-        </div>
-      </div>
-      <div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-          <div class="modal-content">
-            <div class="card text-center">
-              <div class="card-body">
-                <form action="/update_question" method="POST">
-                  <div class="form-group">
-                    <label for="inputAddress">Question</label>
-                    <input type="text" class="form-control" name="question" id="question" placeholder="Question">
-                    <input type="text" class="form-control" name="question_id" id="question_id" hidden>
-                    <br>
-                    <button class="btn btn-primary">Update</button>
-                  </div>
+                <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
                 </form>
               </div>
             </div>
-
           </div>
-        </div>
-      </div>
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead class=" text-primary">
+                      <tr>
+                        <th> Name </th>
+                        <th> FeedBack </th>
+                        <th> status </th>
+                        <th> Question </th>
+                        <th> actions </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for item in data["stores"] %}
+                      <tr>
+                        <td>
+                          <a href="/store/{{item[0]}}" target="_blank">
+                            {{ item[1] }}
+                          </a>
+                        </td>
+                        <td>
+                          {% if item[2] == 0 %}
+                          <i class="material-icons dissatisfied" style="color: red;">
+                            sentiment_very_dissatisfied
+                          </i>
+                          {% endif %}
+                          {% if item[2] > 33 and item[2] <= 66 %} <i class="material-icons satisfied" style="color: yellow;">
+                            satisfied
+                            </i>
+                            {% endif %}
+                            {% if item[2] > 66 %}
+                            <i class="material-icons verysatisfied" style="color: green;">
+                              sentiment_very_satisfied
+                            </i>
+                            {% endif %}
+                            {% if item[2] >= 1 and item[2] <= 33 %} <i class="material-icons dissatisfied" style="color: red;">
+                              sentiment_very_dissatisfied
+                              </i>
+                              {% endif %}
+                        </td>
+                        <td id="{{item[0]}}">offline</td>
+                        {% if item[3] == '' %}
+                        <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>No question </td>
+                        {% endif %}
+                        {% if item[3] != '' %}
+                        <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>{{ item[3] }} </td>
+                        {% endif %}
 
-      <div class="modal fade bd-example-modal-lg" id="modalcomment" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
-        aria-hidden="true">
-        <div class="modal-dialog modal-lg" style="max-width: 90%;">
-          <div class="modal-content">
-            <div class="card text-center">
-              <div class="card-body" style="
-                  overflow: scroll;
-              ">
-                <table class="table">
-                  <thead class=" text-primary">
-                    <tr>
-                      <th style="width: 20%;"> Email </th>
-                      <th style="width: 20%;"> Contact </th>
-                      <th style="width: 20%;"> Time </th>
-                      <th style="width: 40%;"> Comment </th>
-                    </tr>
-                  </thead>
-                  <tbody id="allfeedback">
-
-                  </tbody>
-                </table>
+                        
+                        <td>
+                          <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
+                          <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
+                          <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
+                        </td>
+                      </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="row" id="refresh_button" style="display:none">
+          <div class="col-md-12">
+            <div style="float: right;">
+              <i class="material-icons" onclick=show_chart("refresh","refresh")>
+                refresh
+              </i>
+            </div>
+          </div>
+        </div>
+        <div class="row" id="all_charts">
 
+        </div>
+      </div>
+    </div>
+    <div class="modal fade bd-example-modal-lg" id="modal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="card text-center">
+            <div class="card-body">
+              <form action="/update_question" method="POST">
+                <div class="form-group">
+                  <label for="inputAddress">Question</label>
+                  <input type="text" class="form-control" name="question" id="question" placeholder="Question">
+                  <input type="text" class="form-control" name="question_id" id="question_id" hidden>
+                  <br>
+                  <button class="btn btn-primary">Update</button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade bd-example-modal-lg" id="modalcomment" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg" style="max-width: 90%;">
+        <div class="modal-content">
+          <div class="card text-center">
+            <div class="card-body" style="
+                  overflow: scroll;
+              ">
+              <table class="table">
+                <thead class=" text-primary">
+                  <tr>
+                    <th style="width: 20%;"> Email </th>
+                    <th style="width: 20%;"> Contact </th>
+                    <th style="width: 20%;"> Time </th>
+                    <th style="width: 40%;"> Comment </th>
+                  </tr>
+                </thead>
+                <tbody id="allfeedback">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-12">
+            <!-- <img onclick = changelang("sp") style="width: 5%;" src = "static/img/spain.png">
+                      <img onclick = changelang("pg") style="width: 5%;" src = "static/img/portugal.png">
+                      <img onclick = changelang("es") style="width: 5%;" src = "static/img/uk.png"> -->
+          </div>
+          <div class="col-md-12">
+            <p style="float:right;">developed by wj7 marketing digital.com</p>
           </div>
         </div>
       </div>
-
-      <footer class="footer">
-          <div class="container-fluid">
-              <div class="row">
-                  <div class="col-md-12">
-                      <img onclick = changelang("sp") style="width: 5%;" src = "static/img/spain.png">
-                      <img onclick = changelang("pg") style="width: 5%;" src = "static/img/portugal.png">
-                      <img onclick = changelang("es") style="width: 5%;" src = "static/img/uk.png">
-                  </div>
-                  <div class="col-md-12">
-                      <p style="float:right;">developed by wj7 marketing digital.com</p>
-                  </div>
-              </div>
-          </div>
-      </footer>
-    </div>
+    </footer>
+  </div>
   </div>
 
 
@@ -340,10 +341,10 @@
   </script>
   <script>
     localStorage.setItem("lang", "es");
-        function changelang(lang) {
-            localStorage.setItem("lang", lang);
-            window.location = "/"+lang;
-        }
+    function changelang(lang) {
+      localStorage.setItem("lang", lang);
+      window.location = "/" + lang;
+    }
     function delete_question(id) {
       data = { "id": id }
       console.log(JSON.stringify(data))
@@ -389,7 +390,7 @@
 
     function show_chart(id, store_name) {
 
-      if (id == "refresh" && store_name == "refresh"){
+      if (id == "refresh" && store_name == "refresh") {
         id = document.getElementById("current_id").innerText
         store_name = document.getElementById("current_store_name").innerText
         console.log(id)
@@ -406,7 +407,7 @@
         all_store = JSON.parse(responseText);
         all_month_data = all_store["data"]
         name = all_store["name"]
-        for (i=0;i<all_month_data.length;i++){
+        for (i = 0; i < all_month_data.length; i++) {
           console.log(all_month_data[i])
           monthandyear = Object.keys(all_month_data[i])[0]
           month = monthandyear.split(",")[0]
@@ -415,50 +416,50 @@
           t66 = all_month_data[i][monthandyear]["66"]
           t100 = all_month_data[i][monthandyear]["100"]
           total_res = t33 + t66 + t100
-          rating = ((t33 * 33) + (t66 *66) + (t100 * 100)) / total_res
-          if(rating <= 33){
-              smile_color = "red"
-              smilyey = "sentiment_very_dissatisfied"
-            }
-          if(rating > 33 && rating <= 66){
-              smile_color = "orange"
-              smilyey = "sentiment_satisfied"
-            }
-          if(rating > 66){
-              smile_color = "green"
-              smilyey = "sentiment_very_satisfied"
-            }
-          
+          rating = ((t33 * 33) + (t66 * 66) + (t100 * 100)) / total_res
+          if (rating <= 33) {
+            smile_color = "red"
+            smilyey = "sentiment_very_dissatisfied"
+          }
+          if (rating > 33 && rating <= 66) {
+            smile_color = "orange"
+            smilyey = "sentiment_satisfied"
+          }
+          if (rating > 66) {
+            smile_color = "green"
+            smilyey = "sentiment_very_satisfied"
+          }
+
           $('#all_charts').append(`<div class="col-md-4">
-                  <div class="card" style="height:425px;">
-                  <div><p id = "current_id" hidden>`+id+`</p><p id = "current_store_name" hidden>`+store_name.replace(/_/g, " ")+`</p></div>
+                  <div class="card">
+                  <div><p id = "current_id" hidden>`+ id + `</p><p id = "current_store_name" hidden>` + store_name.replace(/_/g, " ") + `</p></div>
                     <div class="card-header card-header-primary text-center" style="background:none;background-color:#0089ec;">
                       <h4 class="card-title">`+ store_name.replace(/_/g, " ") + `</h4>
                     </div>
                     <div class="card-body">
     <div class="text-center"><h4 style="
     margin-top: -11px;
-">`+year+`</h4>
+">`+ year + `</h4>
 <h2 style="
     margin-top: -19px;
-"><strong>`+month+`</strong></h2>
+"><strong>`+ month + `</strong></h2>
     <h5 style="
     margin-top: -8px;
-">`+parseFloat(rating).toFixed(2) +`%</h5>
+">`+ parseFloat(rating).toFixed(2) + `%</h5>
 </div>
 <div class="row text-center"><div class="col-md-12 text-center"><i class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="
-    color: `+smile_color+`;
+    color: `+ smile_color + `;
     font-size: 159px;
 ">
-                                                `+smilyey+`
+                                                `+ smilyey + `
                                             </i>
   </div></div>
-<div class="row text-center"><div class="col-md-12"><h4> `+total_res+` feedbacks</h4></div><div class="col-sm-4 col-md-4"><i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="
+<div class="row text-center"><div class="col-md-12"><h4> `+ total_res + ` feedbacks</h4></div><div class="col-sm-4 col-md-4"><i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="
     color: red;
 ">
                                                 sentiment_very_dissatisfied
                                             </i>
-  <h6>`+t33+`    </h6>
+  <h6>`+ t33 + `    </h6>
   </div>
 
 <div class="col-sm-4 col-md-4"><i class="img-raised rounded-circle img-fluid material-icons satisfied" style="
@@ -466,13 +467,13 @@
 ">
                                                 sentiment_satisfied
                                             </i>
-  <h6>`+t66+`    </h6>
+  <h6>`+ t66 + `    </h6>
   </div><div class="col-sm-4 col-md-4"><i class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="
     color: green;
 ">
                                                 sentiment_very_satisfied
                                             </i>
-  <h6>`+t100+`    </h6>
+  <h6>`+ t100 + `    </h6>
   </div>
 
 </div>  
@@ -480,10 +481,10 @@
                     </div>
                 </div>`)
         }
-        }
-        );
-
       }
+      );
+
+    }
     function sideclick(num) {
       document.getElementById("all_stores").style.display = "none"
       document.getElementById("refresh_button").style.display = "none"
@@ -529,20 +530,20 @@
       }
     })
     socket.on('updatefeedback', function (data) {
-      element = document.getElementById("circle"+data["id"])
+      element = document.getElementById("circle" + data["id"])
       current_value = data["rating"]
       if (current_value < 34) {
         console.log("red")
         element.setAttribute("fill", "red");
-      } 
+      }
       else if (current_value < 67) {
         console.log("yello")
         element.setAttribute("fill", "orange");
-      } 
+      }
       else if (current_value > 66) {
         console.log("green")
         element.setAttribute("fill", "green");
-      } 
+      }
     })
   </script>
 
