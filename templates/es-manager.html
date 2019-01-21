@@ -221,13 +221,13 @@
                         </td>
                         <td id="{{item[0]}}">offline</td>
                         {% if item[3] == '' %}
-                        <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>No question </td>
+                        <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                        <td onclick=openmodal("{{item[0]}}")>No question </td>
                         {% endif %}
                         {% if item[3] != '' %}
-                        <td onclick=openmodal("{{item[3]}}","{{item[0]}}")>{{ item[3] }} </td>
+                        <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                        <td onclick=openmodal("{{item[0]}}")>{{ item[3] }} </td>
                         {% endif %}
-
-                        
                         <td>
                           <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
                           <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
@@ -352,8 +352,8 @@
         location.reload();
       })
     }
-    function openmodal(question, id) {
-      document.getElementById("question").value = question
+    function openmodal(id) {
+      document.getElementById("question").value = document.getElementById(id + "_question").innerText
       document.getElementById("question_id").value = id
       $('#modal').modal(true)
     }
