@@ -523,9 +523,12 @@
         id = each.split(",")[1]
         class_add = each.split(",")[0]
         el = document.getElementById(id)
-        el.innerText = "online"
-        el.classList = []
-        el.classList.add(class_add)
+        if (el != null){
+          el.innerText = "online"
+          el.classList = []
+          el.classList.add(class_add)
+        }
+        
       }
     })
     socket.on('disgetallonlinestoresres', function (disconnectid) {
