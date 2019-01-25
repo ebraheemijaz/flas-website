@@ -518,6 +518,7 @@
     })
     socket.on('getallonlinestoresres', function (all_ids) {
       for (i = 0; i < all_ids.length; i++) {
+        console.log(all_ids)
         each = all_ids[i]
         id = each.split(",")[1]
         class_add = each.split(",")[0]
