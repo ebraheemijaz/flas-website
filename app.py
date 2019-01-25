@@ -101,8 +101,9 @@ def addstore():
     conn = sqlite3.connect('database.db')
     name = request.form['storename']
     question = request.form['question']
+    language = request.form['language']
     conn = sqlite3.connect('database.db')
-    conn.execute("INSERT INTO stores (id, storename, question, pic_link) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"')")
+    conn.execute("INSERT INTO stores (id, storename, question, pic_link, language ) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"', '"+language+"')")
     conn.execute("INSERT INTO store_added (user_id, store_id) VALUES ('"+user_id+"','"+store_id+"')")
     conn.commit()
     return redirect(url_for('index'))
@@ -147,13 +148,14 @@ def get_store_graphs(storeid):
 @app.route('/store/<storeid>' , methods = ['GET'])
 def get_store(storeid):
     conn = sqlite3.connect('database.db')
-    record = conn.execute("select storename, question, pic_link from stores WHERE id = '" + storeid+"'")
+    record = conn.execute("select storename, question, pic_link, language from stores WHERE id = '" + storeid+"'")
     all_stores = record.fetchall()
     if all_stores:
         storename = all_stores[0][0]
         question = all_stores[0][1]
         pic_link = all_stores[0][2]
-        return render_template("store.html", data = {"question":question, "pic_link": pic_link})
+        language = all_stores[0][3]
+        return render_template(language + "-store.html", data = {"question":question, "pic_link": pic_link})
     else:
         return "Invalid Store id"
 

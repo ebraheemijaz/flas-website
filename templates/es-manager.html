@@ -155,9 +155,7 @@
           </div>
           <div class="row" id="all_stores">
             <div class="col-md-12">
-              <div class="card" style="
-                  height: 300px;
-              ">
+              <div class="card">
                 <div class="card-body">
                   <form method="POST" action="/addstore" enctype=multipart/form-data> <div class="form-group">
                     <label>Store Name</label>
@@ -171,6 +169,15 @@
                   <label for="exampleInputEmail1">logo</label>
                   <br>
                   <input type="file" name="logo" required>
+                </div>
+                <br>
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1">Select langugae</label>
+                  <select class="form-control selectpicker" data-style="btn btn-link" name="language">
+                    <option value = "es">English</option>
+                    <option value = "sp">Spanish</option>
+                    <option value = "pg">Portugal</option>
+                  </select>
                 </div>
                 <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
                 </form>
