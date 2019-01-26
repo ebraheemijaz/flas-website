@@ -132,18 +132,18 @@ background:white}
                                 ">
                                 </div>
                                 <div class="card-body">
-                                    <br>
+                                        <br>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <input type="email" name = "email" class="form-control" id="inputEmail4" placeholder="Email">
+                                                <input oninput = "removetime()" type="email" name = "email" class="form-control" id="inputEmail4" placeholder="Email">
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <input type="tel" name = "tel" class="form-control" id="inputPassword4" placeholder="Contact">
+                                                <input oninput = "removetime()" type="tel" name = "tel" class="form-control" id="inputPassword4" placeholder="Contact">
                                             </div>
                                         </div>
     
                                         <div class="form-group">
-                                            <label for="exampleFormControlTextarea1">Comente</label>
+                                            <label onclick = "removetime()" for="exampleFormControlTextarea1">Comment</label>
                                             <textarea class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"></textarea>
                                         </div> <button onclick="addfeedback()" class="float-right btn btn-primary">Próximo</button>
                                 </div>
@@ -156,9 +156,25 @@ background:white}
         </footer>
     </div>
 <script>
+    myVar = -1
+    myVar2 = -1
+    myVar3 = -1
     document.getElementById("smiley").style.display = ""
     document.getElementById("thank_you").style.display = "none"
     rating = 0
+    function removetime(){
+        console.log("ddd")
+        if ( myVar != -1) {
+            clearTimeout(myVar);
+        }
+        if ( myVar2 != -1) {
+            clearTimeout(myVar2);
+        }
+        if ( myVar3 != -1) {
+            clearTimeout(myVar3);
+        }
+        
+    }
     function addfeedback(){
         inputEmail4 = document.getElementById("inputEmail4").value 
         inputPassword4 = document.getElementById("inputPassword4").value 
@@ -175,7 +191,7 @@ background:white}
         document.getElementById("thank_you").style.display = ""
         document.getElementById("commentbutton").style.display = "none"
         document.getElementById("comment_section").style.display = "none"
-        setTimeout(function()
+        myVar3 = setTimeout(function()
             { 
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
@@ -201,7 +217,7 @@ background:white}
         data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
         $.post("/addfeedback", data)
-        setTimeout(function()
+        myVar2 = setTimeout(function()
             { 
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
