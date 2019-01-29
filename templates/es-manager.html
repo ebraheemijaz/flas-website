@@ -157,7 +157,9 @@
             <div class="col-md-12">
               <div class="card">
                 <div class="card-body">
-                  <form method="POST" action="/addstore" enctype=multipart/form-data> <div class="form-group">
+                  <form method="POST" enctype=multipart/form-data id = "form_store"> 
+                    <!-- <form method="POST" action="/addstore" enctype=multipart/form-data>  -->
+                    <div class="form-group">
                     <label>Store Name</label>
                     <input type="managersname" class="form-control" name="storename" placeholder="Enter Store Name">
                 </div>
@@ -168,7 +170,7 @@
                 <div class="">
                   <label for="exampleInputEmail1">logo</label>
                   <br>
-                  <input type="file" name="logo" required>
+                  <input type="file" name="file" required>
                 </div>
                 <br>
                 <div class="form-group">
@@ -189,16 +191,20 @@
               <div class="card-body">
                 <div class="table-responsive">
                   <table class="table">
-                    <thead class=" text-primary">
+                    <thead class=" text-primary" id = "all_store_table">
                       <tr>
                         <th> Name </th>
                         <th> FeedBack </th>
                         <th> status </th>
                         <th> Question </th>
-                        <th> actions </th>
+                        <th> actions 
+                          <i class="material-icons" style="float: right;" onclick="refreshallstore({{data['id']}})">
+                              refresh
+                          </i> 
+                        </th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id = "stores_data">
                       {% for item in data["stores"] %}
                       <tr>
                         <td>
@@ -226,7 +232,7 @@
                               </i>
                               {% endif %}
                         </td>
-                        <td id="{{item[0]}}">offline</td>
+                        <td id="{{item[0]}}" class="ids_of_store">offline</td>
                         {% if item[3] == '' %}
                         <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
                         <td onclick=openmodal("{{item[0]}}")>No question </td>
@@ -336,12 +342,6 @@
   <script src="{{ url_for('static', filename='js/plugins/jquery.validate.min.js') }}"></script>
   <script src="{{ url_for('static', filename='js/material-dashboard.js') }}" type="text/javascript"></script>
 
-  <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
-  <script>
-    zingchart.MODULESDIR = "https://cdn.zingchart.com/modules/";
-    ZC.LICENSE = ["569d52cefae586f634c54f86dc99e6a9", "ee6b7db5b51705a13dc2339db3edaf6d"];
-  </script>
-
   <script>
     document.getElementById("all_stores").style.display = "none"
     document.getElementById("profile").style.display = ""
@@ -352,6 +352,125 @@
       localStorage.setItem("lang", lang);
       window.location = "/" + lang;
     }
+    var form = document.getElementById('form_store');
+      form.onsubmit = function() {
+        event.stopPropagation(); // Stop stuff happening
+        event.preventDefault();
+        var formData = new FormData(form);
+        console.log(document.getElementsByName('file')[0])
+        formData.append('file', document.getElementsByName('file')[0]);
+        console.log(formData)
+        
+        $.ajax({
+        url: 'addstore',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        dataType: 'json',
+        processData: false, // Don't process the files
+        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        success: function(data, textStatus, jqXHR)
+        {
+
+        }});
+
+        return false; // To avoid actual submission of the form
+    }
+    
+    function refreshallstore(user_id){
+      console.log(user_id)
+      data = { "user_id": user_id }
+      console.log(JSON.stringify(data))
+      $.post("/get_all_stores_data", data, function (data, status, xhr) {
+        console.log(data)
+        ids_of_store = document.getElementsByClassName("ids_of_store")
+        on_page_ids = new Set()
+        from_db_ids = new Set()
+        data_object = {}
+        for (i=0;i<ids_of_store.length;i++)  { 
+            on_page_ids.add(ids_of_store[i].id)
+        }
+        for (i=0;i<data["stores"].length;i++)  { 
+            data_object[data["stores"][i][0]] = data["stores"][i]
+            from_db_ids.add(data["stores"][i][0])
+        }
+        console.log(on_page_ids)
+        console.log(from_db_ids)
+        new_stores = new Set([...from_db_ids].filter(x => !on_page_ids.has(x)));
+        console.log(new_stores)
+        if (new_stores.size >= 1){
+          new_stores.forEach(store => {
+            new_store_data = data_object[store] 
+            console.log(new_store_data)
+            sentiment_very_dissatisfied = "hidden"
+            sentiment_satisfied = "hidden"
+            sentiment_very_satisfied = "hidden"
+            if (new_store_data[2] >= 1 || new_store_data[2] <= 33){
+              sentiment_very_dissatisfied = ""
+            }
+            if (new_store_data[2] > 33 && new_store_data[2] <= 66){
+              sentiment_satisfied = ""
+            }
+            if (new_store_data[2] > 66){
+              sentiment_very_satisfied = ""
+            }
+            $('#stores_data').append(`<tr>
+                        <td>
+                          <a href="/store/`+new_store_data[0]+`" target="_blank">
+                            `+new_store_data[1]+`
+                          </a>
+                        </td>
+                        <td>
+                          <i class="material-icons dissatisfied" style="color: red;" `+sentiment_very_dissatisfied+`>
+                            sentiment_very_dissatisfied
+                          </i>
+                           <i class="material-icons satisfied" style="color: yellow;" `+sentiment_satisfied+`>
+                              sentiment_satisfied
+                            </i>
+                            
+                            
+                            <i class="material-icons verysatisfied" style="color: green;" `+sentiment_very_satisfied+`>
+                              sentiment_very_satisfied
+                            </i>
+                            
+                            
+                              
+                        </td>
+                        <td id="`+new_store_data[0]+`">offline</td>
+                        
+                      <td hidden><p  id = "`+new_store_data[0]+`_question">`+new_store_data[3]+`</p></td>
+                        <td onclick=openmodal("`+new_store_data[0]+`")>`+new_store_data[3]+` </td>
+                        
+                        
+                        
+                        
+                        <td>
+                          <i class="material-icons" onclick=openmodalcomment("`+new_store_data[0]+`")>comment</i>
+                          <i class="material-icons" onclick=show_chart("`+new_store_data[0]+`","`+new_store_data[1]+`")>insert_chart</i>
+                          <i class="material-icons" onclick=delete_question("`+new_store_data[0]+`")>delete</i>
+                        </td>
+                          
+                        
+                      </tr>`)
+
+          })
+        }
+        
+        // for(j = 0; j < data["stores"].length ; j++){
+        //   ids_of_store = document.getElementsByClassName("ids_of_store")
+        //   for (i = 0 ; i< ids_of_store.length; i++){
+        //     if (data["stores"][j][0] == ids_of_store[i].id){
+        //       break
+        //     }
+            
+        //   }
+          
+          
+          
+        // }
+      })
+    }
+
     function delete_question(id) {
       data = { "id": id }
       console.log(JSON.stringify(data))
@@ -360,6 +479,8 @@
       })
     }
     function openmodal(id) {
+      console.log(id + "_question")
+      console.log(document.getElementById(id + "_question"))
       document.getElementById("question").value = document.getElementById(id + "_question").innerText
       document.getElementById("question_id").value = id
       $('#modal').modal(true)

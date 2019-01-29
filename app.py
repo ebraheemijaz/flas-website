@@ -1,4 +1,4 @@
-from flask import Flask, session, redirect, url_for, escape, request, render_template, Response
+from flask import Flask, session, redirect, url_for, escape, request, render_template, jsonify
 import json,os
 import sqlite3
 import random,string
@@ -71,6 +71,17 @@ def index(lang):
         data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id'], "pic_link": pic_link}
         return render_template(lang + "-manager.html",data=data)
 
+
+@app.route('/get_all_stores_data' , methods = ['POST'])
+def get_all_stores_data():
+    user_id = request.form['user_id']
+    conn = sqlite3.connect('database.db')
+    store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
+    have_store_recrod =  store_records.fetchall()
+    if have_store_recrod:
+        all_stores = have_store_recrod
+    return jsonify({"stores": all_stores})
+
 @app.route('/addowner' , methods = ['POST'])
 def addowner():
     name = request.form['ownername']
@@ -93,9 +104,10 @@ def addmanager():
 
 @app.route('/addstore' , methods = ['POST'])
 def addstore():
+    print(request.form)
     user_id = str(session['id'])
     store_id = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(16))
-    logo_file= request.files.get('logo')
+    logo_file= request.files.get('file')
     file_name = str(d.now().timestamp()) + logo_file.filename 
     logo_file.save("static//img//" + file_name)
     conn = sqlite3.connect('database.db')
