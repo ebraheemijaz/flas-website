@@ -78,6 +78,7 @@ def get_all_stores_data():
     conn = sqlite3.connect('database.db')
     store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
     have_store_recrod =  store_records.fetchall()
+    all_stores = []
     if have_store_recrod:
         all_stores = have_store_recrod
     return jsonify({"stores": all_stores})
@@ -238,7 +239,7 @@ def update_question():
     conn = sqlite3.connect('database.db')
     conn.execute("UPDATE stores set question = '"+question+"' where id = '"+question_id+"'")
     conn.commit()
-    return redirect(url_for('index'))
+    return jsonify({"question_id":question_id, "question":question})
 
 @app.route('/delete_question' , methods = ['POST'])
 def delete_question():

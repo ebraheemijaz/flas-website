@@ -85,7 +85,7 @@
           <li class="nav-item ">
             <a class="nav-link" onclick=sideclick(0)>
               <i class="material-icons">person</i>
-              <p>STORES<span style="
+              <p>STORES<span id= "total_store_number" style="
                    display: inline;
     float: right;
     background: #0089ec;
@@ -181,7 +181,7 @@
                     <option value = "pg">Português</option>
                   </select>
                 </div>
-                <button type="submit" class=" nbtn btn btn-primary">Add New Store</button>
+                <button type="submit" class="nbtn btn btn-primary" id="add_new_store">Add New Store</button>
                 </form>
               </div>
             </div>
@@ -189,6 +189,9 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-body">
+                <p style="float: right;display:none;" id = "refreshing" >
+                    refreshing...
+                </p>
                 <div class="table-responsive">
                   <table class="table">
                     <thead class=" text-primary" id = "all_store_table">
@@ -200,6 +203,7 @@
                         <th> actions 
                           <i class="material-icons" style="float: right;" onclick="refreshallstore({{data['id']}})">
                               refresh
+                              <p hidden id = "user_id">{{ data['id'] }}</p>
                           </i> 
                         </th>
                       </tr>
@@ -235,11 +239,11 @@
                         <td id="{{item[0]}}" class="ids_of_store">offline</td>
                         {% if item[3] == '' %}
                         <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
-                        <td onclick=openmodal("{{item[0]}}")>No question </td>
+                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >No question </td>
                         {% endif %}
                         {% if item[3] != '' %}
                         <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
-                        <td onclick=openmodal("{{item[0]}}")>{{ item[3] }} </td>
+                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >{{ item[3] }} </td>
                         {% endif %}
                         <td>
                           <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
@@ -275,7 +279,7 @@
         <div class="modal-content">
           <div class="card text-center">
             <div class="card-body">
-              <form action="/update_question" method="POST">
+              <form  method="POST" id = "update_question_form">
                 <div class="form-group">
                   <label for="inputAddress">Question</label>
                   <input type="text" class="form-control" name="question" id="question" placeholder="Question">
@@ -352,8 +356,32 @@
       localStorage.setItem("lang", lang);
       window.location = "/" + lang;
     }
+    var update_question_form = document.getElementById('update_question_form')
+    update_question_form.onsubmit = function(){
+      event.stopPropagation(); // Stop stuff happening
+      event.preventDefault();
+      var formData = new FormData(update_question_form);
+      $.ajax({
+        url: "/update_question",
+        type: 'POST',
+        data: formData,
+        cache: false,
+        dataType: 'json',
+        processData: false, // Don't process the files
+        contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+        success: function(data, textStatus, jqXHR)
+        {
+          document.getElementById(data["question_id"] + "_question_text").innerText = data["question"]
+        }});
+    }
+
     var form = document.getElementById('form_store');
       form.onsubmit = function() {
+        butn = document.getElementById("add_new_store")
+        butn.disabled = true
+        butn.innerText = "Processing..."
+        butn.setAttribute("style","background: gray !important;")
+
         event.stopPropagation(); // Stop stuff happening
         event.preventDefault();
         var formData = new FormData(form);
@@ -371,13 +399,26 @@
         contentType: false, // Set content type to false as jQuery will tell the server its a query string request
         success: function(data, textStatus, jqXHR)
         {
-
+          
         }});
+
+        setTimeout(function()
+            { 
+              butn.innerText = "Add New Store"
+              butn.disabled = false
+              butn.setAttribute("style","")
+              document.getElementsByName("file")[0].value = ''
+              document.getElementsByName("storename")[0].value = ''
+              document.getElementsByName("question")[0].value = ''
+              refreshallstore(document.getElementById("user_id").innerText)
+            }, 2000);
+        
 
         return false; // To avoid actual submission of the form
     }
     
     function refreshallstore(user_id){
+      document.getElementById("refreshing").style.display = ''
       console.log(user_id)
       data = { "user_id": user_id }
       console.log(JSON.stringify(data))
@@ -436,10 +477,10 @@
                             
                               
                         </td>
-                        <td id="`+new_store_data[0]+`">offline</td>
+                        <td id="`+new_store_data[0]+`" class="ids_of_store">offline</td>
                         
                       <td hidden><p  id = "`+new_store_data[0]+`_question">`+new_store_data[3]+`</p></td>
-                        <td onclick=openmodal("`+new_store_data[0]+`")>`+new_store_data[3]+` </td>
+                        <td onclick=openmodal("`+new_store_data[0]+`") id="`+new_store_data[0]+`_question_text">`+new_store_data[3]+` </td>
                         
                         
                         
@@ -455,7 +496,8 @@
 
           })
         }
-        
+        document.getElementById("refreshing").style.display = 'none'
+        document.getElementById("total_store_number").innerText = document.getElementsByClassName("ids_of_store").length
         // for(j = 0; j < data["stores"].length ; j++){
         //   ids_of_store = document.getElementsByClassName("ids_of_store")
         //   for (i = 0 ; i< ids_of_store.length; i++){
@@ -469,15 +511,18 @@
           
         // }
       })
+      
     }
 
     function delete_question(id) {
       data = { "id": id }
       console.log(JSON.stringify(data))
       $.post("/delete_question", data, function (data, status, xhr) {
-        location.reload();
+        document.getElementById(id).parentNode.remove()
+        document.getElementById("total_store_number").innerText = document.getElementsByClassName("ids_of_store").length
       })
     }
+    
     function openmodal(id) {
       console.log(id + "_question")
       console.log(document.getElementById(id + "_question"))
