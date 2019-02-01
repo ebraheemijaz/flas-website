@@ -218,20 +218,20 @@
                         </td>
                         <td>
                           {% if item[2] == 0 %}
-                          <i class="material-icons dissatisfied" style="color: red;">
+                          <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color:blue;">
                             sentiment_very_dissatisfied
                           </i>
                           {% endif %}
-                          {% if item[2] > 33 and item[2] <= 66 %} <i class="material-icons satisfied" style="color: yellow;">
+                          {% if item[2] > 33 and item[2] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
                               sentiment_satisfied
                             </i>
                             {% endif %}
                             {% if item[2] > 66 %}
-                            <i class="material-icons verysatisfied" style="color: green;">
+                            <i class="material-icons verysatisfied"  id = "circle{{item[0]}}"style="color: green;">
                               sentiment_very_satisfied
                             </i>
                             {% endif %}
-                            {% if item[2] >= 1 and item[2] <= 33 %} <i class="material-icons dissatisfied" style="color: red;">
+                            {% if item[2] >= 1 and item[2] <= 33 %} <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color: red;">
                               sentiment_very_dissatisfied
                               </i>
                               {% endif %}
@@ -446,7 +446,8 @@
             sentiment_very_dissatisfied = "hidden"
             sentiment_satisfied = "hidden"
             sentiment_very_satisfied = "hidden"
-            if (new_store_data[2] >= 1 || new_store_data[2] <= 33){
+            new_store = "hidden"
+            if (new_store_data[2] >= 1 && new_store_data[2] <= 33){
               sentiment_very_dissatisfied = ""
             }
             if (new_store_data[2] > 33 && new_store_data[2] <= 66){
@@ -455,6 +456,9 @@
             if (new_store_data[2] > 66){
               sentiment_very_satisfied = ""
             }
+            if (new_store_data[2] == 0){
+              new_store = ""
+            }
             $('#stores_data').append(`<tr>
                         <td>
                           <a href="/store/`+new_store_data[0]+`" target="_blank">
@@ -462,15 +466,19 @@
                           </a>
                         </td>
                         <td>
-                          <i class="material-icons dissatisfied" style="color: red;" `+sentiment_very_dissatisfied+`>
+                          <i class="material-icons dissatisfied" id = "circle`+new_store_data[0]+`" style="color: red;" `+sentiment_very_dissatisfied+`>
                             sentiment_very_dissatisfied
                           </i>
-                           <i class="material-icons satisfied" style="color: yellow;" `+sentiment_satisfied+`>
+                           <i class="material-icons satisfied" id = "circle`+new_store_data[0]+`" style="color: orange;" `+sentiment_satisfied+`>
                               sentiment_satisfied
                             </i>
                             
                             
-                            <i class="material-icons verysatisfied" style="color: green;" `+sentiment_very_satisfied+`>
+                            <i class="material-icons verysatisfied" id = "circle`+new_store_data[0]+`" style="color: green;" `+sentiment_very_satisfied+`>
+                              sentiment_very_satisfied
+                            </i>
+
+                            <i class="material-icons verysatisfied" id = "circle`+new_store_data[0]+`" style="color: blue;" `+new_store+`>
                               sentiment_very_satisfied
                             </i>
                             
@@ -487,7 +495,7 @@
                         
                         <td>
                           <i class="material-icons" onclick=openmodalcomment("`+new_store_data[0]+`")>comment</i>
-                          <i class="material-icons" onclick=show_chart("`+new_store_data[0]+`","`+new_store_data[1]+`")>insert_chart</i>
+                          <i class="material-icons" onclick=show_chart("`+new_store_data[0]+`","`+new_store_data[1].split(" ").join("_")+`")>insert_chart</i>
                           <i class="material-icons" onclick=delete_question("`+new_store_data[0]+`")>delete</i>
                         </td>
                           
@@ -708,18 +716,20 @@
     })
     socket.on('updatefeedback', function (data) {
       element = document.getElementById("circle" + data["id"])
+      console.log(data)
+      console.log(element)
       current_value = data["rating"]
       if (current_value < 34) {
         console.log("red")
-        element.setAttribute("fill", "red");
+        element.style.color = 'red';
       }
       else if (current_value < 67) {
         console.log("yello")
-        element.setAttribute("fill", "orange");
+        element.style.color = 'orange';
       }
       else if (current_value > 66) {
         console.log("green")
-        element.setAttribute("fill", "green");
+        element.style.color = 'green';
       }
     })
   </script>
