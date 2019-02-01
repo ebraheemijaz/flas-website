@@ -448,16 +448,16 @@
             sentiment_very_satisfied = "hidden"
             new_store = "hidden"
             if (new_store_data[2] >= 1 && new_store_data[2] <= 33){
-              sentiment_very_dissatisfied = ""
+              color = "red"
             }
             if (new_store_data[2] > 33 && new_store_data[2] <= 66){
-              sentiment_satisfied = ""
+              color = "orange"
             }
             if (new_store_data[2] > 66){
-              sentiment_very_satisfied = ""
+              color = "green"
             }
             if (new_store_data[2] == 0){
-              new_store = ""
+              color = "blue"
             }
             $('#stores_data').append(`<tr>
                         <td>
@@ -466,21 +466,10 @@
                           </a>
                         </td>
                         <td>
-                          <i class="material-icons dissatisfied" id = "circle`+new_store_data[0]+`" style="color: red;" `+sentiment_very_dissatisfied+`>
+                          <i class="material-icons dissatisfied" id = "circle`+new_store_data[0]+`" style="color: `+color+`;">
                             sentiment_very_dissatisfied
                           </i>
-                           <i class="material-icons satisfied" id = "circle`+new_store_data[0]+`" style="color: orange;" `+sentiment_satisfied+`>
-                              sentiment_satisfied
-                            </i>
-                            
-                            
-                            <i class="material-icons verysatisfied" id = "circle`+new_store_data[0]+`" style="color: green;" `+sentiment_very_satisfied+`>
-                              sentiment_very_satisfied
-                            </i>
-
-                            <i class="material-icons verysatisfied" id = "circle`+new_store_data[0]+`" style="color: blue;" `+new_store+`>
-                              sentiment_very_satisfied
-                            </i>
+                           
                             
                             
                               
@@ -723,7 +712,7 @@
         console.log("red")
         element.style.color = 'red';
       }
-      else if (current_value < 67) {
+      else if (current_value < 67 && current_value > 33) {
         console.log("yello")
         element.style.color = 'orange';
       }
@@ -731,6 +720,10 @@
         console.log("green")
         element.style.color = 'green';
       }
+
+
+
+new_store
     })
   </script>
 
