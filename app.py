@@ -71,7 +71,8 @@ def index(lang):
                 conn = sqlite3.connect('database.db')
                 latest_rating = conn.execute("SELECT avg(rating) AS TotalSales, strftime('%m', time) as SalesMonth FROM user_feedback where id = '"+each_store[0]+"' and strftime('%m', date('now')) = SalesMonth GROUP BY strftime('%Y', time), strftime('%m', time) ORDER BY strftime('%Y', time), strftime('%m', time)")
                 latest_rating = latest_rating.fetchone()
-                all_stores.append(list(each_store) + [latest_rating[0]])
+                if latest_rating:
+                    all_stores.append(list(each_store) + [latest_rating[0]])
         data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id'], "pic_link": pic_link}
         return render_template(lang + "-manager.html",data=data)
 
