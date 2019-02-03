@@ -53,6 +53,12 @@
       background-color: #0089ec !important;
       float: right;
     }
+    @media screen and (max-width: 992px) {
+        #sidebar_button{
+                display: block !important;
+            }
+        }
+
   </style>
 </head>
 <link href="css/jquery.circliful.css" rel="stylesheet" type="text/css" />
@@ -61,6 +67,7 @@
 <script src="js/jquery.circliful.min.js"></script>
 
 <body class="">
+    
   <div class="wrapper ">
     <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
       <!--
@@ -112,6 +119,46 @@
         </ul>
       </div>
     </div>
+    <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                        <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLongTitle">Dashboard</h5>
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                          </button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <ul class="nav">
+                                <li class="nav-item active  ">
+                                  <a class="nav-link" href="./">
+                                    <i class="material-icons">dashboard</i>
+                                    <p>Profile</p>
+                                  </a>
+                                </li>
+                      
+                                <li class="nav-item ">
+                                  <a class="nav-link" onclick=sideclick(0)>
+                                    <i class="material-icons">person</i>
+                                    <p>STORES</p>
+                                  </a>
+                                </li>
+                      
+                                <li class="nav-item ">
+                                  <a class="nav-link" href="./logout">
+                                    <i class="material-icons">content_paste</i>
+                                    <p>logout</p>
+                                  </a>
+                                </li>
+                              </ul>
+            </div>
+                        <div class="modal-footer">
+                          
+                          
+                        </div>
+                      </div>
+        </div>
+      </div>
     <div class="main-panel">
       <!-- Navbar -->
       <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
@@ -119,6 +166,13 @@
           <div class="navbar-wrapper">
             <a class="navbar-brand" id="page_title">Dashboard</a>
           </div>
+          <div class="row">
+              <div class="col-md-12">
+                      <div>
+                          <button  data-toggle="modal" data-target="#exampleModalLong" id = "sidebar_button" data-toggle="modal1" data-target="#exampleModal" style="float: right; background: #0089ec;display: none " class="btn btn-primary">More</button>
+                      </div>
+              </div>
+      </div>
         </div>
       </nav>
       <!-- End Navbar -->
