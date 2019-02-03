@@ -217,21 +217,21 @@
                           </a>
                         </td>
                         <td>
-                          {% if item[2] == 0 %}
+                          {% if item[-1] == 0 %}
                           <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color:blue;">
                             sentiment_very_dissatisfied
                           </i>
                           {% endif %}
-                          {% if item[2] > 33 and item[2] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
+                          {% if item[-1] > 33 and item[2] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
                               sentiment_satisfied
                             </i>
                             {% endif %}
-                            {% if item[2] > 66 %}
+                            {% if item[-1] > 66 %}
                             <i class="material-icons verysatisfied"  id = "circle{{item[0]}}"style="color: green;">
                               sentiment_very_satisfied
                             </i>
                             {% endif %}
-                            {% if item[2] >= 1 and item[2] <= 33 %} <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color: red;">
+                            {% if item[-1] >= 1 and item[-1] <= 33 %} <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color: red;">
                               sentiment_very_dissatisfied
                               </i>
                               {% endif %}
