@@ -73,6 +73,8 @@ def index(lang):
                 latest_rating = latest_rating.fetchone()
                 if latest_rating:
                     all_stores.append(list(each_store) + [latest_rating[0]])
+                else:
+                    all_stores.append(list(each_store) + [0])
         data = {"total_stores":len(all_stores), "stores": all_stores, "id": session['id'], "pic_link": pic_link}
         return render_template(lang + "-manager.html",data=data)
 
@@ -182,6 +184,8 @@ def update_rating():
     rating = request.form.get('rating')
     id = request.form.get('id')
     f_time = request.form.get('f_time')
+    f_time = parser.parse(request.form.get('f_time'))
+    f_time = f_time.strftime('%Y-%m-%d %H:%M:%S')
     conn = sqlite3.connect('database.db')
     conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','-','-','-','"+f_time+"', "+rating+")")
     conn.commit()
@@ -328,8 +332,8 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    # app.run(host= "0.0.0.0", debug=True ,port=5000, threaded=True)
-    app.run(host= "0.0.0.0",port=5000, threaded=True)
+    app.run(host= "0.0.0.0", debug=True ,port=5000, threaded=True)
+    # app.run(host= "0.0.0.0",port=5000, threaded=True)
 
 # {
 #     'total_users': 1, 

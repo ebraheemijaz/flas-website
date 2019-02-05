@@ -272,9 +272,10 @@
                         </td>
                         <td>
                           {% if item[-1] == 0 %}
-                          <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color:blue;">
-                            sentiment_very_dissatisfied
-                          </i>
+                          <svg height="25" width="25">
+                            <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="blue" />
+                          </svg>
+                         
                           {% endif %}
                           {% if item[-1] > 33 and item[-1] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
                               sentiment_satisfied
@@ -501,17 +502,40 @@
             sentiment_satisfied = "hidden"
             sentiment_very_satisfied = "hidden"
             new_store = "hidden"
+            
+
+
+
+
+
             if (new_store_data[2] >= 1 && new_store_data[2] <= 33){
               color = "red"
+              reaction = "dissatisfied"
+              r_type  = "sentiment_very_dissatisfied"
+              html = `<i class="material-icons `+reaction+`" id = "circle`+new_store_data[0]+`" style="color: `+color+`;">
+                            `+r_type+`
+              </i>`
             }
             if (new_store_data[2] > 33 && new_store_data[2] <= 66){
               color = "orange"
+              reaction = "satisfied"
+              r_type  = "sentiment_satisfied"
+              html = `<i class="material-icons `+reaction+`" id = "circle`+new_store_data[0]+`" style="color: `+color+`;">
+                            `+r_type+`
+              </i>`
             }
             if (new_store_data[2] > 66){
               color = "green"
+              reaction = "verysatisfied"
+              r_type  = "sentiment_very_satisfied"
+              html = `<i class="material-icons `+reaction+`" id = "circle`+new_store_data[0]+`" style="color: `+color+`;">
+                            `+r_type+`
+              </i>`
             }
             if (new_store_data[2] == 0){
-              color = "blue"
+              html = `<svg height="25" width="25">
+                            <circle value = "`+new_store_data[2]+`" id = "circle`+new_store_data[0]+`" cx="12" cy="12" r="10" fill="blue" />
+              </svg>`
             }
             $('#stores_data').append(`<tr>
                         <td>
@@ -520,9 +544,7 @@
                           </a>
                         </td>
                         <td>
-                          <i class="material-icons dissatisfied" id = "circle`+new_store_data[0]+`" style="color: `+color+`;">
-                            sentiment_very_dissatisfied
-                          </i>
+                          `+html+`
                            
                             
                             
@@ -760,8 +782,18 @@
     socket.on('updatefeedback', function (data) {
       element = document.getElementById("circle" + data["id"])
       console.log(data)
-      console.log(element)
+      console.log(element.tagName)
       current_value = data["rating"]
+      if (element.tagName == 'circle'){
+        console.log("blue")
+        parent = element.parentNode.parentNode
+        parent.innerHTML = ''
+        parent.innerHTML = `<i class="material-icons verysatisfied" id = "circle`+data['id']+`" style="color: green;">
+                              sentiment_very_satisfied
+                            </i>`
+      }
+      element = document.getElementById("circle" + data["id"])
+      console.log(element)
       if (current_value < 34) {
         console.log("red")
         element.style.color = 'red';
@@ -777,7 +809,7 @@
 
 
 
-new_store
+
     })
   </script>
 
