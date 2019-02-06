@@ -29,7 +29,23 @@
             font-size: 175px;
         }
         .header-filter::before { 
-background:white}
+            background:white
+        }
+        @media only screen and (max-width: 767px) {
+            .col-md-4.col-sm-4.text-center{
+                    width:33%;
+                    float:left;
+            }
+            .verysatisfied{
+                font-size: 75px;
+            }
+            .satisfied{
+                font-size: 75px;
+            } 
+            .dissatisfied{
+                font-size: 75px;
+            }
+        }       
     </style>
 </head>
 
@@ -216,12 +232,12 @@ background:white}
         var dateTime = date+' '+time;
         data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
-        $.post("/addfeedback", data)
         myVar2 = setTimeout(function()
             { 
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
                 document.getElementById("comment_section").style.display = "none"
+                $.post("/addfeedback", data)
             }, 10000);
     }
     function feedback(type){
