@@ -111,6 +111,13 @@
           </li>
 
           <li class="nav-item ">
+            <a class="nav-link" onclick=sideclick(1,"{{data['id']}}")>
+              <i class="material-icons">share</i>
+              <p>Shares</p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
             <a class="nav-link" href="./logout">
               <i class="material-icons">content_paste</i>
               <p>logout</p>
@@ -314,6 +321,29 @@
             </div>
           </div>
         </div>
+
+        <div class="row" id = "whatsapp_shares_table">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-body">
+                <table class="table">
+                  <thead class=" text-primary">
+                    <tr>
+                      <th style="width: 60%;"> Name </th>
+                      <th style="width: 40%;"> Actions </th>
+                    </tr>
+                  </thead>
+                  <tbody id="whatsapp_shares_table_body">
+                      
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
         <div class="row" id="refresh_button" style="display:none">
           <div class="col-md-12">
             <div style="float: right;">
@@ -403,6 +433,7 @@
 
   <script>
     document.getElementById("all_stores").style.display = "none"
+    document.getElementById("whatsapp_shares_table").style.display = "none"
     document.getElementById("profile").style.display = ""
   </script>
   <script>
@@ -731,9 +762,10 @@
       );
 
     }
-    function sideclick(num) {
+    function sideclick(num, user_id = "") {
       document.getElementById("all_stores").style.display = "none"
       document.getElementById("refresh_button").style.display = "none"
+      document.getElementById("whatsapp_shares_table").style.display = "none"
       all_nav_item = document.getElementsByClassName("nav-item")
       for (i = 0; i < all_nav_item.length; i++) {
         all_nav_item[i].classList.remove("active")
@@ -745,7 +777,40 @@
         document.getElementById("profile").style.display = "none"
         document.getElementById("all_charts").style.display = "none"
       }
+      if (num == 1) {
+        document.getElementById("page_title").innerHTML = "Shares"
+        document.getElementById("whatsapp_shares_table").style.display = ""
+        document.getElementById("profile").style.display = "none"
+        document.getElementById("all_charts").style.display = "none"
+        show_share_table(user_id)
+      }
     }
+
+    function show_share_table(user_id){
+      document.getElementById("whatsapp_shares_table_body").innerHTML = ""
+      data = { "user_id": user_id }
+      console.log(data)
+      $.post("/get_all_stores_data", data, function (data, status, xhr) {
+        console.log(data)
+        for (i = 0; i < data["stores"].length; i++) {
+          $('#whatsapp_shares_table_body').append(`
+          <tr>
+            <td>`+data["stores"][i][1]+`</td>
+            <td>
+              <button class="btn btn-primary" style="background-color: gray;border-radius: 50px;">validate</button>
+              <button class="btn btn-primary" style="background-color: green;border-radius: 50px;">report</button>
+              <button class="btn btn-primary" style="border-radius: 50px;" onclick=openwhatsapp("code")>shares</button>
+            </td>
+          </tr>
+          `)
+        }
+      })
+    } 
+
+    function openwhatsapp(code){
+      window.open("https://web.whatsapp.com/send?text=123", "", "width=900,height=600")
+    }
+    
   </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
