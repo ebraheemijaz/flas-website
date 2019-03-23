@@ -332,16 +332,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    # app.run(host= "0.0.0.0", debug=True ,port=5000, threaded=True)
+    # app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
     app.run(host= "0.0.0.0",port=80, threaded=True)
-
-# {
-#     'total_users': 1, 
-#     'total_stores': 1, 
-#     'users': [
-#         (13, None, 'owner', 'owner', '1')
-#     ], 
-#     'stores': [
-#         ('1', None, 0, None)
-#     ]
-# }

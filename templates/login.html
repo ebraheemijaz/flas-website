@@ -15,18 +15,32 @@
   <!-- CSS Files -->
   <link href="{{ url_for('static', filename='css/material-kit.css') }}" rel="stylesheet" />
   <!-- assets/css/material-kit.css?v=2.0.4"  -->
+
+<style>
+  #logo{
+    margin-bottom: 3%;
+    margin-left: 36%;
+    width: 29%;
+  }
+@media only screen and (min-width: 992px){
+  #logo{
+    margin-bottom: 2%;
+    margin-left: 40%;
+    width: 20%;
+  }
+}
+</style>
+
 </head>
+
+
 
 <body class="login-page sidebar-collapse"  style="background-color: #fff;">
   <div class="page-header" style="background-size: cover; background-position: top center;">
     <div class="container">
       <div class="row">
       <div class="col-md-12">
-<img src="/static/img/logo.jpg" style="
-    margin-bottom: 3%;
-    margin-left: 36%;
-    width: 29%;
-">
+<img src="/static/img/logo.jpg" id ="logo" >
 </div>
         <div class="col-lg-4 col-md-6 ml-auto mr-auto">
           <div class="card card-login">
