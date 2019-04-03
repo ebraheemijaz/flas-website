@@ -299,7 +299,12 @@
                         {% endif %}
                         {% if item[3] != '' %}
                         <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
-                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >{{ item[3] }} </td>
+                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" style="
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+">{{ item[3] }} </td>
                         {% endif %}
                         <td>
                           <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
