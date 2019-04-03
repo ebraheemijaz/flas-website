@@ -292,7 +292,7 @@
                               </i>
                               {% endif %}
                         </td>
-                        <td id="{{item[0]}}" class="ids_of_store">offline</td>
+                        <td id="{{item[0]}}" class="ids_of_store" style="color: red;font-weight: bold;">offline</td>
                         {% if item[3] == '' %}
                         <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
                         <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >No question </td>
@@ -803,6 +803,9 @@
           el.innerText = "online"
           // el.classList = []
           el.classList.add(class_add)
+          el.style.color = "green"
+          el.style.fontWeight = "bold"
+          
         }
         
       }
@@ -814,6 +817,8 @@
       console.log(el.length)
       if (el.length >= 1) {
         document.getElementsByClassName(disconnectid)[0].innerText = "offline"
+        document.getElementsByClassName(disconnectid)[0].style.color = "red"
+        document.getElementsByClassName(disconnectid)[0].style.fontWeight = "bold"
       }
     })
     socket.on('updatefeedback', function (data) {
