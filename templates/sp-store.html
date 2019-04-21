@@ -31,7 +31,23 @@
             font-size: 175px;
         }
         .header-filter::before { 
-background:white}
+            background:white
+        }
+        @media only screen and (max-width: 767px) {
+            .col-md-4.col-sm-4.text-center{
+                    width:33%;
+                    float:left;
+            }
+            .verysatisfied{
+                font-size: 75px;
+            }
+            .satisfied{
+                font-size: 75px;
+            } 
+            .dissatisfied{
+                font-size: 75px;
+            }
+        }       
     </style>
 </head>
 
@@ -51,7 +67,7 @@ background:white}
                             </div>
                             <div class="card-body">
                                 <div>
-                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 65px;color: black;font-weight: 1;">
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
                                         {{ data["question"] }}
                                     </h2>
                                 </div>
@@ -107,7 +123,9 @@ background:white}
                             <button class="btn btn-primary text-center" style="
     font-family: 'Playfair', serif;
     font-style: italic;
-" onclick="showcommentsection()" id= "commentbutton">Comentario</button></h1>
+    font-weight: 600;
+    padding: 22px 26px;
+" onclick="showcommentsection()" id= "commentbutton">Deje su comentario</button></h1>
                             </div>
                         </div>
                     </div>
@@ -216,12 +234,12 @@ background:white}
         var dateTime = date+' '+time;
         data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
-        $.post("/addfeedback", data)
         myVar2 = setTimeout(function()
             { 
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
                 document.getElementById("comment_section").style.display = "none"
+                $.post("/addfeedback", data)
             }, 10000);
     }
     function feedback(type){
