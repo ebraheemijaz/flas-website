@@ -596,12 +596,15 @@
     }
 
     function delete_question(id) {
-      data = { "id": id }
-      console.log(JSON.stringify(data))
-      $.post("/delete_question", data, function (data, status, xhr) {
-        document.getElementById(id).parentNode.remove()
-        document.getElementById("total_store_number").innerText = document.getElementsByClassName("ids_of_store").length
-      })
+      var confirm = prompt("Please enter 'y' to delete", "n");
+      if (confirm == 'y') {
+        data = { "id": id }
+        console.log(JSON.stringify(data))
+        $.post("/delete_question", data, function (data, status, xhr) {
+          document.getElementById(id).parentNode.remove()
+          document.getElementById("total_store_number").innerText = document.getElementsByClassName("ids_of_store").length
+        })
+      }
     }
     
     function openmodal(id) {
