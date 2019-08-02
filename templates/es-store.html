@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="../assets/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>
-        Admin
+        Store
     </title>
     <link href="https://fonts.googleapis.com/css?family=Playfair:italic" rel="stylesheet">
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" name="viewport">
@@ -136,6 +136,33 @@
         </footer>
     </div>
 
+    <div id= "attandant" class="page-header header-filter" style="display: none;">
+            <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div>
+                                            <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                Select Attandants
+                                            </h2>
+                                            <p hidden id ="selected_attandant">-1</p>
+                                        </div>
+                                        <br>
+                                        <div class="row" id = "show_all_attandants">
+                                                                                       
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="footer">
+                </footer>
+    </div>
+
     <div id= "comment_section" class="page-header header-filter" style="background-image: url('../assets/img/bg7.jpg'); display:none; background-size: cover; background-position: top center;">
         <div class="container">
             <div class="row">
@@ -193,18 +220,31 @@
         }
         
     }
+    function selectattandant(id, type, dateTime, attandant_id){
+        document.getElementById("selected_attandant").text = attandant_id
+        document.getElementById("attandant").style.display = "none"
+        document.getElementById("thank_you").style.display = ""
+        myVar = setTimeout(function()
+        { 
+            document.getElementById("smiley").style.display = ""
+            document.getElementById("thank_you").style.display = "none" 
+            $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime, "attandant_id": attandant_id})
+            document.getElementById("selected_attandant").text = -1
+        }, 5000);
+    }
     function addfeedback(){
         removetime()
         inputEmail4 = document.getElementById("inputEmail4").value 
         inputPassword4 = document.getElementById("inputPassword4").value 
         exampleFormControlTextarea1 = document.getElementById("exampleFormControlTextarea1").value 
+        attandant_id = Number(document.getElementById("selected_attandant").text)
         var myParam = window.location.href.split("/")
         id = myParam[myParam.length-1]
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date+' '+time;
-        data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
+        data = {"f_time":dateTime,"rating":rating,"id":id, "attandant_id":attandant_id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
         $.post("/addfeedback", data)
         document.getElementById("thank_you").style.display = ""
@@ -215,6 +255,7 @@
                 document.getElementById("smiley").style.display = ""
                 document.getElementById("thank_you").style.display = "none" 
                 document.getElementById("comment_section").style.display = "none"
+                document.getElementById("selected_attandant") = -1
             }, 5000);
     }
     function showcommentsection(){
@@ -255,13 +296,29 @@
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date+' '+time;
         document.getElementById("smiley").style.display = "none"
-        document.getElementById("thank_you").style.display = ""
-        myVar = setTimeout(function()
-            { 
-                document.getElementById("smiley").style.display = ""
-                document.getElementById("thank_you").style.display = "none" 
-                $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime})
-            }, 5000);
+        $.post("/check_attandant_status", {"store_id":id}, function (data, status, xhr) {
+            if (data.showattandant == 1) {
+                document.getElementById("attandant").style.display = ""
+                ele = document.getElementById("show_all_attandants")
+                ele.innerHTML = ''
+                for (i=0; i<data.all_attandants.length; i++){
+                    ele.innerHTML = ele.innerHTML + `
+                        <div class="col-md-3" onclick = "selectattandant('`+id+`', `+type+`, '`+dateTime+`', `+data.all_attandants[i][0]+`)">
+                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width: 33%;">
+                            <h3>`+data.all_attandants[i][1]+`</h3>
+                        </div>`
+                }
+            }
+            else{
+                document.getElementById("thank_you").style.display = ""
+                myVar = setTimeout(function()
+                { 
+                    document.getElementById("smiley").style.display = ""
+                    document.getElementById("thank_you").style.display = "none" 
+                    $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime})
+                }, 5000);
+            }
+        })
         
     }
 </script>

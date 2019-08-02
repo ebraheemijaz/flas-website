@@ -57,7 +57,7 @@ def index(lang):
     if type_user == "1":
         all_stores = []
         conn = sqlite3.connect('database.db')
-        store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
+        store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, stores.show_attandants FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
         user_pic = conn.execute("SELECT pic_link FROM users WHERE id = " + str(id))
         user_pic = user_pic.fetchone()
         if user_pic[0] == None:
@@ -83,12 +83,64 @@ def index(lang):
 def get_all_stores_data():
     user_id = request.form['user_id']
     conn = sqlite3.connect('database.db')
-    store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
+    store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, show_attandants FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
     have_store_recrod =  store_records.fetchall()
     all_stores = []
     if have_store_recrod:
         all_stores = have_store_recrod
     return jsonify({"stores": all_stores})
+
+@app.route('/get_all_attandant_progress' , methods = ['POST'])
+def get_all_attandant_progress():
+    store_id = request.form['store_id']
+    conn = sqlite3.connect('database.db')
+    record = conn.execute(""" SELECT count(rating),rating, attandant_id, attendants.name, image, store_id from user_feedback INNER join attendants
+            on user_feedback.attandant_id = attendants.id GROUP BY user_feedback.attandant_id, 
+            user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id)
+    records = record.fetchall()
+    data = {}
+    for x in records:
+        if x[2] not in data:
+            data[x[2]] = {}
+            data[x[2]]["33"] = 0
+            data[x[2]]["66"] = 0
+            data[x[2]]["100"] = 0
+        
+        if x[1] == 33: data[x[2]]["33"] = x[0]
+        if x[1] == 66: data[x[2]]["66"] = x[0]
+        if x[1] == 100: data[x[2]]["100"] = x[0]
+        data[x[2]]["name"] = x[3]
+        data[x[2]]["image"] = x[4]
+        total = data[x[2]]["33"] + data[x[2]]["66"] + data[x[2]]["100"]
+        data[x[2]]["average"] = (data[x[2]]["33"] * 33 + data[x[2]]["66"] * 66 + data[x[2]]["100"] * 100) / total 
+    high_average = 0
+    for x in data.keys():
+        if data[x]["average"] >= high_average:
+            high_average = data[x]["average"]
+    return jsonify({"data":data, "high_average":high_average})
+
+@app.route('/changeAttandantStatus' , methods = ['POST'])
+def changeAttandantStatus():
+    store_id = request.form['store_id']
+    show_attandants = request.form['show_attandants']
+    conn = sqlite3.connect('database.db')
+    conn.execute("UPDATE stores set show_attandants = " + show_attandants + " where id = '" + store_id + "'")
+    conn.commit()
+    return "done"
+
+@app.route('/check_attandant_status' , methods = ['POST'])
+def check_attandant_status():
+    store_id = request.form['store_id']
+    conn = sqlite3.connect('database.db')
+    record = conn.execute("Select show_attandants from stores where id = '" + store_id + "'")
+    record = record.fetchone()
+    showattandant = record[0]
+    all_attandants = []
+    if showattandant:
+        record = conn.execute("SELECT id, name, image from attendants where store_id  = '" + store_id + "'")
+        all_attandants = record.fetchall()
+    return jsonify({"showattandant":showattandant, "all_attandants":all_attandants})
+    
 
 @app.route('/addowner' , methods = ['POST'])
 def addowner():
@@ -127,6 +179,20 @@ def addstore():
     conn.execute("INSERT INTO store_added (user_id, store_id) VALUES ('"+user_id+"','"+store_id+"')")
     conn.commit()
     return redirect(url_for('index'))
+
+@app.route('/addattandant' , methods = ['POST'])
+def addattandant():
+    attendantname= request.form.get('attendantname')
+    attendant_image= request.files.get('attendant_image')
+    attandant_store= request.form.get('attandant_store')
+    image_id = str(d.now().timestamp()).replace(".", "") + attendant_image.filename 
+    attendant_image.save("static\\img\\attendant_image\\" + image_id )
+    conn = sqlite3.connect('database.db')
+    conn.execute("INSERT INTO attendants (name, image, store_id) VALUES ('"+attendantname+"','"+image_id+"', '"+ attandant_store +"')")
+    conn.commit()
+    return "done"
+
+
 
 @app.route('/get_store_graphs/<storeid>' , methods = ['GET'])
 def get_store_graphs(storeid):
@@ -183,11 +249,12 @@ def get_store(storeid):
 def update_rating():
     rating = request.form.get('rating')
     id = request.form.get('id')
+    attandant_id = request.form.get('attandant_id', -1)
     f_time = request.form.get('f_time')
     f_time = parser.parse(request.form.get('f_time'))
     f_time = f_time.strftime('%Y-%m-%d %H:%M:%S')
     conn = sqlite3.connect('database.db')
-    conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','-','-','-','"+f_time+"', "+rating+")")
+    conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating, attandant_id) VALUES ('"+id+"','-','-','-','"+f_time+"', "+rating+", "+attandant_id+")")
     conn.commit()
     rating_record = conn.execute("SELECT avg(rating) from user_feedback where id = '"+id+"'")
     record = rating_record.fetchall()
@@ -206,11 +273,12 @@ def addfeedback():
     tel = request.form.get('inputPassword4')
     comment = request.form.get('exampleFormControlTextarea1')
     id = request.form.get('id')
+    attandant_id = request.form.get('attandant_id', -1)
     f_time = parser.parse(request.form.get('f_time'))
     f_time = f_time.strftime('%Y-%m-%d %H:%M:%S')
     rating = request.form.get('rating')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating) VALUES ('"+id+"','"+email+"','"+tel+"','"+comment+"', '"+f_time+"',"+rating+")")
+    record = conn.execute("INSERT INTO user_feedback (id, email, phone, comment, time, rating, attandant_id) VALUES ('"+id+"','"+email+"','"+tel+"','"+comment+"', '"+f_time+"',"+rating+", "+attandant_id+")")
     conn.commit()
     rating_record = conn.execute("SELECT avg(rating) from user_feedback where id = '"+id+"'")
     record = rating_record.fetchall()
@@ -332,5 +400,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    # app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
-    app.run(host= "0.0.0.0",port=80, threaded=True)
+    app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
+    # app.run(host= "0.0.0.0",port=80, threaded=True)

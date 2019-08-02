@@ -16,6 +16,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
   <!-- CSS Files -->
   <link href="{{ url_for('static', filename='css/material-dashboard.css') }}" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.9.0/css/all.css" rel="stylesheet">
   <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
   <script src="https://www.amcharts.com/lib/3/pie.js"></script>
   <style>
@@ -108,6 +109,13 @@
     padding-top: 1px;
             ">{{
                   data["total_stores"] }}</span></p>
+            </a>
+          </li>
+
+          <li class="nav-item ">
+            <a class="nav-link" onclick=sideclick(1)>
+              <i class="material-icons">person</i>
+              <p>Attendants</p>
             </a>
           </li>
 
@@ -240,86 +248,163 @@
                 </form>
               </div>
             </div>
-          </div>
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-body">
-                <p style="float: right;display:none;" id = "refreshing" >
-                    refreshing...
-                </p>
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead class=" text-primary" id = "all_store_table">
-                      <tr>
-                        <th> Name </th>
-                        <th> FeedBack </th>
-                        <th> status </th>
-                        <th> Question </th>
-                        <th> actions 
-                          <i class="material-icons" style="float: right;" onclick="refreshallstore({{data['id']}})">
-                              refresh
-                              <p hidden id = "user_id">{{ data['id'] }}</p>
-                          </i> 
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id = "stores_data">
-                      {% for item in data["stores"] %}
-                      <tr>
-                        <td>
-                          <a href="/store/{{item[0]}}" target="_blank">
-                            {{ item[1] }}
-                          </a>
-                        </td>
-                        <td>
-                          {% if item[-1] == 0 %}
-                          <svg height="25" width="25">
-                            <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="blue" />
-                          </svg>
-                         
-                          {% endif %}
-                          {% if item[-1] > 33 and item[-1] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
-                              sentiment_satisfied
-                            </i>
+            </div>
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <p style="float: right;display:none;" id = "refreshing" >
+                      refreshing...
+                  </p>
+                  <div class="table-responsive">
+                    <table class="table">
+                      <thead class=" text-primary" id = "all_store_table">
+                        <tr>
+                          <th> Name </th>
+                          <th> FeedBack </th>
+                          <th> status </th>
+                          <th> Question </th>
+                          <th> actions </th>
+                          <th> Attandants </th>
+                          <th>
+                              <i class="material-icons" style="float: right;" onclick="refreshallstore({{data['id']}})">
+                                  refresh
+                                  <p hidden id = "user_id">{{ data['id'] }}</p>
+                              </i> 
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody id = "stores_data">
+                        {% for item in data["stores"] %}
+                        <tr>
+                          <td>
+                            <a href="/store/{{item[0]}}" target="_blank">
+                              {{ item[1] }}
+                            </a>
+                          </td>
+                          <td>
+                            {% if item[-1] == 0 %}
+                            <svg height="25" width="25">
+                              <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="blue" />
+                            </svg>
+                          
                             {% endif %}
-                            {% if item[-1] > 66 %}
-                            <i class="material-icons verysatisfied"  id = "circle{{item[0]}}"style="color: green;">
-                              sentiment_very_satisfied
-                            </i>
-                            {% endif %}
-                            {% if item[-1] >= 1 and item[-1] <= 33 %} <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color: red;">
-                              sentiment_very_dissatisfied
+                            {% if item[-1] > 33 and item[-1] <= 66 %} <i class="material-icons satisfied" id = "circle{{item[0]}}" style="color: orange;">
+                                sentiment_satisfied
                               </i>
                               {% endif %}
-                        </td>
-                        <td id="{{item[0]}}" class="ids_of_store" style="color: red;font-weight: bold;">offline</td>
-                        {% if item[3] == '' %}
-                        <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
-                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >No question </td>
-                        {% endif %}
-                        {% if item[3] != '' %}
-                        <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
-                        <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" style="
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-">{{ item[3] }} </td>
-                        {% endif %}
-                        <td>
-                          <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
-                          <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
-                          <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
-                        </td>
-                      </tr>
-                      {% endfor %}
-                    </tbody>
-                  </table>
+                              {% if item[-1] > 66 %}
+                              <i class="material-icons verysatisfied"  id = "circle{{item[0]}}"style="color: green;">
+                                sentiment_very_satisfied
+                              </i>
+                              {% endif %}
+                              {% if item[-1] >= 1 and item[-1] <= 33 %} <i class="material-icons dissatisfied" id = "circle{{item[0]}}" style="color: red;">
+                                sentiment_very_dissatisfied
+                                </i>
+                                {% endif %}
+                          </td>
+                          <td id="{{item[0]}}" class="ids_of_store" style="color: red;font-weight: bold;">offline</td>
+                          {% if item[3] == '' %}
+                          <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                          <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >No question </td>
+                          {% endif %}
+                          {% if item[3] != '' %}
+                          <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                          <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" style="
+      max-width: 100px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+  ">{{ item[3] }} </td>
+                          {% endif %}
+                          <td>
+                            <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
+                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
+                            <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
+                          </td>
+                          <td>
+                              <div class="form-check">
+                                  <label class="form-check-label">
+                                      <input  class="form-check-input" type="checkbox" id= "check_{{item[0]}}" {{'checked' if item[-2]==1 else ''}}
+                                              onclick="changeAttandantStatus('{{item[0]}}')"> 
+                                      <span class="form-check-sign">
+                                          <span class="check"></span>
+                                      </span>
+                                  </label>
+                              </div>
+                          </td>
+                          <td></td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+          
+          <div class="row" id="all_attandants" style="display:none">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <form method="POST" enctype=multipart/form-data id = "form_attandant"> 
+                    <div class="form-group">
+                      <label>Attendant Name</label>
+                      <input type="text" class="form-control" name="attendantname" placeholder="Enter Attendant Name">
+                    </div>
+                    <div class="">
+                      <label for="attendant_image">Attendant Image</label>
+                      <br>
+                      <input type="file" name="attendant_image" required>
+                    </div>
+                    <div class="form-group">
+                      <div class="row">
+                        <div class="col-md-11 col-sm-11">
+                            <label>Select Store To Assign</label>
+                            <select class="form-control selectpicker" data-style="btn btn-link" name="attandant_store" >
+                              <option value = "">Select</option>
+                            </select>
+                        </div>
+                        <div class="col-md-1 col-sm-1">
+                          <i class="material-icons" style="float: right;" onclick="get_all_stores_name({{data['id']}})">
+                              refresh
+                          </i>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" class="nbtn btn btn-primary" id="add_new_attendant">Add New Attendant</button>
+                </form>
+                </div>
+              </div>
+              <br>
+              <br>
+              <br>
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                      <div class="col-md-10 col-sm-10">
+                          <select class="form-control selectpicker" id="show_progress_selected" data-style="btn btn-link" name="attandant_store" >
+                            <option value = "">SelectStore</option>
+                          </select>
+                      </div>
+                      <div class="col-md-2 col-sm-2">
+                        <button class="btn btn-primary" onclick=show_progress()>
+                            <i class="material-icons" >
+                                search
+                            </i>
+                        </button>
+                      </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="row" id = "progrssOfAttandants">
+                      
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
 
 
         <div class="row" id="refresh_button" style="display:none">
@@ -412,6 +497,82 @@
   <script>
     document.getElementById("all_stores").style.display = "none"
     document.getElementById("profile").style.display = ""
+
+    function show_progress(){
+      if (document.getElementById("show_progress_selected").value == "") {
+        alert("Select Store")
+        return
+      }
+      store_id = document.getElementById("show_progress_selected").value
+      $.post("/get_all_attandant_progress", {"store_id": store_id}, function (data, status, xhr) {
+        el = document.getElementById("progrssOfAttandants")
+        el.innerHTML = ''
+        for (var key in data.data) {
+          el.innerHTML = el.innerHTML + `
+          <div class= "col-md-3 col-sm-2" >
+                <img src="static/img/attendant_image/`+data.data[key]['image']+`" class="avatar img-raised" style="width: 33%;">
+            </div>
+            <div class="col-md-6 col-sm-8" >
+              <div class="row">
+                  <div class="col-sm-4 col-md-4 text-center">
+                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: green;">
+                        sentiment_very_dissatisfied
+                    </i>
+                    <h6>`+data.data[key]['100']+`</h6>
+                  </div>
+                  <div class="col-sm-4 col-md-4 text-center">
+                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: orange;">
+                        sentiment_satisfied
+                    </i>
+                    <h6>`+data.data[key]['66']+`</h6>
+                  </div>
+                  <div class="col-sm-4 col-md-4 text-center">
+                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;">
+                        sentiment_very_satisfied
+                    </i>
+                    <h6>`+data.data[key]['33']+`</h6>
+                  </div>
+              </div>
+            </div>`
+            if (data.data[key]['average'] == data.high_average){
+              el.innerHTML = el.innerHTML + 
+                  `
+                    <div class="col-md-3 col-sm-2" text-center>
+                      <i class="fas fa-trophy" style="font-size: 35px;color: orange;"></i>
+                    </div>
+                  `
+            }
+            else{
+              el.innerHTML = el.innerHTML + `<div class="col-md-3 col-sm-2" text-center></div>`
+            }
+        }
+      });
+    }
+
+    function get_all_stores_name(user_id){
+      data = { "user_id": user_id }
+      $.post("/get_all_stores_data", data, function (data, status, xhr) {
+        select_tag_attandants = document.getElementsByName("attandant_store")
+        for (each=0 ;each< select_tag_attandants.length; each++ ) {
+          select_tag_attandants[each].innerHTML = "<option value=''>SelectStore</option>";
+          for (i = 0; i< data.stores.length; i++){
+            option = document.createElement("option");
+            option.text = data.stores[i][1];
+            option.value = data.stores[i][0];
+            select_tag_attandants[each].add(option)
+          }
+        }
+      });
+    }
+    function changeAttandantStatus(store_id){
+      checkbox = document.getElementById("check_" + store_id)
+      if (checkbox.checked){show_attandants = 1}
+      else { show_attandants = 0}
+      data = { "store_id": store_id, "show_attandants": show_attandants }
+      $.post("/changeAttandantStatus", data, function (data, status, xhr) {
+        
+      });
+    }
   </script>
   <script>
     localStorage.setItem("lang", "es");
@@ -439,7 +600,7 @@
     }
 
     var form = document.getElementById('form_store');
-      form.onsubmit = function() {
+    form.onsubmit = function() {
         butn = document.getElementById("add_new_store")
         butn.disabled = true
         butn.innerText = "Processing..."
@@ -480,6 +641,43 @@
         return false; // To avoid actual submission of the form
     }
     
+    var form_attandant = document.getElementById('form_attandant');
+    form_attandant.onsubmit = function() {
+      butn = document.getElementById("add_new_attendant")
+      butn.disabled = true
+      butn.innerText = "Processing..."
+      butn.setAttribute("style","background: gray !important;")
+      
+      event.stopPropagation(); // Stop stuff happening
+      event.preventDefault();
+      var formData = new FormData(form_attandant);
+      formData.append('file', document.getElementsByName('attendant_image')[0]);
+      
+      $.ajax({
+      url: 'addattandant',
+      type: 'POST',
+      data: formData,
+      cache: false,
+      dataType: 'json',
+      processData: false, // Don't process the files
+      contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+      success: function(data, textStatus, jqXHR)
+      {
+        
+      }});
+
+      setTimeout(function()
+      { 
+        butn.innerText = "Add New Attandant"
+        butn.disabled = false
+        butn.setAttribute("style","")
+        document.getElementsByName("attendantname")[0].value = ''
+        document.getElementsByName("attendant_image")[0].value = ''
+        document.getElementsByName("attandant_store")[0].value = ''
+      }, 2000);
+        return false; // To avoid actual submission of the form
+    }
+
     function refreshallstore(user_id){
       document.getElementById("refreshing").style.display = ''
       console.log(user_id)
@@ -571,7 +769,18 @@
                           <i class="material-icons" onclick=show_chart("`+new_store_data[0]+`","`+new_store_data[1].split(" ").join("_")+`")>insert_chart</i>
                           <i class="material-icons" onclick=delete_question("`+new_store_data[0]+`")>delete</i>
                         </td>
-                          
+                        <td>
+                            <div class="form-check">
+                                  <label class="form-check-label">
+                                      <input  class="form-check-input" type="checkbox" id= "check_`+new_store_data[0]+`" 
+                                              onclick="changeAttandantStatus('`+new_store_data[0]+`')"> 
+                                      <span class="form-check-sign">
+                                          <span class="check"></span>
+                                      </span>
+                                  </label>
+                              </div>
+                          </td>
+                        <td></td>
                         
                       </tr>`)
 
@@ -756,13 +965,13 @@
         document.getElementById("all_stores").style.display = ""
         document.getElementById("profile").style.display = "none"
         document.getElementById("all_charts").style.display = "none"
+        document.getElementById("all_attandants").style.display = "none"
       }
       if (num == 1) {
-        document.getElementById("page_title").innerHTML = "Shares"
-        // document.getElementById("whatsapp_shares_table").style.display = ""
+        document.getElementById("page_title").innerHTML = "Attendants"
         document.getElementById("profile").style.display = "none"
         document.getElementById("all_charts").style.display = "none"
-        show_share_table(user_id)
+        document.getElementById("all_attandants").style.display = ""
       }
     }
 
