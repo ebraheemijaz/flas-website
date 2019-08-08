@@ -93,10 +93,15 @@ def get_all_stores_data():
 @app.route('/get_all_attandant_progress' , methods = ['POST'])
 def get_all_attandant_progress():
     store_id = request.form['store_id']
+    year = request.form['year']
+    month = request.form['month']
+    condition = ''
+    if year and month:
+        condition = " and strftime('%m', time) = '"+month+"' and strftime('%Y', time) = '"+year+"'"
     conn = sqlite3.connect('database.db')
     record = conn.execute(""" SELECT count(rating),rating, attandant_id, attendants.name, image, store_id from user_feedback INNER join attendants
             on user_feedback.attandant_id = attendants.id GROUP BY user_feedback.attandant_id, 
-            user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id)
+            user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id + condition)
     records = record.fetchall()
     data = {}
     for x in records:
@@ -111,13 +116,18 @@ def get_all_attandant_progress():
         if x[1] == 100: data[x[2]]["100"] = x[0]
         data[x[2]]["name"] = x[3]
         data[x[2]]["image"] = x[4]
+        data[x[2]]["id"] = x[2]
         total = data[x[2]]["33"] + data[x[2]]["66"] + data[x[2]]["100"]
         data[x[2]]["average"] = (data[x[2]]["33"] * 33 + data[x[2]]["66"] * 66 + data[x[2]]["100"] * 100) / total 
     high_average = 0
     for x in data.keys():
         if data[x]["average"] >= high_average:
             high_average = data[x]["average"]
-    return jsonify({"data":data, "high_average":high_average})
+    # import pdb; pdb.set_trace()
+    def c(x):
+        return data[x]['average']
+    sortedarray = sorted(data, key= lambda x: c(x), reverse= True)
+    return jsonify({"data":data, "high_average":high_average, "sorted":sortedarray})
 
 @app.route('/changeAttandantStatus' , methods = ['POST'])
 def changeAttandantStatus():
@@ -189,6 +199,26 @@ def addattandant():
     attendant_image.save("static\\img\\attendant_image\\" + image_id )
     conn = sqlite3.connect('database.db')
     conn.execute("INSERT INTO attendants (name, image, store_id) VALUES ('"+attendantname+"','"+image_id+"', '"+ attandant_store +"')")
+    conn.commit()
+    return "done"
+
+@app.route('/updateattandant' , methods = ['POST'])
+def updateattandant():
+    updateAttandatName = request.form.get('updateAttandatName')
+    updateAttandatId = request.form.get('updateAttandatId')
+    updatedAttandantImage = request.files.get('updatedAttandantImage')
+    image_id = str(d.now().timestamp()).replace(".", "") + updatedAttandantImage.filename 
+    updatedAttandantImage.save("static\\img\\attendant_image\\" + image_id )
+    conn = sqlite3.connect('database.db')
+    conn.execute("UPDATE attendants set name = '"+updateAttandatName+"' , image = '"+image_id+"' where id = " + updateAttandatId)
+    conn.commit()
+    return "done"
+
+@app.route('/deleteAttandant' , methods = ['POST'])
+def deleteAttandant():
+    AttandatId = request.form.get('id')
+    conn = sqlite3.connect('database.db')
+    conn.execute("delete from attendants  where id = " + AttandatId)
     conn.commit()
     return "done"
 
@@ -400,5 +430,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
-    # app.run(host= "0.0.0.0",port=80, threaded=True)
+    # app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
+    app.run(host= "0.0.0.0",port=80, threaded=True)

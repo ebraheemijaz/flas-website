@@ -382,10 +382,13 @@
               <div class="card">
                 <div class="card-body">
                   <div class="row">
-                      <div class="col-md-10 col-sm-10">
+                      <div class="col-md-5 col-sm-5">
                           <select class="form-control selectpicker" id="show_progress_selected" data-style="btn btn-link" name="attandant_store" >
                             <option value = "">SelectStore</option>
                           </select>
+                      </div>
+                      <div class="col-md-5 col-sm-5">
+                          <input id="monthFilter"  class="form-control" type="month" name="monthFilter" value="overall">
                       </div>
                       <div class="col-md-2 col-sm-2">
                         <button class="btn btn-primary" onclick=show_progress()>
@@ -471,6 +474,32 @@
       </div>
     </div>
 
+    <div class="modal fade bd-example-modal-lg" id="modalEditAttandant" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="card">
+            <div class="card-body" >
+                <form method="POST" enctype="multipart/form-data" id="updateFormAttandant"> 
+                  <div class="form-group">
+                    <label>Attendant Name</label>
+                    <input type="text" class="form-control" name = "updateAttandatName" id="updateAttandatName" placeholder="Enter Attendant Name">
+                    <input type="text" class="form-control" name = "updateAttandatId" id="updateAttandatId" hidden >
+                  </div>
+                  <div class="">
+                    <label for="attendant_image">Attendant Image</label>
+                    <br>
+                    <input type="file" name="updatedAttandantImage" >
+                  </div>
+                  <button type="submit" class="nbtn btn btn-primary" id="updateAttendant">Update Attendant</button>
+              </form>
+              <button class="btn btn-danger float-right" onclick="deleteAttendant()">Delete Attendant</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <footer class="footer">
       <div class="container-fluid">
         <div class="row">
@@ -498,19 +527,41 @@
     document.getElementById("all_stores").style.display = "none"
     document.getElementById("profile").style.display = ""
 
+    function deleteAttendant(){
+      id = document.getElementById('updateAttandatId').value
+      $.post("/deleteAttandant", {"id": id}, function (data, status, xhr) {
+        alert("deleted")
+      })
+    }
+
+    function attandantModal(name, id){
+      document.getElementById('updateAttandatName').value = name
+      document.getElementById('updateAttandatId').value = id
+      $('#modalEditAttandant').modal(true)
+    }
+
     function show_progress(){
+      year = ''
+      month = ''
       if (document.getElementById("show_progress_selected").value == "") {
         alert("Select Store")
         return
       }
+      if (document.getElementById('monthFilter').value != "") {
+        _ = document.getElementById('monthFilter').value.split("-")
+        year = _[0]
+        month = _[1]
+      }
       store_id = document.getElementById("show_progress_selected").value
-      $.post("/get_all_attandant_progress", {"store_id": store_id}, function (data, status, xhr) {
+      $.post("/get_all_attandant_progress", {"store_id": store_id, "year": year, "month": month}, function (data, status, xhr) {
         el = document.getElementById("progrssOfAttandants")
         el.innerHTML = ''
-        for (var key in data.data) {
+        for (kk=0; kk<data.sorted.length; kk++) {
+          key = data.sorted[kk]
           el.innerHTML = el.innerHTML + `
           <div class= "col-md-3 col-sm-2" >
-                <img src="static/img/attendant_image/`+data.data[key]['image']+`" class="avatar img-raised" style="width: 33%;">
+                <img src="static/img/attendant_image/`+data.data[key]['image']+`" class="avatar img-raised" style="cursor: pointer;width: 33%;padding: 5%;" 
+                onclick="attandantModal('`+data.data[key]['name']+`',`+data.data[key]['id']+`)">
             </div>
             <div class="col-md-6 col-sm-8" >
               <div class="row">
@@ -676,6 +727,40 @@
         document.getElementsByName("attandant_store")[0].value = ''
       }, 2000);
         return false; // To avoid actual submission of the form
+    }
+
+    var updateFormAttandant = document.getElementById('updateFormAttandant');
+    updateFormAttandant.onsubmit = function() {
+      butn = document.getElementById("updateAttendant")
+      butn.disabled = true
+      butn.innerText = "Updating..."
+      butn.setAttribute("style","background: gray !important;")
+      
+      event.stopPropagation(); // Stop stuff happening
+      event.preventDefault();
+      var formData = new FormData(updateFormAttandant);
+      formData.append('file', document.getElementsByName('updatedAttandantImage')[0]);
+      $.ajax({
+      url: 'updateattandant',
+      type: 'POST',
+      data: formData,
+      cache: false,
+      dataType: 'json',
+      processData: false, // Don't process the files
+      contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+      success: function(data, textStatus, jqXHR)
+      {
+      }});
+      setTimeout(function()
+      { 
+        butn.innerText = "Update Attandant"
+        butn.disabled = false
+        butn.setAttribute("style","")
+        document.getElementsByName("attendantname")[0].value = ''
+        document.getElementsByName("attendant_image")[0].value = ''
+        document.getElementsByName("attandant_store")[0].value = ''
+      }, 2000);
+      return false; // To avoid actual submission of the form
     }
 
     function refreshallstore(user_id){
