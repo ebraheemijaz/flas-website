@@ -196,7 +196,7 @@ def addattandant():
     attendant_image= request.files.get('attendant_image')
     attandant_store= request.form.get('attandant_store')
     image_id = str(d.now().timestamp()).replace(".", "") + attendant_image.filename 
-    attendant_image.save("static\\img\\attendant_image\\" + image_id )
+    attendant_image.save(".\\static\\img\\attendant_image\\" + image_id )
     conn = sqlite3.connect('database.db')
     conn.execute("INSERT INTO attendants (name, image, store_id) VALUES ('"+attendantname+"','"+image_id+"', '"+ attandant_store +"')")
     conn.commit()
@@ -208,7 +208,7 @@ def updateattandant():
     updateAttandatId = request.form.get('updateAttandatId')
     updatedAttandantImage = request.files.get('updatedAttandantImage')
     image_id = str(d.now().timestamp()).replace(".", "") + updatedAttandantImage.filename 
-    updatedAttandantImage.save("static\\img\\attendant_image\\" + image_id )
+    updatedAttandantImage.save(".\\static\\img\\attendant_image\\" + image_id )
     conn = sqlite3.connect('database.db')
     conn.execute("UPDATE attendants set name = '"+updateAttandatName+"' , image = '"+image_id+"' where id = " + updateAttandatId)
     conn.commit()
