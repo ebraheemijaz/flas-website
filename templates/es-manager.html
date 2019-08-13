@@ -264,7 +264,7 @@
                           <th> status </th>
                           <th> Question </th>
                           <th> actions </th>
-                          <th> Attandants </th>
+                          <!-- <th> Attandants </th> -->
                           <th>
                               <i class="material-icons" style="float: right;" onclick="refreshallstore({{data['id']}})">
                                   refresh
@@ -317,11 +317,11 @@
   ">{{ item[3] }} </td>
                           {% endif %}
                           <td>
-                            <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i>
-                            <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i>
+                            <!-- <i class="material-icons" onclick=openmodalcomment("{{item[0]}}")>comment</i> -->
+                            <!-- <i class="material-icons" onclick=show_chart("{{item[0]}}","{{item[1].replace(" ","_")}}")>insert_chart</i> -->
                             <i class="material-icons" onclick=delete_question("{{item[0]}}")>delete</i>
                           </td>
-                          <td>
+                          <!-- <td>
                               <div class="form-check">
                                   <label class="form-check-label">
                                       <input  class="form-check-input" type="checkbox" id= "check_{{item[0]}}" {{'checked' if item[-2]==1 else ''}}
@@ -331,7 +331,7 @@
                                       </span>
                                   </label>
                               </div>
-                          </td>
+                          </td> -->
                           <td></td>
                         </tr>
                         {% endfor %}
@@ -400,9 +400,22 @@
                     </div>
                     <br>
                     <br>
-                    <div class="row" id = "progrssOfAttandants">
-                      
-                    </div>
+                    <div class="table-responsive">
+            <table class="table">
+                <thead class=" text-primary">
+                    <tr>
+                        <th style="width: 10%;">Image</th>
+                        <th style="width: 50%;">Reviews</th>
+                        <th style="width: 20%;">Total</th>
+                        <th style="width: 10%;">Best</th>
+                        <th style="width: 10%;">Comments</th>
+                    </tr>
+                </thead>
+                <tbody id = "progrssOfAttandants">
+                   
+                </tbody>
+            </table>
+        </div>
                 </div>
               </div>
             </div>
@@ -537,10 +550,12 @@
     function attandantModal(name, id){
       document.getElementById('updateAttandatName').value = name
       document.getElementById('updateAttandatId').value = id
+      document.getElementsByName('updatedAttandantImage')[0].value = ""
       $('#modalEditAttandant').modal(true)
     }
 
     function show_progress(){
+      $('#progrssOfAttandants').html('')
       year = ''
       month = ''
       if (document.getElementById("show_progress_selected").value == "") {
@@ -557,45 +572,58 @@
         el = document.getElementById("progrssOfAttandants")
         el.innerHTML = ''
         for (kk=0; kk<data.sorted.length; kk++) {
-          key = data.sorted[kk]
-          el.innerHTML = el.innerHTML + `
-          <div class= "col-md-3 col-sm-2" >
-                <img src="static/img/attendant_image/`+data.data[key]['image']+`" class="avatar img-raised" style="cursor: pointer;width: 33%;padding: 5%;" 
-                onclick="attandantModal('`+data.data[key]['name']+`',`+data.data[key]['id']+`)">
-            </div>
-            <div class="col-md-6 col-sm-8" >
-              <div class="row">
-                  <div class="col-sm-4 col-md-4 text-center">
-                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: green;">
-                        sentiment_very_dissatisfied
-                    </i>
-                    <h6>`+data.data[key]['100']+`</h6>
-                  </div>
-                  <div class="col-sm-4 col-md-4 text-center">
-                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: orange;">
-                        sentiment_satisfied
-                    </i>
-                    <h6>`+data.data[key]['66']+`</h6>
-                  </div>
-                  <div class="col-sm-4 col-md-4 text-center">
-                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;">
-                        sentiment_very_satisfied
-                    </i>
-                    <h6>`+data.data[key]['33']+`</h6>
-                  </div>
-              </div>
-            </div>`
-            if (data.data[key]['average'] == data.high_average){
-              el.innerHTML = el.innerHTML + 
-                  `
-                    <div class="col-md-3 col-sm-2" text-center>
-                      <i class="fas fa-trophy" style="font-size: 35px;color: orange;"></i>
-                    </div>
-                  `
-            }
-            else{
-              el.innerHTML = el.innerHTML + `<div class="col-md-3 col-sm-2" text-center></div>`
-            }
+          attandant_id = data.sorted[kk]
+          each = data.data[attandant_id]
+          if (each['average'] <= 33) {color  = "red"; icon = "sentiment_very_dissatisfied"}
+          else if (each['average'] > 33 && each['average'] <= 66) {color  = "orange"; icon = "sentiment_satisfied"}
+          else if (each['average'] > 66) {color  = "green"; icon = "sentiment_very_satisfied"}
+          trophy = each['average'] == data['high_average'] ? "fas fa-trophy" : ""
+          no_of_commets = each["comments"] == undefined ? "0" : each["comments"] 
+          $('#progrssOfAttandants').append(`
+          <tr>
+                        <td onclick = "attandantModal('`+each['name']+`','`+each['id']+`')">
+                          <img src="./static/img/attendant_image/` + each['image'] + `" class="avatar img-raised" style="width: 45%;"></td>
+                        <td>
+                            <div class="row text-center">
+                                <div class="col-sm-4 col-md-4 ">
+                                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied"
+                                        style="color: red;">
+                                        sentiment_very_dissatisfied
+                                    </i>
+                                    <h6>` + each['33'] + `</h6>
+                                </div>
+                                <div class="col-sm-4 col-md-4">
+                                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied"
+                                        style="color: orange;">
+                                        sentiment_satisfied
+                                    </i>
+                                    <h6>` + each['66'] +  `</h6>
+                                </div>
+                                <div class="col-sm-4 col-md-4">
+                                    <i class="img-raised rounded-circle img-fluid material-icons dissatisfied"
+                                        style="color: green;">
+                                        sentiment_very_satisfied
+                                    </i>
+                                    <h6>` + each['100'] + `</h6>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: `+color+`;">
+                                ` + icon + `
+                            </i>
+                        </td>
+                        <td><i class="`+trophy+`" style="font-size: 35px;color: orange;"></i></td>
+                        <td onclick = "openmodalcomment('`+each['id']+`')">
+                            <i class="img-fluid material-icons">
+                                comment
+                            </i>
+                            <span class="badge" style="position: absolute;background: red;color: white;font-size: inherit;">
+                                `+ no_of_commets+`
+                            </span>
+                        </td>
+                    </tr>
+          `)
         }
       });
     }
@@ -748,9 +776,11 @@
       dataType: 'json',
       processData: false, // Don't process the files
       contentType: false, // Set content type to false as jQuery will tell the server its a query string request
-      success: function(data, textStatus, jqXHR)
-      {
-      }});
+      success: function(data)
+        {
+          show_progress()
+        }
+      });
       setTimeout(function()
       { 
         butn.innerText = "Update Attandant"
@@ -850,21 +880,9 @@
                         
                         
                         <td>
-                          <i class="material-icons" onclick=openmodalcomment("`+new_store_data[0]+`")>comment</i>
-                          <i class="material-icons" onclick=show_chart("`+new_store_data[0]+`","`+new_store_data[1].split(" ").join("_")+`")>insert_chart</i>
                           <i class="material-icons" onclick=delete_question("`+new_store_data[0]+`")>delete</i>
                         </td>
-                        <td>
-                            <div class="form-check">
-                                  <label class="form-check-label">
-                                      <input  class="form-check-input" type="checkbox" id= "check_`+new_store_data[0]+`" 
-                                              onclick="changeAttandantStatus('`+new_store_data[0]+`')"> 
-                                      <span class="form-check-sign">
-                                          <span class="check"></span>
-                                      </span>
-                                  </label>
-                              </div>
-                          </td>
+                        
                         <td></td>
                         
                       </tr>`)

@@ -1,4 +1,5 @@
 from flask import Flask, session, redirect, url_for, escape, request, render_template, jsonify
+from flask import make_response
 import json,os
 import sqlite3
 import random,string
@@ -103,6 +104,9 @@ def get_all_attandant_progress():
             on user_feedback.attandant_id = attendants.id GROUP BY user_feedback.attandant_id, 
             user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id + condition)
     records = record.fetchall()
+    comment_record = conn.execute(""" SELECT attandant_id, count(comment)  from user_feedback GROUP BY attandant_id ,id  
+            having attandant_id != -1   and id = "%s"  """ % store_id + condition)
+    comment_record = comment_record.fetchall()
     data = {}
     for x in records:
         if x[2] not in data:
@@ -124,19 +128,22 @@ def get_all_attandant_progress():
         if data[x]["average"] >= high_average:
             high_average = data[x]["average"]
     # import pdb; pdb.set_trace()
+    for c_record in comment_record:
+        atandant_id = c_record[0]
+        data.get(atandant_id, {})["comments"] = c_record[1]
     def c(x):
         return data[x]['average']
     sortedarray = sorted(data, key= lambda x: c(x), reverse= True)
     return jsonify({"data":data, "high_average":high_average, "sorted":sortedarray})
 
-@app.route('/changeAttandantStatus' , methods = ['POST'])
-def changeAttandantStatus():
-    store_id = request.form['store_id']
-    show_attandants = request.form['show_attandants']
-    conn = sqlite3.connect('database.db')
-    conn.execute("UPDATE stores set show_attandants = " + show_attandants + " where id = '" + store_id + "'")
-    conn.commit()
-    return "done"
+# @app.route('/changeAttandantStatus' , methods = ['POST'])
+# def changeAttandantStatus():
+#     store_id = request.form['store_id']
+#     show_attandants = request.form['show_attandants']
+#     conn = sqlite3.connect('database.db')
+#     conn.execute("UPDATE stores set show_attandants = " + show_attandants + " where id = '" + store_id + "'")
+#     conn.commit()
+#     return "done"
 
 @app.route('/check_attandant_status' , methods = ['POST'])
 def check_attandant_status():
@@ -185,7 +192,7 @@ def addstore():
     question = request.form['question']
     language = request.form['language']
     conn = sqlite3.connect('database.db')
-    conn.execute("INSERT INTO stores (id, storename, question, pic_link, language ) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"', '"+language+"')")
+    conn.execute("INSERT INTO stores (id, storename, question, pic_link, language, show_attandants ) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"', '"+language+"', 1)")
     conn.execute("INSERT INTO store_added (user_id, store_id) VALUES ('"+user_id+"','"+store_id+"')")
     conn.commit()
     return redirect(url_for('index'))
@@ -207,12 +214,15 @@ def updateattandant():
     updateAttandatName = request.form.get('updateAttandatName')
     updateAttandatId = request.form.get('updateAttandatId')
     updatedAttandantImage = request.files.get('updatedAttandantImage')
-    image_id = str(d.now().timestamp()).replace(".", "") + updatedAttandantImage.filename 
-    updatedAttandantImage.save("static//img//attendant_image//" + image_id )
+    image_update_query = ' '
+    if updatedAttandantImage: 
+        image_id = str(d.now().timestamp()).replace(".", "") + updatedAttandantImage.filename 
+        image_update_query = ", image = '"+image_id+"'"
+        updatedAttandantImage.save("static//img//attendant_image//" + image_id )
     conn = sqlite3.connect('database.db')
-    conn.execute("UPDATE attendants set name = '"+updateAttandatName+"' , image = '"+image_id+"' where id = " + updateAttandatId)
+    conn.execute("UPDATE attendants set name = '"+updateAttandatName+"' " + image_update_query + "  where id = " + updateAttandatId)
     conn.commit()
-    return "done"
+    return make_response(jsonify({"status":"done"}), 201)
 
 @app.route('/deleteAttandant' , methods = ['POST'])
 def deleteAttandant():
@@ -361,7 +371,7 @@ def delete_question():
 def getfeedback():
     id = request.form.get('id')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("SELECT * from user_feedback where id  = '"+id+"' order by time desc")
+    record = conn.execute("SELECT * from user_feedback where attandant_id  = '"+id+"' order by time desc")
     feedback = record.fetchall()
     return json.dumps(feedback)
 
