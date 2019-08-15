@@ -58,7 +58,7 @@ def index(lang):
     if type_user == "1":
         all_stores = []
         conn = sqlite3.connect('database.db')
-        store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, stores.show_attandants FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
+        store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, stores.show_attandants, stores.tag_line FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(session['id']))
         user_pic = conn.execute("SELECT pic_link FROM users WHERE id = " + str(id))
         user_pic = user_pic.fetchone()
         if user_pic[0] == None:
@@ -84,7 +84,7 @@ def index(lang):
 def get_all_stores_data():
     user_id = request.form['user_id']
     conn = sqlite3.connect('database.db')
-    store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, show_attandants FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
+    store_records = conn.execute("SELECT stores.id, stores.storename, stores.feedback, stores.question, show_attandants, tag_line FROM store_added INNER JOIN stores  on store_added.store_id = stores.id where user_id = " + str(user_id))
     have_store_recrod =  store_records.fetchall()
     all_stores = []
     if have_store_recrod:
@@ -148,15 +148,16 @@ def get_all_attandant_progress():
 @app.route('/check_attandant_status' , methods = ['POST'])
 def check_attandant_status():
     store_id = request.form['store_id']
+    offset = request.form.get('offset', '0')
     conn = sqlite3.connect('database.db')
-    record = conn.execute("Select show_attandants from stores where id = '" + store_id + "'")
+    record = conn.execute("Select tag_line from stores where id = '" + store_id + "'")
     record = record.fetchone()
-    showattandant = record[0]
-    all_attandants = []
-    if showattandant:
-        record = conn.execute("SELECT id, name, image from attendants where store_id  = '" + store_id + "'")
-        all_attandants = record.fetchall()
-    return jsonify({"showattandant":showattandant, "all_attandants":all_attandants})
+    tag_line = record[0]
+    record = conn.execute("SELECT id, name, image from attendants where store_id  = '" + store_id + "' limit "+offset+"*6, 6")
+    all_attandants = record.fetchall()
+    number_of_attandants = conn.execute("SELECT count(*) from attendants where store_id  = '" + store_id + "'")
+    number_of_attandants = number_of_attandants.fetchone()
+    return jsonify({"all_attandants":all_attandants, "tag_line":tag_line, "number_of_attandants":number_of_attandants[0]})
     
 
 @app.route('/addowner' , methods = ['POST'])
@@ -190,9 +191,10 @@ def addstore():
     conn = sqlite3.connect('database.db')
     name = request.form['storename']
     question = request.form['question']
+    tag_line = request.form['tag_line']
     language = request.form['language']
     conn = sqlite3.connect('database.db')
-    conn.execute("INSERT INTO stores (id, storename, question, pic_link, language, show_attandants ) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"', '"+language+"', 1)")
+    conn.execute("INSERT INTO stores (id, storename, question, pic_link, language, show_attandants, tag_line ) VALUES ('"+store_id+"','"+name+"','"+question+"', '"+file_name+"', '"+language+"', 1 , '"+tag_line+"')")
     conn.execute("INSERT INTO store_added (user_id, store_id) VALUES ('"+user_id+"','"+store_id+"')")
     conn.commit()
     return redirect(url_for('index'))
@@ -313,7 +315,7 @@ def addfeedback():
     tel = request.form.get('inputPassword4')
     comment = request.form.get('exampleFormControlTextarea1')
     id = request.form.get('id')
-    attandant_id = request.form.get('attandant_id', -1)
+    attandant_id = request.form.get('attandant_id', '-1')
     f_time = parser.parse(request.form.get('f_time'))
     f_time = f_time.strftime('%Y-%m-%d %H:%M:%S')
     rating = request.form.get('rating')
@@ -354,10 +356,11 @@ def changeaccount():
 def update_question():
     question = request.form.get('question')
     question_id = request.form.get('question_id')
+    tag_line = request.form.get('tag_line')
     conn = sqlite3.connect('database.db')
-    conn.execute("UPDATE stores set question = '"+question+"' where id = '"+question_id+"'")
+    conn.execute("UPDATE stores set question = '"+question+"', tag_line = '"+tag_line+"' where id = '"+question_id+"'")
     conn.commit()
-    return jsonify({"question_id":question_id, "question":question})
+    return jsonify({"question_id":question_id, "question":question,"tag_line":tag_line})
 
 @app.route('/delete_question' , methods = ['POST'])
 def delete_question():
@@ -440,5 +443,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    # app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
-    app.run(host= "0.0.0.0",port=80, threaded=True)
+    app.run(host= "0.0.0.0", debug=True ,port=80, threaded=True)
+    # app.run(host= "0.0.0.0",port=80, threaded=True)

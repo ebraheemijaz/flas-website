@@ -144,15 +144,17 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <div>
-                                            <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
-                                                Select Attandants
+                                            <h2 id="tag_line" class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                
                                             </h2>
                                             <p hidden id ="selected_attandant">-1</p>
                                         </div>
                                         <br>
                                         <div class="row" id = "show_all_attandants">
-                                                                                       
+                                                                                   
                                         </div>
+                                        <button onclick="show_more_attandant()" id="more_attandant" style ="display:none; background-color: #0089ec !important;" class="float-right btn btn-primary">Show More</button>
+                                    <p hidden id="attandant_offset">0</p>
                                     </div>
                                 </div>
                             </div>
@@ -204,6 +206,7 @@
     myVar = -1
     myVar2 = -1
     myVar3 = -1
+    myVar4 = -1
     document.getElementById("smiley").style.display = ""
     document.getElementById("thank_you").style.display = "none"
     rating = 0
@@ -218,9 +221,50 @@
         if ( myVar3 != -1) {
             clearTimeout(myVar3);
         }
+        if ( myVar4 != -1) {
+            clearTimeout(myVar4);
+        }
         
     }
+    function show_more_attandant(){
+        removetime()
+        offset = Number(document.getElementById("attandant_offset").innerText)
+        offset = offset + 1
+        document.getElementById("attandant_offset").innerText = offset
+        var myParam = window.location.href.split("/")
+        id = myParam[myParam.length-1]
+        var today = new Date();
+        var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+        var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+        var dateTime = date+' '+time;
+        type = document.getElementById('more_attandant').value
+        $.post("/check_attandant_status", {"store_id":id, "offset":offset}, function (data, status, xhr) {
+            if (data.all_attandants.length == 0) {
+                offset = Number(document.getElementById("attandant_offset").innerText)
+                offset = -1
+                document.getElementById("attandant_offset").innerText = offset
+                show_more_attandant()
+            }
+            else {
+                ele = document.getElementById("show_all_attandants")
+                ele.innerHTML = ''
+                for (i=0; i<data.all_attandants.length; i++){
+                    ele.innerHTML = ele.innerHTML + `
+                        <div class="col-md-4 text-center" onclick = "selectattandant('`+id+`', `+type+`, '`+dateTime+`', `+data.all_attandants[i][0]+`)">
+                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width: 45%;">
+                            <h3>`+data.all_attandants[i][1]+`</h3>
+                        </div>`
+                }
+                myVar4 = setTimeout(function(){
+                    location.reload()
+                }, 15000);
+            }
+        });
+
+    }
+
     function selectattandant(id, type, dateTime, attandant_id){
+        removetime()
         document.getElementById("selected_attandant").text = attandant_id
         document.getElementById("attandant").style.display = "none"
         document.getElementById("thank_you").style.display = ""
@@ -259,7 +303,7 @@
             }, 5000);
     }
     function showcommentsection(){
-        clearTimeout(myVar);
+        removetime()
         document.getElementById("thank_you").style.display = "none"
         document.getElementById("comment_section").style.display = ""
         document.getElementById("inputEmail4").value = ""
@@ -268,13 +312,14 @@
         inputEmail4 = document.getElementById("inputEmail4").value 
         inputPassword4 = document.getElementById("inputPassword4").value 
         exampleFormControlTextarea1 = document.getElementById("exampleFormControlTextarea1").value 
+        attandant_id = Number(document.getElementById("selected_attandant").text)
         var myParam = window.location.href.split("/")
         id = myParam[myParam.length-1]
         var today = new Date();
         var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
         var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
         var dateTime = date+' '+time;
-        data = {"f_time":dateTime,"rating":rating,"id":id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
+        data = {"f_time":dateTime,"rating":rating,"id":id, "attandant_id":attandant_id, "inputEmail4":inputEmail4, "inputPassword4":inputPassword4, "exampleFormControlTextarea1":exampleFormControlTextarea1}
         console.log(JSON.stringify(data))
         myVar2 = setTimeout(function()
             { 
@@ -285,6 +330,7 @@
             }, 10000);
     }
     function feedback(type){
+        document.getElementById('more_attandant').value = type
         rating = type
         document.getElementById("commentbutton").style.display = ""
         var myParam = window.location.href.split("/")
@@ -297,25 +343,34 @@
         var dateTime = date+' '+time;
         document.getElementById("smiley").style.display = "none"
         $.post("/check_attandant_status", {"store_id":id}, function (data, status, xhr) {
-            if (data.showattandant == 1) {
-                document.getElementById("attandant").style.display = ""
+            document.getElementById("attandant").style.display = ""
+            document.getElementById('tag_line').innerText = data.tag_line
+            if (data.number_of_attandants > 6){
+                document.getElementById("more_attandant").style.display = ""
+            }
+            if (data.all_attandants.length >= 1) {
                 ele = document.getElementById("show_all_attandants")
                 ele.innerHTML = ''
                 for (i=0; i<data.all_attandants.length; i++){
                     ele.innerHTML = ele.innerHTML + `
-                        <div class="col-md-3" onclick = "selectattandant('`+id+`', `+type+`, '`+dateTime+`', `+data.all_attandants[i][0]+`)">
-                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width: 33%;">
+                        <div class="col-md-4 text-center" onclick = "selectattandant('`+id+`', `+type+`, '`+dateTime+`', `+data.all_attandants[i][0]+`)">
+                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width: 45%;">
                             <h3>`+data.all_attandants[i][1]+`</h3>
                         </div>`
                 }
+                myVar4 = setTimeout(function(){
+                    location.reload()
+                }, 15000);
             }
             else{
-                document.getElementById("thank_you").style.display = ""
+                // document.getElementById("thank_you").style.display = ""
+                document.getElementById('tag_line').innerText = "No Attandant Assigned to this store"
                 myVar = setTimeout(function()
                 { 
-                    document.getElementById("smiley").style.display = ""
-                    document.getElementById("thank_you").style.display = "none" 
-                    $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime})
+                    location.reload()
+                    // document.getElementById("smiley").style.display = ""
+                    // document.getElementById("thank_you").style.display = "none" 
+                    // $.post("/update_rating", {"id":id, "rating":type, "f_time":dateTime})
                 }, 5000);
             }
         })

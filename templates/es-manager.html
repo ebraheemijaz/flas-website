@@ -230,6 +230,10 @@
                   <label>Question</label>
                   <input type="text" class="form-control" name="question" placeholder="Enter Question">
                 </div>
+                <div class="form-group">
+                  <label>Tag Line</label>
+                  <input type="text" class="form-control" name="tag_line" value = "Select Attandant" placeholder="Tag Line">
+                </div>
                 <div class="">
                   <label for="exampleInputEmail1">logo</label>
                   <br>
@@ -305,10 +309,12 @@
                           <td id="{{item[0]}}" class="ids_of_store" style="color: red;font-weight: bold;">offline</td>
                           {% if item[3] == '' %}
                           <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                          <p hidden id = "{{item[0]}}_tag_line">{{item[5]}}</p>
                           <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" >No question </td>
                           {% endif %}
                           {% if item[3] != '' %}
                           <p hidden id = "{{item[0]}}_question">{{item[3]}}</p>
+                          <p hidden id = "{{item[0]}}_tag_line">{{item[5]}}</p>
                           <td onclick=openmodal("{{item[0]}}") id="{{item[0]}}_question_text" style="
       max-width: 100px;
       overflow: hidden;
@@ -391,11 +397,14 @@
                           <input id="monthFilter"  class="form-control" type="month" name="monthFilter" value="overall">
                       </div>
                       <div class="col-md-2 col-sm-2">
-                        <button class="btn btn-primary" onclick=show_progress()>
+                        <button class="btn btn-primary" style="background-color: #0088EC;" onclick=show_progress()>
                             <i class="material-icons" >
                                 search
                             </i>
                         </button>
+                        <i class="material-icons" style="float: right;" onclick="get_all_stores_name({{data['id']}})">
+                          refresh
+                      </i> 
                       </div>
                     </div>
                     <br>
@@ -448,9 +457,14 @@
                   <label for="inputAddress">Question</label>
                   <input type="text" class="form-control" name="question" id="question" placeholder="Question">
                   <input type="text" class="form-control" name="question_id" id="question_id" hidden>
-                  <br>
-                  <button class="btn btn-primary">Update</button>
                 </div>
+                <div class="form-group">
+                  <label for="inputAddress">Tag line</label>
+                  <input type="text" class="form-control" name="tag_line" id="tag_line" placeholder="Tag Line">
+                  <input type="text" class="form-control" name="tag_line_id" id="tag_line_id" hidden>
+                </div>
+                <br>
+                <button class="btn btn-primary">Update</button>
               </form>
             </div>
           </div>
@@ -675,6 +689,8 @@
         success: function(data, textStatus, jqXHR)
         {
           document.getElementById(data["question_id"] + "_question_text").innerText = data["question"]
+          document.getElementById(data["question_id"] + "_question").innerText = data["question"]
+          document.getElementById(data["question_id"] + "_tag_line").innerText = data["tag_line"]
         }});
     }
 
@@ -713,6 +729,7 @@
               document.getElementsByName("file")[0].value = ''
               document.getElementsByName("storename")[0].value = ''
               document.getElementsByName("question")[0].value = ''
+              document.getElementsByName("tag_line")[0].value = 'Select Attandant'
               refreshallstore(document.getElementById("user_id").innerText)
             }, 2000);
         
@@ -874,6 +891,7 @@
                         <td id="`+new_store_data[0]+`" class="ids_of_store">offline</td>
                         
                       <td hidden><p  id = "`+new_store_data[0]+`_question">`+new_store_data[3]+`</p></td>
+                      <td hidden><p  id = "`+new_store_data[0]+`_tag_line">`+new_store_data[5]+`</p></td>
                         <td onclick=openmodal("`+new_store_data[0]+`") id="`+new_store_data[0]+`_question_text">`+new_store_data[3]+` </td>
                         
                         
@@ -920,10 +938,12 @@
     }
     
     function openmodal(id) {
-      console.log(id + "_question")
       console.log(document.getElementById(id + "_question"))
+      console.log(document.getElementById(id + "_tag_line"))
       document.getElementById("question").value = document.getElementById(id + "_question").innerText
       document.getElementById("question_id").value = id
+      document.getElementById("tag_line").value = document.getElementById(id + "_tag_line").innerText
+      document.getElementById("tag_line_id").value = id
       $('#modal').modal(true)
     }
 
