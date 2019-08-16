@@ -596,7 +596,7 @@
           $('#progrssOfAttandants').append(`
           <tr>
                         <td onclick = "attandantModal('`+each['name']+`','`+each['id']+`')">
-                          <img src="./static/img/attendant_image/` + each['image'] + `" class="avatar img-raised" style="width: 45%;"></td>
+                          <img src="./static/img/attendant_image/` + each['image'] + `" class="avatar img-raised" style="width: 100%;"></td>
                         <td>
                             <div class="row text-center">
                                 <div class="col-sm-4 col-md-4 ">
@@ -623,7 +623,7 @@
                             </div>
                         </td>
                         <td>
-                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: `+color+`;">
+                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: `+color+`;font-size: 60px;">
                                 ` + icon + `
                             </i>
                         </td>
