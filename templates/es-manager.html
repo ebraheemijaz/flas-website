@@ -422,7 +422,7 @@
                         <th style="width: 10%;">Image</th>
                         <th style="width: 70%;">Reviews</th>
                         <th hidden>Total</th>
-                        <th style="width: 10%;">Best</th>
+                        <th style="width: 10%;">Ranking</th>
                         <th style="width: 10%;">Comments</th>
                     </tr>
                 </thead>
@@ -591,13 +591,20 @@
       $.post("/get_all_attandant_progress", {"store_id": store_id, "year": year, "month": month}, function (data, status, xhr) {
         el = document.getElementById("progrssOfAttandants")
         el.innerHTML = ''
+        first_src =  "./static/img/1st.jpg"
+        second_src =  "./static/img/2nd.png"
+        third_src =  "./static/img/3rd.png"
         for (kk=0; kk<data.sorted.length; kk++) {
           attandant_id = data.sorted[kk]
           each = data.data[attandant_id]
           if (each['average'] <= 33) {color  = "red"; icon = "sentiment_very_dissatisfied"}
           else if (each['average'] > 33 && each['average'] <= 66) {color  = "orange"; icon = "sentiment_satisfied"}
           else if (each['average'] > 66) {color  = "green"; icon = "sentiment_very_satisfied"}
-          trophy = each['average'] == data['high_average'] ? "fas fa-trophy" : ""
+          // trophy = each['average'] == data['high_average'] ? "fas fa-trophy" : ""
+          trophy = ''
+          if (kk == 0){ trophy = first_src}
+          else if (kk == 1){ trophy = second_src}
+          else if (kk == 2){ trophy = third_src}
           no_of_commets = each["comments"] == undefined ? "0" : each["comments"] 
           $('#progrssOfAttandants').append(`
           <tr>
@@ -633,7 +640,9 @@
                                 ` + icon + `
                             </i>
                         </td>
-                        <td><i class="`+trophy+`" style="font-size: 35px;color: orange;"></i></td>
+                        <td>
+                            <img src= "`+trophy+`" style="width:65%"></i>
+                        </td>
                         <td onclick = "openmodalcomment('`+each['id']+`')">
                             <i class="img-fluid material-icons">
                                 comment
