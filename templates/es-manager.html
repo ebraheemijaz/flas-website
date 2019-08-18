@@ -151,6 +151,12 @@
                                     <i class="material-icons">person</i>
                                     <p>STORES</p>
                                   </a>
+                                </li> 
+                                <li class="nav-item ">
+                                  <a class="nav-link" onclick=sideclick(1)>
+                                    <i class="material-icons">person</i>
+                                    <p>Attendants</p>
+                                  </a>
                                 </li>
                       
                                 <li class="nav-item ">
@@ -264,7 +270,7 @@
                       <thead class=" text-primary" id = "all_store_table">
                         <tr>
                           <th> Name </th>
-                          <th> FeedBack </th>
+                          <th hidden> FeedBack </th>
                           <th> status </th>
                           <th> Question </th>
                           <th> actions </th>
@@ -285,7 +291,7 @@
                               {{ item[1] }}
                             </a>
                           </td>
-                          <td>
+                          <td hidden>
                             {% if item[-1] == 0 %}
                             <svg height="25" width="25">
                               <circle value = "{{item[2]}}" id = "circle{{item[0]}}" cx="12" cy="12" r="10" fill="blue" />
@@ -414,8 +420,8 @@
                 <thead class=" text-primary">
                     <tr>
                         <th style="width: 10%;">Image</th>
-                        <th style="width: 50%;">Reviews</th>
-                        <th style="width: 20%;">Total</th>
+                        <th style="width: 70%;">Reviews</th>
+                        <th hidden>Total</th>
                         <th style="width: 10%;">Best</th>
                         <th style="width: 10%;">Comments</th>
                     </tr>
@@ -622,7 +628,7 @@
                                 </div>
                             </div>
                         </td>
-                        <td>
+                        <td hidden>
                             <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: `+color+`;font-size: 60px;">
                                 ` + icon + `
                             </i>
@@ -881,7 +887,7 @@
                             `+new_store_data[1]+`
                           </a>
                         </td>
-                        <td>
+                        <td hidden>
                           `+html+`
                            
                             
