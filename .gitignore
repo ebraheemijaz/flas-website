@@ -1,5 +1,5 @@
 *.db
-*.png
+# *.png
 *.out
-*.jpg
+# *.jpg
 static/img/attendant_image
