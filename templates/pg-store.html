@@ -117,7 +117,7 @@
 
                                 <h1 class="title 
                        text-center"  style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 65px;color: black;font-weight: 1;">
-                       Obrigado
+                                    Obrigado
                                 
                             </br>
                             <button class="btn btn-primary text-center" style="
@@ -184,16 +184,16 @@
                                     <br>
                                         <div class="form-row">
                                             <div class="form-group col-md-6">
-                                                <input oninput = "removetime()" type="email" name = "email" class="form-control" id="inputEmail4" placeholder="Email">
+                                                <input oninput = "removetime(1)" type="email" name = "email" class="form-control" id="inputEmail4" placeholder="Email">
                                             </div>
                                             <div class="form-group col-md-6">
-                                                <input oninput = "removetime()" type="tel" name = "tel" class="form-control" id="inputPassword4" placeholder="Telephone/Whatsapp">
+                                                <input oninput = "removetime(1)" type="tel" name = "tel" class="form-control" id="inputPassword4" placeholder="Telephone/Whatsapp">
                                             </div>
                                         </div>
     
                                         <div class="form-group">
-                                            <label onclick = "removetime()" for="exampleFormControlTextarea1">Comente</label>
-                                            <textarea class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                            <label  for="exampleFormControlTextarea1">Comente</label>
+                                            <textarea onclick = "removetime(1)" class="form-control" name="comment" id="exampleFormControlTextarea1" rows="3"></textarea>
                                         </div> <button onclick="addfeedback()" class="float-right btn btn-primary">Próximo</button>
                                 </div>
                         </div>
@@ -212,8 +212,9 @@
     document.getElementById("smiley").style.display = ""
     document.getElementById("thank_you").style.display = "none"
     rating = 0
-    function removetime(){
-        console.log("ddd")
+    function removetime(com = 0){
+        console.log(com == 1)
+        console.log(com)
         if ( myVar != -1) {
             clearTimeout(myVar);
         }
@@ -225,6 +226,13 @@
         }
         if ( myVar4 != -1) {
             clearTimeout(myVar4);
+        }
+        if (com == 1) {
+            clearTimeout(myVar2);
+            console.log("extend")
+            myVar2 = setTimeout(function(){ 
+                store_comment() 
+            }, 15000);
         }
         
     }
@@ -304,13 +312,7 @@
                 document.getElementById("selected_attandant") = -1
             }, 5000);
     }
-    function showcommentsection(){
-        removetime()
-        document.getElementById("thank_you").style.display = "none"
-        document.getElementById("comment_section").style.display = ""
-        document.getElementById("inputEmail4").value = ""
-        document.getElementById("inputPassword4").value = ""
-        document.getElementById("exampleFormControlTextarea1").value = ""
+    function store_comment(){
         inputEmail4 = document.getElementById("inputEmail4").value 
         inputPassword4 = document.getElementById("inputPassword4").value 
         exampleFormControlTextarea1 = document.getElementById("exampleFormControlTextarea1").value 
@@ -330,6 +332,16 @@
                 document.getElementById("comment_section").style.display = "none"
                 $.post("/addfeedback", data)
             }, 10000);
+    }
+
+    function showcommentsection(){
+        removetime()
+        document.getElementById("thank_you").style.display = "none"
+        document.getElementById("comment_section").style.display = ""
+        document.getElementById("inputEmail4").value = ""
+        document.getElementById("inputPassword4").value = ""
+        document.getElementById("exampleFormControlTextarea1").value = ""
+        store_comment()
     }
     function feedback(type){
         document.getElementById('more_attandant').value = type
@@ -356,7 +368,7 @@
                 for (i=0; i<data.all_attandants.length; i++){
                     ele.innerHTML = ele.innerHTML + `
                         <div class="col-md-4 text-center" onclick = "selectattandant('`+id+`', `+type+`, '`+dateTime+`', `+data.all_attandants[i][0]+`)">
-                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width:75%;">
+                            <img src="../static/img/attendant_image/`+data.all_attandants[i][2]+`" class="avatar img-raised" style="width: 75%;">
                             <h3>`+data.all_attandants[i][1]+`</h3>
                         </div>`
                 }
