@@ -104,9 +104,6 @@ def get_all_attandant_progress():
             on user_feedback.attandant_id = attendants.id GROUP BY user_feedback.attandant_id, 
             user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id + condition)
     records = record.fetchall()
-    comment_record = conn.execute(""" SELECT attandant_id, count(comment)  from user_feedback GROUP BY attandant_id ,id  
-            having attandant_id != -1   and id = "%s"  """ % store_id + condition)
-    comment_record = comment_record.fetchall()
     data = {}
     for x in records:
         if x[2] not in data:
@@ -123,14 +120,19 @@ def get_all_attandant_progress():
         data[x[2]]["id"] = x[2]
         total = data[x[2]]["33"] + data[x[2]]["66"] + data[x[2]]["100"]
         data[x[2]]["average"] = (data[x[2]]["33"] * 33 + data[x[2]]["66"] * 66 + data[x[2]]["100"] * 100) / total 
+        comment_record = conn.execute(""" SELECT count(comment) from user_feedback 
+                        where attandant_id = %s and id = "%s" and comment!='-' and comment!=' ' and comment!=''  %s """  %  (x[2],store_id, condition))
+        comment_record = comment_record.fetchone()
+        data.get(x[2], {})["comments"] = comment_record[0]
+    
     high_average = 0
     for x in data.keys():
         if data[x]["average"] >= high_average:
             high_average = data[x]["average"]
-    # import pdb; pdb.set_trace()
-    for c_record in comment_record:
-        atandant_id = c_record[0]
-        data.get(atandant_id, {})["comments"] = c_record[1]
+
+    # for c_record in comment_record:
+    #     atandant_id = c_record[0]
+    #     data.get(atandant_id, {})["comments"] = c_record[1]
     def c(x):
         return data[x]['average']
     sortedarray = sorted(data, key= lambda x: c(x), reverse= True)
@@ -373,8 +375,13 @@ def delete_question():
 @app.route('/getfeedback' , methods = ['POST'])
 def getfeedback():
     id = request.form.get('id')
+    year = request.form['year']
+    month = request.form['month']
+    condition = ''
+    if year and month:
+        condition = " and strftime('%m', time) = '"+month+"' and strftime('%Y', time) = '"+year+"'"
     conn = sqlite3.connect('database.db')
-    record = conn.execute("SELECT * from user_feedback where attandant_id  = '"+id+"' order by time desc")
+    record = conn.execute("SELECT * from user_feedback where attandant_id  = '"+id+"' " + condition + " order by time desc")
     feedback = record.fetchall()
     return json.dumps(feedback)
 

@@ -643,7 +643,7 @@
                         <td>
                             <img src= "`+trophy+`" style="width:65%"></i>
                         </td>
-                        <td onclick = "openmodalcomment('`+each['id']+`')">
+                        <td onclick = "openmodalcomment('`+each['id']+`','`+year+`','`+month+`')">
                             <i class="img-fluid material-icons">
                                 comment
                             </i>
@@ -962,9 +962,10 @@
       $('#modal').modal(true)
     }
 
-    function openmodalcomment(id) {
+    function openmodalcomment(id, year,month) {
+      console.log(id, year,month) 
       $('#allfeedback').html('')
-      data = { "id": id }
+      data = { "id": id, 'year':year, 'month':month }
       console.log(JSON.stringify(data))
       $.post("/getfeedback", data, function (data, status, xhr) {
         all_rows = JSON.parse(data)
