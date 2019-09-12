@@ -100,43 +100,85 @@ def get_all_attandant_progress():
     if year and month:
         condition = " and strftime('%m', time) = '"+month+"' and strftime('%Y', time) = '"+year+"'"
     conn = sqlite3.connect('database.db')
-    record = conn.execute(""" SELECT count(rating),rating, attandant_id, attendants.name, image, store_id from user_feedback INNER join attendants
-            on user_feedback.attandant_id = attendants.id GROUP BY user_feedback.attandant_id, 
-            user_feedback.rating having user_feedback.attandant_id != -1 and store_id = "%s" """ % store_id + condition)
+    query = """ SELECT comment,rating,attandant_id,name,image from user_feedback INNER join attendants on user_feedback.attandant_id = attendants.id where store_id = '%s'  %s """ % (store_id, condition) 
+    record = conn.execute(query)
     records = record.fetchall()
-    data = {}
-    for x in records:
-        if x[2] not in data:
-            data[x[2]] = {}
-            data[x[2]]["33"] = 0
-            data[x[2]]["66"] = 0
-            data[x[2]]["100"] = 0
-        
-        if x[1] == 33: data[x[2]]["33"] = x[0]
-        if x[1] == 66: data[x[2]]["66"] = x[0]
-        if x[1] == 100: data[x[2]]["100"] = x[0]
-        data[x[2]]["name"] = x[3]
-        data[x[2]]["image"] = x[4]
-        data[x[2]]["id"] = x[2]
-        total = data[x[2]]["33"] + data[x[2]]["66"] + data[x[2]]["100"]
-        data[x[2]]["average"] = (data[x[2]]["33"] * 33 + data[x[2]]["66"] * 66 + data[x[2]]["100"] * 100) / total 
-        comment_record = conn.execute(""" SELECT count(comment) from user_feedback 
-                        where attandant_id = %s and id = "%s" and comment!='-' and comment!=' ' and comment!=''  %s """  %  (x[2],store_id, condition))
-        comment_record = comment_record.fetchone()
-        data.get(x[2], {})["comments"] = comment_record[0]
     
-    high_average = 0
-    for x in data.keys():
-        if data[x]["average"] >= high_average:
-            high_average = data[x]["average"]
+    attandant_id = set()
+    data = {}
+    for each in records:
+        if each[2] not in attandant_id:
+            data[each[2]] = { 
+                "id":each[2], 
+                "name": each[3],
+                "image": each[4],
+                "totalComments": 0,
+                "average":0,
+                "green":0, "yellow":0, "red":0 }
 
-    # for c_record in comment_record:
-    #     atandant_id = c_record[0]
-    #     data.get(atandant_id, {})["comments"] = c_record[1]
-    def c(x):
-        return data[x]['average']
-    sortedarray = sorted(data, key= lambda x: c(x), reverse= True)
-    return jsonify({"data":data, "high_average":high_average, "sorted":sortedarray})
+        if each[1] == 100: 
+            data[each[2]]['green'] = data[each[2]]['green'] + 1
+        if each[1] == 66: 
+            data[each[2]]['yellow'] = data[each[2]]['yellow'] + 1
+        if each[1] == 33: 
+            data[each[2]]['red'] = data[each[2]]['red'] + 1
+
+        if each[0] != ' ' and each[0] != '' and each[0] != "-":
+            data[each[2]]['totalComments'] = data[each[2]]['totalComments'] + 1
+        
+        attandant_id.add(each[2])
+        _ = (data[each[2]]['green'] * 100) + (data[each[2]]['yellow'] * 66) + (data[each[2]]['red'] * 33)
+        data[each[2]]['average'] = _ / (199)
+    final_data = {"data":[],"max":0}
+    t_average = 0
+    for x,y in data.items():
+        if t_average < y['average']:
+            t_average = y['average']
+            final_data['max'] = t_average
+        final_data['data'].append(y)
+
+    final_data['data'] = sorted(final_data['data'], key = lambda x : x['average'], reverse=True)
+
+    
+    final_data['data'][0]['position'] = 1
+    final_data['data'][1]['position'] = 2
+    final_data['data'][2]['position'] = 3
+
+    return jsonify(final_data)
+
+    # data = {}
+    # for x in records:
+    #     if x[2] not in data:
+    #         data[x[2]] = {}
+    #         data[x[2]]["33"] = 0
+    #         data[x[2]]["66"] = 0
+    #         data[x[2]]["100"] = 0
+        
+    #     if x[1] == 33: data[x[2]]["33"] = x[0]
+    #     if x[1] == 66: data[x[2]]["66"] = x[0]
+    #     if x[1] == 100: data[x[2]]["100"] = x[0]
+    #     data[x[2]]["name"] = x[3]
+    #     data[x[2]]["image"] = x[4]
+    #     data[x[2]]["id"] = x[2]
+    #     total = data[x[2]]["33"] + data[x[2]]["66"] + data[x[2]]["100"]
+    #     data[x[2]]["average"] = (data[x[2]]["33"] * 33 + data[x[2]]["66"] * 66 + data[x[2]]["100"] * 100) / total 
+    #     comment_record = conn.execute(""" SELECT count(comment) from user_feedback 
+    #                     where attandant_id = %s and id = "%s" and comment!='-' and comment!=' ' and comment!=''  %s """  %  (x[2],store_id, condition))
+    #     comment_record = comment_record.fetchone()
+    #     data.get(x[2], {})["comments"] = comment_record[0]
+    
+    # high_average = 0
+    # for x in data.keys():
+    #     if data[x]["average"] >= high_average:
+    #         high_average = data[x]["average"]
+
+    # # for c_record in comment_record:
+    # #     atandant_id = c_record[0]
+    # #     data.get(atandant_id, {})["comments"] = c_record[1]
+    # def c(x):
+    #     return data[x]['average']
+    # sortedarray = sorted(data, key= lambda x: c(x), reverse= True)
+    # return jsonify({"data":data, "high_average":high_average, "sorted":sortedarray})
 
 # @app.route('/changeAttandantStatus' , methods = ['POST'])
 # def changeAttandantStatus():
