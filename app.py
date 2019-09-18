@@ -141,9 +141,14 @@ def get_all_attandant_progress():
 
     
     final_data['data'][0]['position'] = 1
-    final_data['data'][1]['position'] = 2
-    final_data['data'][2]['position'] = 3
-
+    try:
+        final_data['data'][1]['position'] = 2
+    except Exception as identifier:
+        pass
+    try:
+        final_data['data'][2]['position'] = 3
+    except Exception as identifier:
+        pass
     return jsonify(final_data)
 
     # data = {}
