@@ -1,0 +1,2 @@
+use wfeedback
+db.users.insert({"username":"admin","password":"admin123","image":"./static/img/portugal.png","role":"sa"})

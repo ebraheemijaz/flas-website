@@ -6,13 +6,13 @@ import random,string
 from flask_socketio import SocketIO
 from dateutil import parser
 from datetime import datetime as d
-from DB import DB
+from database import databaseclass
 from bson.objectid import ObjectId
 
 app = Flask(__name__)
 app.secret_key = "any random string"
 socketio = SocketIO(app)
-db = DB()
+db = databaseclass()
 language = {
     "es":{
         "thank":"Thank You",
@@ -226,5 +226,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    app.run(host= "0.0.0.0", debug=True ,port=8080, threaded=True)
-    # app.run(host= "0.0.0.0",port=80, threaded=True)
+    # app.run(host= "0.0.0.0", debug=True ,port=8080, threaded=True)
+    app.run(host= "0.0.0.0",port=80, threaded=True)

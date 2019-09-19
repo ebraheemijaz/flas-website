@@ -1,7 +1,7 @@
 import pymongo
 from bson.objectid import ObjectId
 
-class DB():
+class databaseclass():
     def __init__(self):
         self.client = pymongo.MongoClient("mongodb://localhost:27017/")
         self.mydb = self.client["wfeedback"]
