@@ -131,7 +131,8 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         $window.location.assign('./')
     }
 
-    var socket = io.connect($window.location.origin);
+    console.log($window.location)
+    var socket = io.connect('http://' + $window.location.host + ':' + $window.location.port);
     socket.on('connect', function () {
         console.log("connected")
     })
