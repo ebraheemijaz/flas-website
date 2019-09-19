@@ -1,0 +1,171 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label>Store Name</label>
+                        <input type="managersname" class="form-control" ng-model="newStore.storename" placeholder="Enter Store Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Tag Line</label>
+                        <input type="text" class="form-control" ng-model="newStore.tag_line" placeholder="Tag Line">
+                    </div>
+                    <div class="form-group">
+                        <span class="float-right">
+                            <i class="material-icons" ng-click="addQuestion(newStore)">add</i>
+                        </span>
+                        <div ng-repeat="q in newStore.questions">
+                            <br>
+                            <label>Question [[$index+1]]</label>
+                            <input type="text" class="form-control" ng-model="q.title" placeholder="Enter Question">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <img ng-src="[[newStore.file]]" style="width:10%;" alt="logo"
+                            class="img-raised rounded img-fluid">
+                    </div>
+                    <div>
+                        <label for="exampleInputEmail1">logo</label>
+                        <br>
+                        <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*"
+                                        ngf-max-height="1000" ngf-max-size="1MB">
+                        Select File</button>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select langugae</label>
+                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.language">
+                            <option value="es">English</option>
+                            <option value="sp">Spanish</option>
+                            <option value="pg">Português</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select Option</label>
+                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.statstype">
+                            <option value="0">Only Store</option>
+                            <option value="1">Only Attandants</option>
+                            <!-- <option value="2">Both Store and Attandants</option> -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Ask For Comments</label>
+                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.askComments">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div>
+                    <button ng-click="addNewStore(newStore)" class="nbtn btn float-right btn-primary" >Add New Store</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table text-center">
+                        <thead class=" text-primary">
+                            <tr>
+                                <th> Name </th>
+                                <th> Status </th>
+                                <th> Tagline </th>
+                                <th> Language </th>
+                                <th> Actions </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="store in allStores">
+                                <td>
+                                    <a ng-href="./stores/[[store._id]]" target="_blank">
+                                        [[store.storename]]
+                                    </a>
+                                </td>
+                                <td ng-if="online.indexOf(store._id) === -1">offline</td>
+                                <td ng-if="online.indexOf(store._id) !== -1">online</td>
+                                <td>[[store.tag_line]]</td>
+                                <td>[[store.language]]</td>
+                                <td>
+                                    <i class="material-icons" ng-click="editStore(store)">edit</i>
+                                    <i class="material-icons" ng-click="deleteStore(store._id)">delete</i>
+                                    <i class="material-icons"ng-if="store.statstype != '1'"  ng-click="statsStore(store._id)">assessment</i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="editStore" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="container">
+                <div>
+                        <form>
+                                <div class="form-group">
+                                    <label>Store Name</label>
+                                    <p hidden ng-model="editStoreData._id"></p>
+                                    <input type="managersname" class="form-control" ng-model="editStoreData.storename" placeholder="Enter Store Name">
+                                </div>
+                                <div class="form-group">
+                                    <label>Tag Line</label>
+                                    <input type="text" class="form-control" ng-model="editStoreData.tag_line" placeholder="Tag Line">
+                                </div>
+                                <div class="form-group">
+                                    <span class="float-right">
+                                        <i class="material-icons" ng-click="addQuestion(editStoreData)">add</i>
+                                    </span>
+                                    <div ng-repeat="q in editStoreData.questions">
+                                        <br>
+                                        <label>Question [[$index+1]]</label>
+                                        <input type="text" class="form-control" ng-model="q.title" placeholder="Enter Question">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <img ng-if="editStoreData.file" ng-src="[[editStoreData.file]]" style="width:10%;" alt="logo"
+                                        class="img-raised rounded img-fluid">
+                                </div>
+                                <div>
+                                    <label for="exampleInputEmail1">logo</label>
+                                    <br>
+                                    <button type="file" ngf-select="uploadFiles($file, $invalidFiles,true)" accept="image/*"
+                                                    ngf-max-height="1000" ngf-max-size="1MB">
+                                    Select File</button>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Select langugae</label>
+                                    <select class="form-control selectpicker" data-style="btn btn-link" ng-model="editStoreData.language">
+                                        <option value="es">English</option>
+                                        <option value="sp">Spanish</option>
+                                        <option value="pg">Português</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Select Option</label>
+                                    <select class="form-control selectpicker" data-style="btn btn-link" ng-model="editStoreData.statstype">
+                                        <option value="0">Only Store</option>
+                                        <option value="1">Only Attandants</option>
+                                        <!-- <option value="2">Both Store and Attandants</option> -->
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleFormControlSelect1">Ask For Comments</label>
+                                    <select class="form-control selectpicker" data-style="btn btn-link" ng-model="editStoreData.askComments">
+                                        <option value="0">No</option>
+                                        <option value="1">Yes</option>
+                                    </select>
+                                </div>
+                                <button ng-click="updateStore(editStoreData)" class="nbtn btn float-right btn-primary" >Save Store</button>
+                            </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

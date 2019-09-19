@@ -1,0 +1,79 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select Store</label>
+                        <select ng-model="stats.selectedStore" class="form-control selectpicker"
+                            data-style="btn btn-link">
+                            <option value="">Select Store</option>
+                            <option ng-repeat="x in allStores" value="[[$index]]">[[x.storename]]</option>>
+                        </select>
+                    </div>
+                    <br>
+                    <div ng-if="stats.selectedStore" class="form-group">
+                        <label for="exampleFormControlSelect1">Select Question</label>
+                        <select ng-model="stats.selectedQuestion" class="form-control selectpicker"
+                            data-style="btn btn-link">
+                            <option value="">Select Question</option>
+                            <option ng-repeat="x in allStores[stats.selectedStore].questions" value="[[x.id]]">
+                                [[x.title]]</option>>
+                        </select>
+                    </div>
+                    <button ng-click="getstoreStats(stats)" class="nbtn btn float-right btn-primary">Show Stats</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header card-header-primary text-center">
+                <h4 class="card-title">Teminal Gávea</h4>
+            </div>
+            <div class="card-body">
+                <div class="text-center">
+                    <h4 style="margin-top: -11px;">2019</h4>
+                    <h2 style="margin-top: -19px;"><strong>May</strong></h2>
+                    <h5 style="margin-top: -8px;">92.24%</h5>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-12 text-center"><i
+                            class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 159px;">
+                            sentiment_very_satisfied
+                        </i>
+                    </div>
+                </div>
+                <div class="row text-center">
+                    <div class="col-md-12">
+                        <h4> 217 feedbacks</h4>
+                    </div>
+                    <div class="col-sm-4 col-md-4"><i
+                            class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;font-size: 24px;">
+                            sentiment_very_dissatisfied
+                        </i>
+                        <h6>15 </h6>
+                    </div>
+
+                    <div class="col-sm-4 col-md-4"><i
+                            class="img-raised rounded-circle img-fluid material-icons satisfied" style="color: orange;font-size: 24px;">
+                            sentiment_satisfied
+                        </i>
+                        <h6>20 </h6>
+                    </div>
+                    <div class="col-sm-4 col-md-4"><i
+                            class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 24px;">
+                            sentiment_very_satisfied
+                        </i>
+                        <h6>182 </h6>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

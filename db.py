@@ -1,21 +1,48 @@
-a = [
-"CREATE TABLE user (id TEXT, name TEXT, password TEXT, type TEXT)",
-"INSERT INTO user (id, name, password, type) VALUES ('id','admin', 'admin12345.', '0')",
-"Select * from user where id = id and password = password",
-"CREATE TABLE stores (id Text, name TEXT, owner TEXT, manager TEXT)",
-"INSERT INTO stores (id, name, owner, manager) VALUES ('storeid1' ,'storename1', 'storeowner1', 'storemanager1')",
-"CREATE TABLE manager (name TEXT)",
-"INSERT INTO manager (name) VALUES ('manger1')",
-"CREATE TABLE owner (name TEXT)",
-"INSERT INTO owner (name) VALUES ('owner1')",
-"CREATE TABLE employees (id TEXT ,name TEXT, pic TEXT, store_id TEXT)",
-"INSERT INTO employees (id, name, pic, store_id) VALUES ('employeesid1', 'employeesname1','employees1.png', 'employeetroeid1')",
-"CREATE TABLE feedback (phone TEXT ,email TEXT, comment TEXT, employees_id TEXT ,store_id TEXT, rating TEXT)",
-"INSERT INTO feedback (phone, email, comment, employees_id, store_id, rating) VALUES ('phone1','email1','comment1', 'employeesid1' ,'storeid1' ,'33')"
-]
+import pymongo
+from bson.objectid import ObjectId
 
-import sqlite3
-conn = sqlite3.connect('database.db')
-for each in a:
-    records = conn.execute(each)
-conn.commit()
+class DB():
+    def __init__(self):
+        self.client = pymongo.MongoClient("mongodb://localhost:27017/")
+        self.mydb = self.client["wfeedback"]
+    
+    def find(self, col, query, projection = {}):
+        mycol = self.mydb[col]
+        if projection:
+            data = mycol.find(query, projection)
+        else:
+            data = mycol.find(query)
+        response = []
+        for x in data:
+            x['_id'] = str(x.get("_id",''))
+            response.append(x)
+        return response
+
+    def update(self, col, id, data, push = False):
+        mycol = self.mydb[col]
+        _id = ObjectId(data.pop('_id'))
+        newvalues = { "$set": data }
+        if push == True:
+            newvalues = { "$push": { "attandants": data } }
+        mycol.update_one({'_id': _id}, newvalues)
+        return data
+
+    def insert(self, col, data):
+        mycol = self.mydb[col]
+        mycol.insert_one(data)
+        return data
+
+    def delete(self, col, id):
+        mycol = self.mydb[col]
+        mycol.delete_one({'_id':id})
+        return 'done'
+
+
+        
+
+
+
+
+
+
+        

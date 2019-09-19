@@ -1,0 +1,145 @@
+<div class="wrapper ">
+    <div class="sidebar" data-color="purple" data-background-color="white" data-image="../assets/img/sidebar-1.jpg">
+        <div class="logo">
+            <a href="" class="simple-text logo-normal">
+                WfeebBack
+            </a>
+        </div>
+        <div class="sidebar-wrapper">
+            <ul class="nav">
+                <li class="nav-item active" ng-class="{active: active == 'profile'}" ng-click="change('profile')">
+                    <a class="nav-link">
+                        <i class="material-icons">dashboard</i>
+                        <p>Profile</p>
+                    </a>
+                </li>
+                <li class="nav-item " ng-class="{active: active == 'owner'}" ng-click="change('owner')">
+                    <a class="nav-link">
+                        <i class="material-icons">person</i>
+                        <p>OWNER<span id="owner">[[allUsers.length]]</span></p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" ng-click="logout()">
+                        <i class="material-icons">content_paste</i>
+                        <p>logout</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-panel">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
+            <div class="container-fluid">
+                <div class="navbar-wrapper">
+                    <a class="navbar-brand" href="#pablo">Dashboard</a>
+                </div>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                    <span class="navbar-toggler-icon icon-bar"></span>
+                </button>
+                <div class="collapse navbar-collapse justify-content-end">
+                </div>
+            </div>
+        </nav>
+        <!-- End Navbar -->
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div ng-show="active == 'profile'" class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Profile</h4>
+                            </div>
+                            <div class="card-body">
+                                <form name="myForm">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">UserName</label>
+                                        <input type="email" ng-model="user.username" class="form-control" readonly=""
+                                            placeholder="admin">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Password</label>
+                                        <input type="text" ng-model="user.password" class="form-control" name="Password"
+                                            placeholder="Password">
+                                    </div>
+
+
+                                    <div class="form-group">
+                                        <img ng-src="[[user.image]]" style="width:30%;" alt="logo"
+                                            class="img-raised rounded img-fluid">
+                                    </div>
+
+                                    <label for="exampleInputEmail1">logo</label>
+                                    <br>
+                                    <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*"
+                                        ngf-max-height="1000" ngf-max-size="1MB">
+                                        Select File</button>
+
+                                    <br>
+                                    <button ng-click="update()" class="btn btn-primary float-right">Update</button>
+                                </form>
+                                <img ng-show="myForm.file.$valid" ngf-thumbnail="picFile" class="thumb">
+                                <button ng-click="picFile = null" ng-show="picFile">Remove</button>
+                            </div>
+                        </div>
+                        <div ng-show="active == 'owner'">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card" style="height: 166px;">
+                                        <div class="card-body">
+                                            <form>
+                                                <div class="form-group">
+                                                    <label>Owner Name</label>
+                                                    <input class="form-control" ng-model="newuser.name"
+                                                        placeholder="Enter Owner Name">
+                                                </div>
+                                                <button ng-click="insert()" class="nbtn btn float-right btn-primary">Add New Owner</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead class=" text-primary">
+                                                        <tr>
+                                                            <th> Name </th>
+                                                            <th> ID </th>
+                                                            <th> Password </th>
+                                                            <th> Action </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr ng-repeat="user in allUsers">
+                                                            <td>[[user.name]]</td>
+                                                            <td>[[user.username]]</td>
+                                                            <td>[[user.password]]</td>
+                                                            <td>
+                                                                <i class="material-icons" ng-click="delete(user)" >delete_outline</i>
+                                                                <i class="material-icons" ng-click="changeaccount(user)">search</i>
+                                                            </td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+
+        </footer>
+    </div>
+</div>

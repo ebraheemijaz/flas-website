@@ -1,0 +1,147 @@
+<html>
+
+<head>
+    <style type="text/css">
+        @charset "UTF-8";
+
+        [ng\:cloak],
+        [ng-cloak],
+        [data-ng-cloak],
+        [x-ng-cloak],
+        .ng-cloak,
+        .x-ng-cloak,
+        .ng-hide:not(.ng-hide-animate) {
+            display: none !important;
+        }
+
+        ng\:form {
+            display: block;
+        }
+
+        .ng-animate-shim {
+            visibility: hidden;
+        }
+
+        .ng-anchor {
+            position: absolute;
+        }
+    </style>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title></title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script type="text/javascript" src="/js/lib/dummy.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="/css/result-light.css">
+
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.4/angular.js"></script>
+    <script type="text/javascript" src="https://angular-file-upload.appspot.com/js/ng-file-upload-shim.js"></script>
+    <script type="text/javascript" src="https://angular-file-upload.appspot.com/js/ng-file-upload.js"></script>
+
+    <style id="compiled-css" type="text/css">
+        .thumb {
+            width: 24px;
+            height: 24px;
+            float: none;
+            position: relative;
+            top: 7px;
+        }
+
+        form .progress {
+            line-height: 15px;
+        }
+
+        .progress {
+            display: inline-block;
+            width: 100px;
+            border: 3px groove #CCC;
+        }
+
+        .progress div {
+            font-size: smaller;
+            background: orange;
+            width: 0;
+        }
+    </style>
+
+
+    <!-- TODO: Missing CoffeeScript 2 -->
+
+    <script type="text/javascript">//<![CDATA[
+
+
+        //inject angular file upload directives and services.
+        var app = angular.module('fileUpload', ['ngFileUpload']);
+
+        app.controller('MyCtrl', ['$scope', 'Upload', '$timeout', function ($scope, Upload, $timeout) {
+            $scope.uploadFiles = function (file, errFiles) {
+                $scope.f = file;
+                $scope.errFile = errFiles && errFiles[0];
+                if (file) {
+                    file.upload = Upload.upload({
+                        url: 'https://angular-file-upload-cors-srv.appspot.com/upload',
+                        data: { file: file }
+                    });
+
+                    file.upload.then(function (response) {
+                        $timeout(function () {
+                            file.result = response.data;
+                        });
+                    }, function (response) {
+                        if (response.status > 0)
+                            $scope.errorMsg = response.status + ': ' + response.data;
+                    }, function (evt) {
+                        file.progress = Math.min(100, parseInt(100.0 *
+                            evt.loaded / evt.total));
+                    });
+                }
+            }
+        }]);
+
+
+    //]]></script>
+
+</head>
+
+<body ng-app="fileUpload" ng-controller="MyCtrl" class="ng-scope ng-binding">
+
+    <h4>Upload on file select</h4>
+    <button type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="1000"
+        ngf-max-size="1MB">
+        Select File</button>
+    <br><br>
+    File:
+    <div style="font:smaller" class="ng-binding">
+        <span class="progress ng-hide" ng-show="f.progress >= 0">
+            <div style="width:%" ng-bind="f.progress + '%'" class="ng-binding">%</div>
+        </span>
+    </div>
+
+
+
+
+    <script>
+        // tell the embed parent frame the height of the content
+        if (window.parent && window.parent.parent) {
+            window.parent.parent.postMessage(["resultsFrame", {
+                height: document.body.getBoundingClientRect().height,
+                slug: "0mz6ff9o"
+            }], "*")
+        }
+
+        // always overwrite window.name, in case users try to set it manually
+        window.name = "result"
+    </script>
+
+
+    <label tabindex="-1"
+        style="visibility: hidden; position: absolute; overflow: hidden; width: 0px; height: 0px; border: none; margin: 0px; padding: 0px;">upload<input
+            type="file" ngf-select="uploadFiles($file, $invalidFiles)" accept="image/*" ngf-max-height="1000"
+            ngf-max-size="1MB"></label>
+</body>
+
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <link rel="apple-touch-icon" sizes="76x76" href="{{ url_for('static', filename='img/apple-icon.png') }}">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <link rel="icon" type="image/png" href="static/img/favicon.png">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>
+        Stores
+    </title>
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no'
+        name='viewport' />
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+    <link href="{{ url_for('static', filename='css/material-dashboard.css') }}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.css">
+    <style>
+        #logo {
+            margin-bottom: 3%;
+            margin-left: 36%;
+            width: 29%;
+        }
+
+        @media only screen and (min-width: 992px) {
+            #logo {
+                margin-bottom: 2%;
+                margin-left: 40%;
+                width: 20%;
+            }
+        }
+    </style>
+
+</head>
+
+<body ng-cloak ng-app = "wfeedBackApp" class="login-page sidebar-collapse" ng-controller="storeController">
+    <div class="page-header header-filter" style=" background-size: cover; background-position: top center;">
+        <div class="container">
+            <div class="row" >
+                <div class="col-lg-12 col-md-12 ml-auto mr-auto">
+                    <div class="col-md-12">
+                        <div ng-if="active == 'questions'" class="card">
+                            <div> <img ng-src="../[[currentStore.file]]" style="
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 50%;
+                            ">
+                            </div>
+                            <div class="card-body animated bounceInRight" ng-show="activeQuestion==[[$index]]" ng-repeat="question in currentStore.questions" >
+                                <div>
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                            [[question.title]]
+                                    </h2>
+                                </div>
+                                <div class="row">
+                                    <div ng-click='questionReview(question,100)' class="col-md-4 col-sm-4 text-center">
+                                            <i class="img-raised rounded-circle img-fluid material-icons verysatisfied">
+                                                sentiment_very_satisfied
+                                            </i>
+                                    </div>
+                                    <div ng-click='questionReview(question,66)' class="col-md-4 col-sm-4 text-center">
+                                            <i  class="img-raised rounded-circle img-fluid material-icons satisfied">
+                                                sentiment_satisfied
+                                            </i>
+                                    </div>
+                                    <div ng-click='questionReview(question,33)' class="col-md-4 col-sm-4 text-center">
+                                            <i  class="img-raised rounded-circle img-fluid material-icons dissatisfied">
+                                                sentiment_very_dissatisfied
+                                            </i>
+                                    </div>
+
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
+                        <div ng-if="active == 'NoQuestions'" class="card">
+                            <div class="card-body animated bounceInRight" >
+                                <div>
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                        No Question Added
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="active == 'attandants'" class="card">
+                                <div> <img ng-src="../[[currentStore.file]]" style="
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 50%;
+                                ">
+                                </div>
+                                <div class="card-body animated bounceInRight" >
+                                    <div>
+                                        <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                [[currentStore.tag_line]]
+                                        </h2>
+                                    </div>
+                                    <div class="row">
+                                        <div ng-click='attandantReview1(100)' class="col-md-4 col-sm-4 text-center">
+                                                <i class="img-raised rounded-circle img-fluid material-icons verysatisfied">
+                                                    sentiment_very_satisfied
+                                                </i>
+                                        </div>
+                                        <div ng-click='attandantReview1(66)' class="col-md-4 col-sm-4 text-center">
+                                                <i  class="img-raised rounded-circle img-fluid material-icons satisfied">
+                                                    sentiment_satisfied
+                                                </i>
+                                        </div>
+                                        <div ng-click='attandantReview1(33)' class="col-md-4 col-sm-4 text-center">
+                                                <i  class="img-raised rounded-circle img-fluid material-icons dissatisfied">
+                                                    sentiment_very_dissatisfied
+                                                </i>
+                                        </div>
+    
+                                    </div>
+                                    <br>
+                                    <br>
+                                </div>
+                        </div>
+                        <div ng-if="active == 'NoAttandants'" class="card">
+                            <div class="card-body animated bounceInRight" >
+                                <div>
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                        No Attandants Added
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="active == 'allAttandants'" class="card">
+                            <div class="card-body animated bounceInRight" >
+                                <div>
+                                    <div class="row">
+                                        <div class="col-md-4 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in currentStore.attandants | limitTo:6:6*offset">
+                                            <img ng-src="../[[eachAttandant.file]]"  class="avatar img-raised" style="width: 75%;">
+                                            <h3>[[eachAttandant.name]]</h3>
+                                        </div>
+                                    </div>
+                                    <button ng-disabled="offset == 0" ng-click="offset = offset-1" class="btn btn-primary text-center" style="float: left;">
+                                        <i class="material-icons">skip_previous</i>
+                                    </button>
+                                    <button ng-disabled="(offset+1)*6 >= currentStore.attandants.length " ng-click="offset = offset+1" class="btn btn-primary text-center" style="float: right;">
+                                        <i class="material-icons">skip_next</i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-if="active == 'thankyou'" class="card">
+                                <div> <img ng-src="../[[currentStore.file]]" style="
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 50%;
+                                ">
+                                </div>
+                                <div class="card-body animated bounceInRight"  >
+                                    <div>
+                                        <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                            [[currentStore.language.thank]]
+                                        </h2>
+                                        <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1'" class="btn btn-primary text-center" style="margin-left: 37%;font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
+                                            [[currentStore.language.leavecomment]]
+                                        </button>
+                                    </div>
+                                </div>
+                        </div>
+                        <div ng-if="active == 'leaveComment'" class="card">
+                                <div> <img ng-src="../[[currentStore.file]]" style="
+                                    display: block;
+                                    margin-left: auto;
+                                    margin-right: auto;
+                                    width: 50%;
+                                ">
+                                </div>
+                                <div class="card-body animated bounceInRight"  >
+                                    <div class="card-body">
+                                            <br>
+                                            <div class="form-row">
+                                                <div class="form-group col-md-6">
+                                                    <input ng-keydown="startTimer(15000)" ng-model="commnter.email" class="form-control" id="inputEmail4" placeholder="Email">
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <input ng-keydown="startTimer(15000)" ng-model="commnter.tel" class="form-control" id="inputPassword4" placeholder="Telephone/Whatsapp">
+                                                </div>
+                                            </div>
+        
+                                            <div class="form-group">
+                                                <label  for="exampleFormControlTextarea1">[[currentStore.language.comment]]</label>
+                                                <textarea ng-keydown="startTimer(15000)" class="form-control" ng-model="commnter.comment" id="exampleFormControlTextarea1" rows="3"></textarea>
+                                            </div> 
+                                            <button ng-click="submitComment(commnter)" class="float-right btn btn-primary">[[currentStore.language.next]]</button>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="footer">
+        </footer>
+    </div>
+</body>
+<!-- addition lib -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+
+<!--   Core JS Files   -->
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}" rel="stylesheet"></script>
+<script src="{{ url_for('static', filename='js/popper.min.js') }}" rel="stylesheet"></script>
+<script src="{{ url_for('static', filename='js/bootstrap-material-design.min.js') }}" rel="stylesheet"></script>
+<script src="{{ url_for('static', filename='js/perfect-scrollbar.jquery.min.js') }}" rel="stylesheet"></script>
+<script src="{{ url_for('static', filename='js/material-dashboard.js') }}" rel="stylesheet"></script>
+
+<!-- Angular lib -->
+<!-- Angular lib -->
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular.min.js" type="text/javascript"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-route.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.8/angular-cookies.min.js"></script>
+
+<script type="text/javascript" src="https://angular-file-upload.appspot.com/js/ng-file-upload-shim.js"></script>
+<script type="text/javascript" src="https://angular-file-upload.appspot.com/js/ng-file-upload.js"></script>
+
+<!-- app js -->
+<script src="../static/angular/app.js"></script>
+
+<!-- service -->
+<script src="../static/angular/ApiService.js"></script>
+
+<!-- controllers -->
+<script src="../static/angular/storeCtrl.js"></script>
+
+</html>
