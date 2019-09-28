@@ -65,10 +65,14 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
 
     $scope.addNewStore = (store) => {
         adminApi.addNewStore(store).then(function(data){
+            console.log($scope.newStore)
             swal("Approved", 'store added successfully', "success");
             store._id = data.data._id
             $scope.allStores.push(store)
-            $scope.newStore = {questions:[{title:'', id:Math.random().toString(36).substring(2)}]}
+            $scope.newStore.file = ''
+            $scope.newStore = {questions:[{title:'', id:Math.random().toString(36).substring(2)}], file:''}
+            console.log($scope.newStore)
+
         })
     }
 

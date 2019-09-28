@@ -4,7 +4,9 @@ app.controller('admindashboard', function($scope, $rootScope, $route, $cookies, 
     $scope.active = 'profile'
     $scope.update = () => {
         if($scope.user.password == '') {delete $scope.user.password}
-        adminApi.update($scope.user)
+        adminApi.update($scope.user).then(function(){
+            swal("Approved", "updated", "success");
+        })
     }
 
     $scope.insert = () => {

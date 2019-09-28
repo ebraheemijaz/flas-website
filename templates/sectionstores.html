@@ -2,14 +2,14 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <form>
+                <form name="addStoreForm">
                     <div class="form-group">
                         <label>Store Name</label>
-                        <input type="managersname" class="form-control" ng-model="newStore.storename" placeholder="Enter Store Name">
+                        <input required type="managersname" class="form-control" ng-model="newStore.storename" placeholder="Enter Store Name">
                     </div>
                     <div class="form-group">
                         <label>Tag Line</label>
-                        <input type="text" class="form-control" ng-model="newStore.tag_line" placeholder="Tag Line">
+                        <input required type="text" class="form-control" ng-model="newStore.tag_line" placeholder="Tag Line">
                     </div>
                     <div class="form-group">
                         <span class="float-right">
@@ -21,7 +21,7 @@
                             <input type="text" class="form-control" ng-model="q.title" placeholder="Enter Question">
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" ng-if="newStore.file != ''">
                         <img ng-src="[[newStore.file]]" style="width:10%;" alt="logo"
                             class="img-raised rounded img-fluid">
                     </div>
@@ -35,7 +35,7 @@
                     <br>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Select langugae</label>
-                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.language">
+                        <select required class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.language">
                             <option value="es">English</option>
                             <option value="sp">Spanish</option>
                             <option value="pg">Português</option>
@@ -43,7 +43,7 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Select Option</label>
-                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.statstype">
+                        <select required class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.statstype">
                             <option value="0">Only Store</option>
                             <option value="1">Only Attandants</option>
                             <!-- <option value="2">Both Store and Attandants</option> -->
@@ -51,12 +51,12 @@
                     </div>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Ask For Comments</label>
-                        <select class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.askComments">
+                        <select required class="form-control selectpicker" data-style="btn btn-link" ng-model="newStore.askComments">
                             <option value="0">No</option>
                             <option value="1">Yes</option>
                         </select>
                     </div>
-                    <button ng-click="addNewStore(newStore)" class="nbtn btn float-right btn-primary" >Add New Store</button>
+                    <button ng-disabled="addStoreForm.$invalid" ng-click="addNewStore(newStore)" class="nbtn btn float-right btn-primary" >Add New Store</button>
                 </form>
             </div>
         </div>

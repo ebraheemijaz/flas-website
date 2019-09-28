@@ -43,31 +43,33 @@
         <br>
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-md-4 col-sm-4">
-                        <select class="form-control selectpicker" data-style="btn btn-link"
-                                    ng-model="attandantStat.storeId">
-                            <option value="">Select Store</option>>
-                            <option ng-repeat="x in allStores" ng-if="x.statstype == '1'" value="[[x._id]]">[[x.storename]]</option>>
-                        </select>
+                <form name="searchAttandantForm">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-4">
+                            <select required class="form-control selectpicker" data-style="btn btn-link"
+                                        ng-model="attandantStat.storeId">
+                                <option value="">Select Store</option>>
+                                <option ng-repeat="x in allStores" ng-if="x.statstype == '1'" value="[[x._id]]">[[x.storename]]</option>>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <select required ng-model="attandantStat.month" class="form-control selectpicker" data-style="btn btn-link">
+                                <option value="">Select month</option>>
+                                <option ng-repeat="x in monthsName" value="[[$index+1]]">[[x]]</option>>
+                            </select>
+                        </div>
+                        <div class="col-md-3 col-sm-3">
+                            <input required ng-model="attandantStat.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
+                        </div>
+                        <div class="col-md-2 col-sm-2">
+                            <button ng-disabled="searchAttandantForm.$invalid" class="btn btn-primary float-right" ng-click="getAttandantStats(attandantStat)">
+                                <i class="material-icons">
+                                    search
+                                </i>
+                            </button>
+                        </div>
                     </div>
-                    <div class="col-md-3 col-sm-3">
-                        <select ng-model="attandantStat.month" class="form-control selectpicker" data-style="btn btn-link">
-                            <option value="">Select month</option>>
-                            <option ng-repeat="x in monthsName" value="[[$index+1]]">[[x]]</option>>
-                        </select>
-                    </div>
-                    <div class="col-md-3 col-sm-3">
-                        <input ng-model="attandantStat.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
-                    </div>
-                    <div class="col-md-2 col-sm-2">
-                        <button class="btn btn-primary float-right" ng-click="getAttandantStats(attandantStat)">
-                            <i class="material-icons">
-                                search
-                            </i>
-                        </button>
-                    </div>
-                </div>
+                </form>
                 <br>
                 <br>
                 <div class="table-responsive">
