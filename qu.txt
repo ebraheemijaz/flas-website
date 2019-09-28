@@ -1,0 +1,45 @@
+{"item" : "Mobile Phones", "price" : 20000, "quantity" : 2, "date" : ISODate("2019-08-05T08:00:00Z") } ,
+{"item" : "TV set", "price" : 15000, "quantity" : 3, "date" : ISODate("2019-08-05T08:00:00Z") } ,
+{"item" : "Laptop", "price" : 50000, "quantity" : 5, "date" : ISODate("2019-06-01T08:00:00Z") } ,
+{"item" : "Furniture", "price" : 20000, "quantity" : 1, "date" : ISODate("2019-06-01T08:00:00Z") } ,
+{"item" : "Sofa set", "price" : 10000, "quantity" : 2, "date" : ISODate("2019-02-09T08:00:00Z") }
+
+
+db.rating.aggregate([
+  {
+    $group: {
+      _id: {
+        month: { $month: "$created_at" },
+        year: { $year: "$created_at" }
+      },
+      100: {$sum: {$cond: [{$eq: ['$rating', 100]}, 1, 0]} },
+      66: {$sum: {$cond: [{$eq: ['$rating', 66]}, 1, 0]} },
+      33: {$sum: {$cond: [{$eq: ['$rating', 33]}, 1, 0]} },
+      count: { $sum: 1 }
+    }
+  }
+]);
+
+db.rating.aggregate([
+  {
+    $match: {
+      'storeId': '5d83e153ceed3302749e150a', 
+      'type':'attandant',
+      'created_at' :{
+        $gte: ISODate("2019-09-01T00:00:00.0Z"), $lt: ISODate("2019-10-01T00:00:00.0Z")
+      }
+    }
+  },
+  {
+    $group:{
+      _id:"$id",
+      name : { $first: '$name' },
+      file : { $first: '$file' },
+      100: {$sum: {$cond: [{$eq: ['$rating', 100]}, 1, 0]} },
+      66: {$sum: {$cond: [{$eq: ['$rating', 66]}, 1, 0]} },
+      33: {$sum: {$cond: [{$eq: ['$rating', 33]}, 1, 0]} },
+      comment: {$sum: {$cond: [{$ne: ['$comment', '']}, 1, 0]} },
+      count: { $sum: 1 }
+    }
+  }
+]);

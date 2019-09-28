@@ -5,7 +5,7 @@ import sqlite3
 import random,string
 from flask_socketio import SocketIO
 from dateutil import parser
-from datetime import datetime as d
+import datetime
 from database import databaseclass
 from bson.objectid import ObjectId
 
@@ -195,8 +195,36 @@ def getStore():
 @app.route('/addRating', methods=['POST'])
 def addRating():
     data = request.json
+    data['created_at'] = parser.parse(data.get('created_at'))
     data= db.insert('rating', data)
     return "done"
+
+@app.route('/getStoreStats', methods=['POST'])
+def getStoreStats():
+    data = request.json
+    return jsonify(db.getgetStoreStats(data))
+
+@app.route('/getAttandantStats', methods=['POST'])
+def getAttandantStats():
+    data = request.json
+    return jsonify(db.getAttandantStats(data))
+
+@app.route('/showAttandantComment', methods=['POST'])
+def showAttandantComment():
+    query = request.json
+    query['comment'] =  { '$ne': '' }
+    return getData('rating', query, all=True, makeResponse=True)
+    
+
+@app.route('/getStoreComment', methods=['POST'])
+def getStoreComment():
+    data = request.json
+    query = { 
+        "id" : data.get('selectedQuestion'), 
+        'storeId': data.get('storeId'),
+        "type":'comment'
+    }
+    return jsonify(db.find('rating', query, {"_id":0}))
 
 def messageReceived(methods=['GET', 'POST']):
     print('message was received!!!')

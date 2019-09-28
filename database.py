@@ -1,4 +1,6 @@
 import pymongo
+from dateutil import parser
+from dateutil.relativedelta import relativedelta
 from bson.objectid import ObjectId
 
 class databaseclass():
@@ -37,6 +39,62 @@ class databaseclass():
         mycol.delete_one({'_id':id})
         return 'done'
 
+    def getgetStoreStats(self, data):
+        mycol = self.mydb['rating']
+        query = [
+            { "$match" : { "id" : data.get('selectedQuestion'), 'storeId': data.get('storeId') } },
+            {
+                "$group": {
+                "_id": {
+                    "month": { "$month": "$created_at" },
+                    "year": { "$year": "$created_at" }
+                },
+                "100": {"$sum": {"$cond": [{"$eq": ['$rating', 100]}, 1, 0]} },
+                "66": {"$sum": {"$cond": [{"$eq": ['$rating', 66]}, 1, 0]} },
+                "33": {"$sum": {"$cond": [{"$eq": ['$rating', 33]}, 1, 0]} },
+                "count": { "$sum": 1 }
+                }
+            }
+        ]
+        rzlt = []
+        for x in mycol.aggregate(query):
+            rzlt.append(x)
+        return rzlt
+    
+    def getAttandantStats(self, data):
+        mycol = self.mydb['rating']
+        dateTime = parser.parse(f"{data.get('year')}-{data.get('month')}-01T00:00:00.0Z")
+        query = [
+            {
+                '$match': {
+                    'storeId': data.get('storeId'), 
+                    'type':'attandant',
+                    'created_at' :{
+                        '$gte': dateTime, 
+                        '$lt': dateTime + relativedelta(months=1)
+                    }
+                }
+            },
+            {
+                '$group':{
+                    '_id':"$id",
+                    'name' : { '$first': '$name' },
+                    'file' : { '$first': '$file' },
+                    '100': {"$sum": {"$cond": [{"$eq": ['$rating', 100]}, 1, 0]} },
+                    '66': {"$sum": {"$cond": [{"$eq": ['$rating', 66]}, 1, 0]} },
+                    '33': {"$sum": {"$cond": [{"$eq": ['$rating', 33]}, 1, 0]} },
+                    'comment': {'$sum': {'$cond': [{'$ne': ['$comment', '']}, 1, 0]} },
+                    'count': { "$sum": 1 }
+                }
+            }
+        ]
+        rzlt = []
+        for x in mycol.aggregate(query):
+            rzlt.append(x)
+        return rzlt
+
+    
+        
 
         
 

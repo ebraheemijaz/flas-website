@@ -29,7 +29,7 @@
                                 <select class="form-control selectpicker" data-style="btn btn-link"
                                     ng-model="newAttendant.storeId">
                                     <option value="">Select Store</option>>
-                                    <option ng-repeat="x in allStores" value="[[x._id]]">[[x.storename]]</option>>
+                                    <option ng-repeat="x in allStores" ng-if="x.statstype == '1'" value="[[x._id]]">[[x.storename]]</option>>
                                 </select>
                             </div>
                         </div>
@@ -46,21 +46,22 @@
                 <div class="row">
                     <div class="col-md-4 col-sm-4">
                         <select class="form-control selectpicker" data-style="btn btn-link"
-                            name="attandant_store">
-                            <option value="">SelectStore</option>
+                                    ng-model="attandantStat.storeId">
+                            <option value="">Select Store</option>>
+                            <option ng-repeat="x in allStores" ng-if="x.statstype == '1'" value="[[x._id]]">[[x.storename]]</option>>
                         </select>
                     </div>
                     <div class="col-md-3 col-sm-3">
-                        <select class="form-control selectpicker" data-style="btn btn-link">
+                        <select ng-model="attandantStat.month" class="form-control selectpicker" data-style="btn btn-link">
                             <option value="">Select month</option>>
                             <option ng-repeat="x in monthsName" value="[[$index+1]]">[[x]]</option>>
                         </select>
                     </div>
                     <div class="col-md-3 col-sm-3">
-                        <input class="form-control" type="number" min="2019" placeholder="Enter Year">
+                        <input ng-model="attandantStat.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
                     </div>
                     <div class="col-md-2 col-sm-2">
-                        <button class="btn btn-primary float-right">
+                        <button class="btn btn-primary float-right" ng-click="getAttandantStats(attandantStat)">
                             <i class="material-icons">
                                 search
                             </i>
@@ -71,19 +72,103 @@
                 <br>
                 <div class="table-responsive">
                     <table class="table">
-                        <thead class=" text-primary">
+                        <thead class="text-center text-primary">
                             <tr>
                                 <th style="width: 10%;">Image</th>
-                                <th style="width: 70%;">Reviews</th>
-                                <th hidden="">Total</th>
+                                <th style="width: 60%;">Reviews</th>
+                                <th style="width: 10%;">Total</th>
                                 <th style="width: 10%;">Ranking</th>
                                 <th style="width: 10%;">Comments</th>
                             </tr>
                         </thead>
                         <tbody>
-
+                            <tr ng-repeat="eachattandant in storeAttandantRzlt | orderBy: '-nps'">
+                                <td hidden>
+                                    <p>[[ eachattandant.nps = ( (eachattandant["100"] - eachattandant["33"]) / eachattandant.count ) * 100 ]]</p>
+                                </td>
+                                <td>
+                                    <img ng-src="[[eachattandant.file]]" class="avatar img-raised" style="width: 100%;">
+                                </td>
+                                <td>
+                                    <div class="row text-center">
+                                        <div class="col-sm-4 col-md-4 ">
+                                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="font-size: 24px;color: red;">
+                                                sentiment_very_dissatisfied
+                                            </i>
+                                            <h6>[[ eachattandant["33"] ]]</h6>
+                                        </div>
+                                        <div class="col-sm-4 col-md-4">
+                                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="font-size: 24px;color: orange;">
+                                                sentiment_satisfied
+                                            </i>
+                                            <h6>[[ eachattandant["66"] ]]</h6>
+                                        </div>
+                                        <div class="col-sm-4 col-md-4">
+                                            <i class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="font-size: 24px;color: green;">
+                                                sentiment_very_satisfied
+                                            </i>
+                                            <h6>[[ eachattandant["100"] ]]</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <i ng-if="eachattandant.nps >= -100 && eachattandant.nps <= 49.99 " class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: red;font-size: 50px;">
+                                        sentiment_very_dissatisfied 
+                                    </i>
+                                    <i ng-if="eachattandant.nps >= 50 && eachattandant.nps <= 69.99" class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: orange;font-size: 50px;">
+                                        sentiment_satisfied 
+                                    </i>
+                                    <i ng-if="eachattandant.nps >= 70 && eachattandant.nps <= 100" class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 50px;">
+                                        sentiment_very_satisfied 
+                                    </i>
+                                </td>
+                                <td>
+                                    <img ng-show="[[$index == 0]]" ng-src="./static/img/1st.jpg" style="width:65%">
+                                    <img ng-show="[[$index == 1]]" ng-src="./static/img/2nd.png" style="width:65%">
+                                    <img ng-show="[[$index == 2]]" ng-src="./static/img/3rd.png" style="width:65%">
+                                </td>
+                                <td ng-click="showAttandantComment(eachattandant._id)" >
+                                    <i class="img-fluid material-icons">
+                                        comment
+                                    </i>
+                                    <span class="badge" style="position: absolute;background: red;color: white;font-size: inherit;">
+                                            [[ eachattandant.comment ]]
+                                    </span>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="attandantAllComment" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="container">
+                <div>
+                    <div class="table-responsive">
+                        <table class="text-center  table">
+                            <thead class="text-primary">
+                                <tr>
+                                    <th> Email </th>
+                                    <th> Tel </th>
+                                    <th> Comment </th>
+                                    <th> Time </th>
+                                </tr>
+                            </thead> 
+                            <tbody>
+                                <tr ng-repeat="eachComment in attandantAllComment">
+                                    <td>[[eachComment.email | uppercase ]]</td>
+                                    <td>[[eachComment.tel]]</td>
+                                    <td>[[eachComment.comment]]</td>
+                                    <td>[[ eachComment.created_at | myDateFilter ]]</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

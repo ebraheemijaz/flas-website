@@ -20,6 +20,7 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout) 
         $scope.attandantRating.storeId = storeId
         $scope.attandantRating.type = 'attandant'
         $scope.active = 'allAttandants'
+        $scope.startTimer(5000)
     }
 
     $scope.attandantReview2 = (attandant) => {
@@ -71,11 +72,13 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout) 
     }
 
     $scope.startTimer = (timer, rate=false) => {
-        if (rate == true){
-            adminApi.addRating($scope.attandantRating)
-        }
         $timeout.cancel($scope.gotoquestion)
-        $scope.gotoquestion = $timeout( function(){ getstoreData() }, timer );
+        $scope.gotoquestion = $timeout( function(){ 
+            getstoreData() 
+            if (rate == true){
+                adminApi.addRating($scope.attandantRating)
+            }
+        }, timer );
     }
 
     console.log($window.location)

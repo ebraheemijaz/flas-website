@@ -16,6 +16,9 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         file: '',
         id:Math.random().toString(36).substring(2)
     }
+    $scope.storeStatRzlt = []
+    $scope.storeStatComment = []
+    $scope.storeAttandantRzlt = []
 
     $scope.addQuestion = (newStore) => {
         newStore.questions.push({'title':'', 'id':Math.random().toString(36).substring(2)})
@@ -150,12 +153,42 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
 
     // section store stats
     $scope.statsStore = (storeId) => {
+        $scope.storeStatRzlt = []
+        $scope.storeStatComment = []
         $scope.active = "questionstats"
     }
 
     $scope.getstoreStats = (stat) => {
+        $scope.storeStatRzlt = []
+        $scope.storeStatComment = []
         $selectedStoreStat = $scope.allStores[stat.selectedStore]
         stat.storeId = $selectedStoreStat._id
+        console.log(stat)
+        if (stat.selectedStoreType == "comment"){
+            adminApi.getStoreComment(stat).then(function(data){
+                $scope.storeStatComment = data.data
+            })
+        }
+        else {
+            adminApi.getStoreStats(stat).then(function(data){
+                $scope.storeStatRzlt = data.data
+            })
+        }
+    }
+
+    $scope.getAttandantStats = (attandant) => {
+        $scope.storeAttandantRzlt = []
+        console.log(attandant)
+        adminApi.getAttandantStats(attandant).then(function(data){
+            $scope.storeAttandantRzlt = data.data
+        })
+    }
+
+    $scope.showAttandantComment = (attandantId) => {
+        adminApi.showAttandantComment({"id":attandantId}).then(function(data){
+            $scope.attandantAllComment = data.data.data
+            $('#attandantAllComment').modal(true)
+        })
     }
     
 })

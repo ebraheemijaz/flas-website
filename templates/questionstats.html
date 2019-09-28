@@ -8,16 +8,25 @@
                         <select ng-model="stats.selectedStore" class="form-control selectpicker"
                             data-style="btn btn-link">
                             <option value="">Select Store</option>
-                            <option ng-repeat="x in allStores" value="[[$index]]">[[x.storename]]</option>>
+                            <option ng-repeat="x in allStores" ng-show="x.statstype == '0'" value="[[$index]]">[[x.storename]]</option>>
                         </select>
                     </div>
                     <div ng-if="stats.selectedStore" class="form-group">
+                        <label for="exampleFormControlSelect1">Select Type</label>
+                        <select ng-model="stats.selectedStoreType" class="form-control selectpicker"
+                            data-style="btn btn-link">
+                            <option value="">Select Type</option>
+                            <option value="question">Question</option>
+                            <option value="comment">Comment</option>
+                        </select>
+                    </div>
+                    <div ng-if="stats.selectedStoreType == 'question'" class="form-group">
                         <label for="exampleFormControlSelect1">Select Question</label>
                         <select ng-model="stats.selectedQuestion" class="form-control selectpicker"
                             data-style="btn btn-link">
                             <option value="">Select Question</option>
                             <option ng-repeat="x in allStores[stats.selectedStore].questions" value="[[x.id]]">
-                                [[x.title]]</option>>
+                                [[x.title]]</option>
                         </select>
                     </div>
                     <button ng-click="getstoreStats(stats)" class="nbtn btn float-right btn-primary">Show Stats</button>
@@ -28,50 +37,87 @@
 </div>
 
 <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-4" ng-repeat="eactMonth in storeStatRzlt.slice().reverse()">
         <div class="card">
             <div class="card-header card-header-primary text-center">
-                <h4 class="card-title">Teminal Gávea</h4>
+                <h4 class="card-title">
+                    <strong>
+                        [[ monthsName[eactMonth._id.month - 1] ]] [[ eactMonth._id.year ]]
+                    </strong>
+                </h4>
             </div>
             <div class="card-body">
                 <div class="text-center">
-                    <h4 style="margin-top: -11px;">2019</h4>
-                    <h2 style="margin-top: -19px;"><strong>May</strong></h2>
-                    <h5 style="margin-top: -8px;">92.24%</h5>
+                        [[ eactMonth.nps = ( (eactMonth["100"] - eactMonth["33"]) / eactMonth.count ) * 100 ]]%
                 </div>
                 <div class="row text-center">
-                    <div class="col-md-12 text-center"><i
-                            class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 159px;">
-                            sentiment_very_satisfied
+                    <div class="col-md-12 text-center">
+                        <i ng-if="eactMonth.nps >= -100 && eactMonth.nps <= 49.99 " class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: red;font-size: 159px;">
+                            sentiment_very_dissatisfied 
+                        </i>
+                        <i ng-if="eactMonth.nps >= 50 && eactMonth.nps <= 69.99" class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: orange;font-size: 159px;">
+                            sentiment_satisfied 
+                        </i>
+                        <i ng-if="eactMonth.nps >= 70 && eactMonth.nps <= 100" class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 159px;">
+                            sentiment_very_satisfied 
                         </i>
                     </div>
                 </div>
                 <div class="row text-center">
                     <div class="col-md-12">
-                        <h4> 217 feedbacks</h4>
+                        <h4> [[eactMonth.count]] feedbacks</h4>
                     </div>
                     <div class="col-sm-4 col-md-4"><i
                             class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;font-size: 24px;">
                             sentiment_very_dissatisfied
                         </i>
-                        <h6>15 </h6>
+                        <h6>[[ eactMonth["33"] ]] </h6>
                     </div>
 
                     <div class="col-sm-4 col-md-4"><i
                             class="img-raised rounded-circle img-fluid material-icons satisfied" style="color: orange;font-size: 24px;">
                             sentiment_satisfied
                         </i>
-                        <h6>20 </h6>
+                        <h6>[[ eactMonth["66"] ]] </h6>
                     </div>
                     <div class="col-sm-4 col-md-4"><i
                             class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 24px;">
                             sentiment_very_satisfied
                         </i>
-                        <h6>182 </h6>
+                        <h6>[[ eactMonth["100"] ]] </h6>
                     </div>
 
                 </div>
 
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12" ng-if="storeStatComment.length > 0">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table text-center">
+                        <thead class=" text-primary">
+                            <tr>
+                                <th> Email </th>
+                                <th> Tel </th>
+                                <th> Comment </th>
+                                <th> Time </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="eachComment in storeStatComment">
+                                <td>[[eachComment.email | uppercase ]]</td>
+                                <td>[[eachComment.tel]]</td>
+                                <td>[[eachComment.comment]]</td>
+                                <td>[[ eachComment.created_at | myDateFilter ]]</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
