@@ -93,14 +93,13 @@ class databaseclass():
             rzlt.append(x)
         return rzlt
 
-    
-        
+    def deleteAttandant(self, col, data):
+        mycol = self.mydb[col]
+        _id = ObjectId(data.get("storeId", " "))
+        query = {"$pull": { "attandants": {"id": data.get("attandantId", " ")} } }
+        mycol.update_one({'_id': _id}, query)
 
-        
-
-
-
-
-
-
-        
+    def updateAttandant(self, col, data):
+        mycol = self.mydb[col]
+        _id = ObjectId(data.get("storeId", " "))
+        mycol.update_one({'_id': _id, "attandants.id": data.get("attandantId", " ")['id']}, { "$set": { "attandants.$" : data.get('attandantId') } })

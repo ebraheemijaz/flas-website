@@ -21,7 +21,7 @@
                             <input type="text" class="form-control" ng-model="q.title" placeholder="Enter Question">
                         </div>
                     </div>
-                    <div class="form-group" ng-if="newStore.file != ''">
+                    <div class="form-group" ng-if="newStore.file != undefined">
                         <img ng-src="[[newStore.file]]" style="width:10%;" alt="logo"
                             class="img-raised rounded img-fluid">
                     </div>
@@ -81,15 +81,16 @@
                                     <a ng-href="./stores/[[store._id]]" target="_blank">
                                         [[store.storename]]
                                     </a>
-                                </td>
-                                <td ng-if="online.indexOf(store._id) === -1">offline</td>
-                                <td ng-if="online.indexOf(store._id) !== -1">online</td>
+                                </td> 
+                                <td ng-if="online.indexOf(store._id) === -1" style="color: red;font-weight: bold;" >offline</td>
+                                <td ng-if="online.indexOf(store._id) !== -1" style="color: green;font-weight: bold;" >online</td>
                                 <td>[[store.tag_line]]</td>
                                 <td>[[store.language]]</td>
                                 <td>
                                     <i class="material-icons" ng-click="editStore(store)">edit</i>
                                     <i class="material-icons" ng-click="deleteStore(store._id)">delete</i>
-                                    <i class="material-icons"ng-if="store.statstype != '1'"  ng-click="statsStore(store._id)">assessment</i>
+                                    <i class="material-icons" ng-if="store.statstype != '1'"  ng-click="statsStore(store._id)">assessment</i>
+                                    <i class="material-icons" ng-if="store.statstype == '1'"  ng-click="editAttandant(store)">visibility</i>
                                 </td>
                             </tr>
                         </tbody>
@@ -165,6 +166,52 @@
                                 <button ng-click="updateStore(editStoreData)" class="nbtn btn float-right btn-primary" >Save Store</button>
                             </form>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="editAttandant" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="container">
+                <p ng-show="attandantStoreEditModal.attandants.length == 0">No Attandans</p>
+                <div ng-show="attandantStoreEditModal.attandants.length != 0" class="row">
+                    <div class="col-md-3 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in attandantStoreEditModal.attandants">
+                        <img ng-src="../[[eachAttandant.file]]"  class="avatar img-raised" style="width: 75%;">
+                        <h3>[[eachAttandant.name]]</h3>
+                        <i class="material-icons" ng-click="modifyAttandant(eachAttandant)">edit</i>
+                        <i class="material-icons" ng-click="deleteAttandant(eachAttandant.id, attandantStoreEditModal)">delete</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="modifyAttandant" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="container">
+                <form name="editAttandantForm">
+                    <div class="form-group">
+                        <label>Name</label>
+                        <input required type="text" class="form-control" ng-model="modifyAttandantData.name" placeholder="Enter Attandant Name">
+                    </div>
+                    <div class="form-group" ng-if="modifyAttandantData.file != undefined">
+                        <img ng-src="[[modifyAttandantData.file]]" style="width:10%;" alt="logo"
+                            class="img-raised rounded img-fluid">
+                    </div>
+                    <div>
+                        <label for="exampleInputEmail1">logo</label>
+                        <br>
+                        <button type="file" ngf-select="uploadFiles($file, $invalidFiles, 'modifyAttandantData')" accept="image/*"
+                                        ngf-max-height="1000" ngf-max-size="1MB">
+                        Select File</button>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary float-right" ng-click="updateAttandant(modifyAttandantData)">Update</button>
+                </form>
             </div>
         </div>
     </div>

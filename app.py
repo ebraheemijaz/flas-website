@@ -179,6 +179,19 @@ def deleteStore():
     data= db.delete('stores', ObjectId(store_id))
     return data
 
+@app.route('/deleteAttandant', methods=['POST'])
+def deleteAttandant():
+    data = request.json
+    db.deleteAttandant('stores', data)
+    return data
+
+@app.route('/updateAttandant', methods=['POST'])
+def updateAttandant():
+    data = request.json
+    db.updateAttandant('stores', data)
+    return data
+
+
 @app.route('/getStore', methods=['POST'])
 def getStore():
     data = request.json

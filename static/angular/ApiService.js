@@ -53,7 +53,7 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
     }
 
     function addRating(data){
-        data.created_at = new Date().toISOString()
+        data.created_at = new Date()
         if (data.type == 'attandant' && (data.comment == '' || data.comment == undefined) ){
             data.comment = ''
             data.email = ''
@@ -77,6 +77,14 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
     function showAttandantComment(data){
         return $http.post('/showAttandantComment', data, config)
     }
+
+    function deleteAttandant(data){
+        return $http.post('/deleteAttandant', data, config)
+    }   
+
+    function updateAttandant(data){
+        return $http.post('/updateAttandant', data, config)
+    }   
     
     return {
         getUser:getUser,
@@ -95,6 +103,8 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
         getStoreStats:getStoreStats,
         getStoreComment:getStoreComment,
         getAttandantStats:getAttandantStats,
-        showAttandantComment:showAttandantComment
+        showAttandantComment:showAttandantComment,
+        deleteAttandant:deleteAttandant,
+        updateAttandant:updateAttandant
     }
 }]);

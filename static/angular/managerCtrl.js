@@ -105,6 +105,9 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                     else if (edit == 'store'){
                         $scope.user.image = response.data.image;
                     }
+                    else if (edit == 'modifyAttandantData'){
+                        $scope.modifyAttandantData.file = response.data.image;
+                    }
                     else if (edit == true){
                         $scope.editStoreData.file = response.data.image;
                     }
@@ -193,6 +196,45 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
             $scope.attandantAllComment = data.data.data
             $('#attandantAllComment').modal(true)
         })
+    }
+
+    $scope.editAttandant = (store) => {
+        $scope.attandantStoreEditModal = store
+        $('#editAttandant').modal(true)
+        $scope.editAttandantStore = store
+    }
+
+    $scope.modifyAttandant = (attandant) => {
+        $('#editAttandant').modal('toggle');
+        $('#modifyAttandant').modal(true)
+        $scope.modifyAttandantData = attandant
+    }
+
+    $scope.updateAttandant = (attandant) => {
+        data = {"attandantId":attandant, "storeId": $scope.editAttandantStore._id}
+        adminApi.updateAttandant(data).then(function(){
+            swal("Approved", 'Updated Attandant successfully', "success");
+        })
+    }
+
+    $scope.deleteAttandant = (id, editAttandantStore) => {
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+          })
+          .then((willDelete) => {
+            if (willDelete) {
+                adminApi.deleteAttandant({"attandantId":id, "storeId": editAttandantStore._id}).then(function(){
+                    swal("Approved", 'deleteAttandant successfully', "success");
+                    editAttandantStore.attandants = editAttandantStore.attandants.filter(function(el) { return el.id != id; });
+                })
+            } else {
+              swal("Nothing deleted");
+            }
+          });
     }
     
 })
