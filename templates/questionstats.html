@@ -29,6 +29,19 @@
                                 [[x.title]]</option>
                         </select>
                     </div>
+                    <div ng-if="stats.selectedStoreType == 'comment'" class="form-group">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6">
+                                <select  ng-model="stats.month" class="form-control selectpicker" data-style="btn btn-link">
+                                    <option value="">Select month</option>>
+                                    <option ng-repeat="x in monthsName" value="[[$index+1]]">[[x]]</option>>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-sm-6">
+                                <input  ng-model="stats.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
+                            </div>
+                        </div>
+                    </div>
                     <button ng-click="getstoreStats(stats)" class="nbtn btn float-right btn-primary">Show Stats</button>
                 </form>
             </div>

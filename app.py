@@ -8,6 +8,7 @@ from dateutil import parser
 import datetime
 from database import databaseclass
 from bson.objectid import ObjectId
+from dateutil.relativedelta import relativedelta
 
 app = Flask(__name__)
 app.secret_key = "any random string"
@@ -237,6 +238,14 @@ def getStoreComment():
         'storeId': data.get('storeId'),
         "type":'comment'
     }
+    if data.get("month") and data.get("year"):
+        dateTime = parser.parse(f"{data.get('year')}-{data.get('month')}-01T00:00:00.0Z")
+        query.update({
+            'created_at': {
+                '$gte': dateTime, 
+                '$lt': dateTime + relativedelta(months=1)
+            }
+        })
     return jsonify(db.find('rating', query, {"_id":0}))
 
 def messageReceived(methods=['GET', 'POST']):
@@ -267,5 +276,5 @@ def test_disconnect():
 
 
 if __name__ =="__main__":
-    # app.run(host= "0.0.0.0", debug=True ,port=8080, threaded=True)
+    # app.run(host= "0.0.0.0", debug=True ,port=9090, threaded=True)
     app.run(host= "0.0.0.0",port=80, threaded=True)
