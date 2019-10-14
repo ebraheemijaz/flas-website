@@ -13,7 +13,7 @@
                     </div>
                     <div class="form-group">
                         <span class="float-right">
-                            <i class="material-icons" ng-click="addQuestion(newStore)">add</i>
+                            <!-- <i class="material-icons" ng-click="addQuestion(newStore)">add</i> -->
                         </span>
                         <div ng-repeat="q in newStore.questions">
                             <br>
@@ -55,6 +55,10 @@
                             <option value="0">No</option>
                             <option value="1">Yes</option>
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Departments Name (e.g security, cleaning)</label>
+                        <input type="text" class="form-control" ng-model="newStore.departments" placeholder="Enter Departments Names seprating by ','">
                     </div>
                     <button ng-disabled="addStoreForm.$invalid" ng-click="addNewStore(newStore)" class="nbtn btn float-right btn-primary" >Add New Store</button>
                 </form>
@@ -120,7 +124,7 @@
                                 </div>
                                 <div class="form-group">
                                     <span class="float-right">
-                                        <i class="material-icons" ng-click="addQuestion(editStoreData)">add</i>
+                                        <!-- <i class="material-icons" ng-click="addQuestion(editStoreData)">add</i> -->
                                     </span>
                                     <div ng-repeat="q in editStoreData.questions">
                                         <br>
@@ -162,6 +166,10 @@
                                         <option value="0">No</option>
                                         <option value="1">Yes</option>
                                     </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Departments Name (e.g security, cleaning)</label>
+                                    <input type="text" class="form-control" ng-model="editStoreData.departments" placeholder="Enter Departments Names seprating by ','">
                                 </div>
                                 <button ng-click="updateStore(editStoreData)" class="nbtn btn float-right btn-primary" >Save Store</button>
                             </form>

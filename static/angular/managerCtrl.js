@@ -237,4 +237,15 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
           });
     }
     
+    $scope.showDepartments = (storeId) => {
+        index= $scope.allStores.findIndex(x=>x._id === storeId)
+        $scope.allDepartments  = $scope.allStores[index].departments.split(',') 
+    }
+
+    $scope.showEditDepartments = (storeId) => {
+        debugger
+        index= $scope.allStores.findIndex(x=>x._id === storeId)
+        $scope.allEditDepartments  = $scope.allStores[index].departments.split(',') 
+    }
+    
 })

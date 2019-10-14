@@ -68,6 +68,7 @@ class databaseclass():
             {
                 '$match': {
                     'storeId': data.get('storeId'), 
+                    'department': data.get('department'), 
                     'type':'attandant',
                     'created_at' :{
                         '$gte': dateTime, 

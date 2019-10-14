@@ -123,6 +123,35 @@
                                     <br>
                                 </div>
                         </div>
+                        <div ng-if="active == 'departments'" class="card">
+                            <div> <img ng-src="../[[currentStore.file]]" style="
+                                display: block;
+                                margin-left: auto;
+                                margin-right: auto;
+                                width: 50%;
+                            ">
+                            </div>
+                            <div class="card-body animated bounceInRight" >
+                                <div>
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                            [[currentStore.tag_line]]
+                                    </h2>
+                                </div>
+                                <div class="row">
+                                    <div ng-repeat="x in currentStore.departments.split(',')" class="col-md-4 col-sm-4 text-center">
+                                        <div class="circle" ng-click="selectDepartment(x)">
+                                            <div class="circle__inner">
+                                                <div class="circle__wrapper">
+                                                <div class="circle__content">[[x]]</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <br>
+                            </div>
+                        </div>
                         <div ng-if="active == 'NoAttandants'" class="card">
                             <div class="card-body animated bounceInRight" >
                                 <div>

@@ -13,13 +13,19 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout) 
         }
     }
 
+    $scope.selectDepartment = (name) => {
+        $scope.department = name
+        $scope.active = 'allAttandants'
+    }
+
     $scope.attandantReview1 = (rating) => {
+        debugger
         $scope.offset = 0
         $scope.attandantRating = {}
         $scope.attandantRating.rating = rating
         $scope.attandantRating.storeId = storeId
         $scope.attandantRating.type = 'attandant'
-        $scope.active = 'allAttandants'
+        $scope.active = 'departments'
         $scope.startTimer(5000)
     }
 
