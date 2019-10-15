@@ -5,22 +5,29 @@
                 <div class="col-md-4"></div>
                 <div class="col-md-4">
                     <!-- <img src="/static/img/logo.png" id ="logo" > -->
-                    <div class="card">
-                        <div class="card-header card-header-primary">
-                            <h4 class="card-title">Login</h4>
+                    <div class="card" style="background: #13131300;">
+                        <div class="card-avatar">
+                            <a>
+                              <img class="img" src="/static/img/logo.png" style="width: 99%;">
+                            </a>
                         </div>
-                        <div class="card-body">
-                            <form>
-                                <div class="form-group">
-                                    <label for="exampleInputEmail1">UserName</label>
-                                    <input ng-model = "user.username" class="form-control" placeholder="Enter Username">
-                                </div>
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Password</label>
-                                    <input ng-model = "user.password" type="password" class="form-control" placeholder="Password">
-                                </div>
-                                <button ng-click = "login()" class="btn btn-primary">Submit</button>
-                            </form>
+                        <div class="card">
+                            <div class="card-header card-header-primary">
+                                <h4 class="card-title">Login</h4>
+                            </div>
+                            <div class="card-body">
+                                <form>
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">UserName</label>
+                                        <input ng-model = "user.username" class="form-control" placeholder="Enter Username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="exampleInputPassword1">Password</label>
+                                        <input ng-model = "user.password" type="password" class="form-control" placeholder="Password">
+                                    </div>
+                                    <button ng-click = "login()" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
