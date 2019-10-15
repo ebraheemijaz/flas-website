@@ -134,7 +134,7 @@
                             <div class="card-body animated bounceInRight" >
                                 <div>
                                     <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
-                                            [[currentStore.tag_line]]
+                                            [[currentStore.tag_line1]]
                                     </h2>
                                 </div>
                                 <div class="row">
@@ -165,7 +165,7 @@
                             <div class="card-body animated bounceInRight" >
                                 <div>
                                     <div class="row">
-                                        <div class="col-md-4 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in currentStore.attandants | limitTo:6:6*offset">
+                                        <div class="col-md-4 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in attandantsDepartment | limitTo:6:6*offset">
                                             <img ng-src="../[[eachAttandant.file]]"  class="avatar img-raised" style="width: 75%;">
                                             <h3>[[eachAttandant.name]]</h3>
                                         </div>
@@ -188,6 +188,11 @@
                                 ">
                                 </div>
                                 <div class="card-body animated bounceInRight"  >
+                                    <div>
+                                        <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                [[currentStore.tag_line2]]
+                                        </h2>
+                                    </div>
                                     <div>
                                         <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
                                             [[currentStore.language.thank]]

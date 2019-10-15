@@ -74,7 +74,7 @@
                             <tr>
                                 <th> Name </th>
                                 <th> Status </th>
-                                <th> Tagline </th>
+                                <th> Question </th>
                                 <th> Language </th>
                                 <th> Actions </th>
                             </tr>
@@ -89,7 +89,9 @@
                                 <td ng-if="online.indexOf(store._id) === -1" style="color: red;font-weight: bold;" >offline</td>
                                 <td ng-if="online.indexOf(store._id) !== -1" style="color: green;font-weight: bold;" >online</td>
                                 <td>[[store.tag_line]]</td>
-                                <td>[[store.language]]</td>
+                                <td ng-if="store.language == 'es'">ES</td>
+                                <td ng-if="store.language == 'pg'">PT_BR</td>
+                                <td ng-if="store.language == 'sp'">SP</td>
                                 <td>
                                     <i class="material-icons" ng-click="editStore(store)">edit</i>
                                     <i class="material-icons" ng-click="deleteStore(store._id)">delete</i>
@@ -121,6 +123,14 @@
                                 <div class="form-group">
                                     <label>Tag Line</label>
                                     <input type="text" class="form-control" ng-model="editStoreData.tag_line" placeholder="Tag Line">
+                                </div>
+                                <div ng-if="editStoreData.statstype == '1'" class="form-group">
+                                    <label>Tag Line 2</label>
+                                    <input type="text" class="form-control" ng-model="editStoreData.tag_line1" placeholder="Tag Line">
+                                </div>
+                                <div ng-if="editStoreData.statstype == '1'" class="form-group">
+                                    <label>Tag Line 3</label>
+                                    <input type="text" class="form-control" ng-model="editStoreData.tag_line2" placeholder="Tag Line">
                                 </div>
                                 <div class="form-group">
                                     <span class="float-right">
