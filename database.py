@@ -104,3 +104,17 @@ class databaseclass():
         mycol = self.mydb[col]
         _id = ObjectId(data.get("storeId", " "))
         mycol.update_one({'_id': _id, "attandants.id": data.get("attandantId", " ")['id']}, { "$set": { "attandants.$" : data.get('attandantId') } })
+    
+    def updaterating(self, data):
+        mycol = self.mydb['rating']
+        attamdamt = data.pop('attandantId')
+        id = attamdamt.pop('id')
+        attamdamt.pop('department')
+        newvalues = { "$set": attamdamt }
+        mycol.update_many({'id': id}, newvalues)
+
+    def deleterating(self, data):
+        mycol = self.mydb['rating']
+        id = data.get('attandantId', '')
+        mycol.delete_many({'id':id})
+        return 'done'

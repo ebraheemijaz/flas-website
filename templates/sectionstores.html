@@ -134,7 +134,7 @@
                                 </div>
                                 <div class="form-group">
                                     <span class="float-right">
-                                        <!-- <i class="material-icons" ng-click="addQuestion(editStoreData)">add</i> -->
+                                        <i class="material-icons" ng-if="editStoreData.statstype == '0'" ng-click="addQuestion(editStoreData)">add</i>
                                     </span>
                                     <div ng-repeat="q in editStoreData.questions">
                                         <br>

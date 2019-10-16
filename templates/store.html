@@ -164,6 +164,11 @@
                         <div ng-if="active == 'allAttandants'" class="card">
                             <div class="card-body animated bounceInRight" >
                                 <div>
+                                    <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                            [[currentStore.tag_line2]]
+                                    </h2>
+                                </div>
+                                <div>
                                     <div class="row">
                                         <div class="col-md-4 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in attandantsDepartment | limitTo:6:6*offset">
                                             <img ng-src="../[[eachAttandant.file]]"  class="avatar img-raised" style="width: 75%;">
@@ -189,14 +194,9 @@
                                 </div>
                                 <div class="card-body animated bounceInRight"  >
                                     <div>
-                                        <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
-                                                [[currentStore.tag_line2]]
-                                        </h2>
-                                    </div>
-                                    <div>
-                                        <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                        <h1 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
                                             [[currentStore.language.thank]]
-                                        </h2>
+                                        </h1>
                                         <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1'" class="btn btn-primary text-center" style="margin-left: 37%;font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
                                             [[currentStore.language.leavecomment]]
                                         </button>

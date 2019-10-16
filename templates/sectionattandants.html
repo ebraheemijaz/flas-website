@@ -77,10 +77,10 @@
                                 <option ng-repeat="x in monthsName" value="[[$index+1]]">[[x]]</option>>
                             </select>
                         </div>
-                        <div class="col-md-1 col-sm-1">
+                        <div class="col-md-2 col-sm-2">
                             <input required ng-model="attandantStat.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
                         </div>
-                        <div class="col-md-2 col-sm-2">
+                        <div class="col-md-1 col-sm-1">
                             <button ng-disabled="searchAttandantForm.$invalid" class="btn btn-primary float-right" ng-click="getAttandantStats(attandantStat)">
                                 <i class="material-icons">
                                     search
@@ -181,7 +181,7 @@
                                 </tr>
                             </thead> 
                             <tbody>
-                                <tr ng-repeat="eachComment in attandantAllComment">
+                                <tr ng-repeat="eachComment in attandantAllComment" ng-class="{ratingcolorgreen: eachComment.rating == 100, ratingcolororange: eachComment.rating == 66, ratingcolored: eachComment.rating == 33}">
                                     <td>[[eachComment.email | uppercase ]]</td>
                                     <td>[[eachComment.tel]]</td>
                                     <td>[[eachComment.comment]]</td>

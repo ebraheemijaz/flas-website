@@ -106,3 +106,7 @@ div {
     font-size: 4em;
   }
 }
+
+.ratingcolored{  color: red; }
+.ratingcolorgreen{  color: green; }
+.ratingcolororange{  color: orange; }
