@@ -105,7 +105,7 @@
                         <tbody>
                             <tr ng-repeat="eachattandant in storeAttandantRzlt | orderBy: '-nps'">
                                 <td hidden>
-                                    <p>[[ eachattandant.nps = ( (eachattandant["100"] - eachattandant["33"]) / eachattandant.count ) * 100 ]]</p>
+                                    <p>[[ eachattandant.nps = ( ( (eachattandant["100"] - eachattandant["33"]) / eachattandant.count ) * 100 ) + eachattandant["100"] ]]</p>
                                 </td>
                                 <td>
                                     <img ng-src="[[eachattandant.file]]" class="avatar img-raised" style="width: 100%;">
