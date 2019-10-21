@@ -91,6 +91,8 @@ class databaseclass():
         ]
         rzlt = []
         for x in mycol.aggregate(query):
+            calculatednps = ( ( (x.get("100",0) - x.get("33",0)) / x.get("count",1) ) * 100 ) + x.get("100",0) 
+            x['nps'] = calculatednps
             rzlt.append(x)
         return rzlt
 
