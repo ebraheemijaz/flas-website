@@ -10,6 +10,8 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout) 
         if ($scope.currentStore.questions.length - $scope.activeQuestion == 0){
             $scope.active = 'thankyou'
             $scope.startTimer(5000)
+        } else{
+            $scope.startTimer(10000)
         }
     }
 
