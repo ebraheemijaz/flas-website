@@ -172,6 +172,8 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         stat.storeId = $selectedStoreStat._id
         console.log(stat)
         if (stat.selectedStoreType == "comment"){
+            delete stat.id
+            delete stat.selectedQuestion
             adminApi.getStoreComment(stat).then(function(data){
                 $scope.storeStatComment = data.data
             })

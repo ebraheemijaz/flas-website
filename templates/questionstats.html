@@ -42,6 +42,14 @@
                             </div>
                         </div>
                     </div>
+
+                    <div ng-if="stats.selectedStoreType == 'question'" class="form-group">
+                        <div class="row">
+                            <div class="col-md-12 col-sm-12">
+                                <input  ng-model="stats.year" class="form-control" type="number" min="2019" max= "3000" placeholder="Enter Year">
+                            </div>
+                        </div>
+                    </div>
                     <button ng-click="getstoreStats(stats)" class="nbtn btn float-right btn-primary">Show Stats</button>
                 </form>
             </div>
@@ -118,11 +126,11 @@
                                 <th> Email </th>
                                 <th> Tel </th>
                                 <th> Comment </th>
-                                <th> Time </th>
+                                <th> Add Comment Time </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr ng-repeat="eachComment in storeStatComment">
+                            <tr ng-repeat="eachComment in storeStatComment" ng-class="{ratingcolorgreen: eachComment.rating == 100, ratingcolororange: eachComment.rating == 66, ratingcolored: eachComment.rating == 33}">
                                 <td>[[eachComment.email | uppercase ]]</td>
                                 <td>[[eachComment.tel]]</td>
                                 <td>[[eachComment.comment]]</td>

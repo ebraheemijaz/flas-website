@@ -56,6 +56,14 @@ class databaseclass():
                 }
             }
         ]
+        if data.get("year"):
+            dateTime = parser.parse(f"{data.get('year')}-01-01T00:00:00.0Z")
+            query[0]['$match'].update({
+                'created_at': {
+                    '$gte': dateTime, 
+                    '$lt': dateTime + relativedelta(years=1)
+                }
+            })
         rzlt = []
         for x in mycol.aggregate(query):
             rzlt.append(x)
