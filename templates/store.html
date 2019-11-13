@@ -37,6 +37,7 @@
 </head>
 
 <body ng-cloak ng-app = "wfeedBackApp" ng-controller="storeController">
+    <p ng-if="pendingRequests!=0" style="color: red;" class="text-center">Pending: [[pendingRequests]] </p>
     <div class="page-header header-filter" style=" background-size: cover; background-position: top center;">
         <div class="container">
             <div class="row" >
@@ -197,7 +198,7 @@
                                         <h1 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
                                             [[currentStore.language.thank]]
                                         </h1>
-                                        <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1'" class="btn btn-primary text-center" style="margin-left: 37%;font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
+                                        <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1' && showCommentBox" class="btn btn-primary text-center" style="margin-left: 37%;font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
                                             [[currentStore.language.leavecomment]]
                                         </button>
                                     </div>
