@@ -25,7 +25,7 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
             $scope.startTimer(5000)
         }
         else{
-            $scope.startTimer(50000)
+            $scope.startTimer(20000)
         }
     }
 
@@ -36,13 +36,13 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
         $scope.attandantRating.storeId = storeId
         $scope.attandantRating.type = 'attandant'
         $scope.active = 'departments'
-        $scope.startTimer(50000)
+        $scope.startTimer(15000)
     }
 
     $scope.attandantReview2 = (attandant) => {
         $scope.attandantRating = Object.assign({}, attandant, $scope.attandantRating);
         $scope.active = 'thankyou'
-        $scope.startTimer(50000, rate=true)
+        $scope.startTimer(20000, rate=true)
     }
     
     $scope.leaveComment = () => {

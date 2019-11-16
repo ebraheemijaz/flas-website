@@ -60,6 +60,10 @@
                         <label>Departments Name (e.g security, cleaning)</label>
                         <input type="text" class="form-control" ng-model="newStore.departments" placeholder="Enter Departments Names seprating by ','">
                     </div>
+                    <div class="form-group" ng-init="newStore.color='#9c27b0'">
+                        <label>Color</label>
+                        <input type="color" class="form-control" ng-model="newStore.color" value="#9c27b0">
+                    </div>
                     <button ng-disabled="addStoreForm.$invalid" ng-click="addNewStore(newStore)" class="nbtn btn float-right btn-primary" >Add New Store</button>
                 </form>
             </div>
@@ -180,6 +184,10 @@
                                 <div class="form-group">
                                     <label>Departments Name (e.g security, cleaning)</label>
                                     <input type="text" class="form-control" ng-model="editStoreData.departments" placeholder="Enter Departments Names seprating by ','">
+                                </div>
+                                <div class="form-group">
+                                    <label>Color</label>
+                                    <input type="color" class="form-control" ng-model="editStoreData.color">
                                 </div>
                                 <button ng-click="updateStore(editStoreData)" class="nbtn btn float-right btn-primary" >Save Store</button>
                             </form>

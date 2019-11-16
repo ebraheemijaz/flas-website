@@ -37,7 +37,7 @@
 </head>
 
 <body ng-cloak ng-app = "wfeedBackApp" ng-controller="storeController">
-    <p ng-if="pendingRequests!=0" style="color: red;" class="text-center">Pending: [[pendingRequests]] </p>
+    <!-- <p ng-if="pendingRequests!=0" style="color: red;" class="text-center">Pending: [[pendingRequests]] </p> -->
     <div class="page-header header-filter" style=" background-size: cover; background-position: top center;">
         <div class="container">
             <div class="row" >
@@ -140,13 +140,23 @@
                                 </div>
                                 <div class="row">
                                     <div ng-repeat="x in currentStore.departments.split(',')" class="col-md-4 col-sm-4 text-center">
-                                        <div class="circle" ng-click="selectDepartment(x)">
+                                        <!-- <div class="circle" ng-click="selectDepartment(x)">
                                             <div class="circle__inner">
                                                 <div class="circle__wrapper">
                                                 <div class="circle__content" style="font-size: 2em;">[[x]]</div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> -->
+                                        <button ng-click="selectDepartment(x)" class="btn btn-primary btn-round" style="
+                                            width: 101%;
+                                            color: black;
+                                            background: white;
+                                            border: solid 2px;
+                                            white-space: normal;
+                                            word-wrap: break-word;
+                                        ">
+                                            [[x]]
+                                        </button>
                                     </div>
                                 </div>
                                 <br>
@@ -194,13 +204,20 @@
                                 ">
                                 </div>
                                 <div class="card-body animated bounceInRight"  >
-                                    <div>
-                                        <h1 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
-                                            [[currentStore.language.thank]]
-                                        </h1>
-                                        <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1' && showCommentBox" class="btn btn-primary text-center" style="margin-left: 37%;font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
-                                            [[currentStore.language.leavecomment]]
-                                        </button>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h1 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                [[currentStore.language.thank]]
+                                            </h1>
+                                        </div>
+                                        <div class="col text-center">
+                                            <button ng-click="leaveComment()" ng-if="currentStore.askComments == '1' && showCommentBox" 
+                                            class="btn btn-primary text-center" 
+                                            ng-style="{ 'background-color' : '[[currentStore.color]]' }"
+                                            style="font-style: italic;font-weight: 600;padding: 22px 26px;font-size: 20px;">
+                                                [[currentStore.language.leavecomment]]
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                         </div>
