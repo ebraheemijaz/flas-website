@@ -187,10 +187,10 @@
                                             <h3>[[eachAttandant.name]]</h3>
                                         </div>
                                     </div>
-                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="offset == 0" ng-click="offset = offset-1" class="btn btn-primary text-center" style="float: left;">
+                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="offset == 0" ng-click="changeOffset(-1)" class="btn btn-primary text-center" style="float: left;">
                                         <i class="material-icons">skip_previous</i>
                                     </button>
-                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="(offset+1)*6 >= currentStore.attandants.length " ng-click="offset = offset+1" class="btn btn-primary text-center" style="float: right;">
+                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="(offset+1)*6 >= currentStore.attandants.length " ng-click="changeOffset(1)" class="btn btn-primary text-center" style="float: right;">
                                         <i class="material-icons">skip_next</i>
                                     </button>
                                 </div>

@@ -13,7 +13,7 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
             $scope.active = 'thankyou'
             $scope.startTimer(5000)
         } else{
-            $scope.startTimer(50000)
+            $scope.startTimer(20000)
         }
     }
 
@@ -63,6 +63,11 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
         $scope.startTimer(5000)
     }
     
+    $scope.changeOffset = (offset) => {
+        $scope.startTimer(15000)
+        $scope.offset = $scope.offset + offset
+    }
+
     function getstoreData(){
         $scope.activeQuestion = 0
         adminApi.getStore(storeId).then(function(data){
