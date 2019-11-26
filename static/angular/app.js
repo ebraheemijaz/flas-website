@@ -11,3 +11,11 @@ app.filter('myDateFilter', function() {
     };
   });
 
+app.filter('myTimeFilter', function() {
+  return function(x) {
+    d = new Date(x)
+    txt = d.getHours() + ":" + d.getMinutes()
+    return txt;
+  };
+});
+  

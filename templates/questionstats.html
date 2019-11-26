@@ -126,7 +126,8 @@
                                 <th> Email </th>
                                 <th> Tel </th>
                                 <th> Comment </th>
-                                <th> Add Comment Time </th>
+                                <th> Date </th>
+                                <th> Time </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -135,6 +136,7 @@
                                 <td>[[eachComment.tel]]</td>
                                 <td>[[eachComment.comment]]</td>
                                 <td>[[ eachComment.created_at | myDateFilter ]]</td>
+                                <td>[[ eachComment.created_at | myTimeFilter ]]</td>
                             </tr>
                         </tbody>
                     </table>
