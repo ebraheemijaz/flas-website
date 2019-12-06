@@ -42,7 +42,7 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
     $scope.attandantReview2 = (attandant) => {
         $scope.attandantRating = Object.assign({}, attandant, $scope.attandantRating);
         $scope.active = 'thankyou'
-        $scope.startTimer(20000, rate=true)
+        $scope.startTimer(5000, rate=true)
     }
     
     $scope.leaveComment = () => {
@@ -148,4 +148,16 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
             }, function(){storeLocally(data)})
         }
     }, 5 * 60000);
+
+
+    $scope.getDepartments = () => {
+        all_dpets = $scope.currentStore.departments.split(',')
+        if ($scope.currentStore.showReverse == true){
+            return all_dpets.reverse()
+        }
+        else {
+            return all_dpets
+        }
+    }
+    
 })
