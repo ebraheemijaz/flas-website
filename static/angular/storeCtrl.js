@@ -30,19 +30,37 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
     }
 
     $scope.attandantReview1 = (rating) => {
-        $scope.offset = 0
-        $scope.attandantRating = {}
-        $scope.attandantRating.rating = rating
-        $scope.attandantRating.storeId = storeId
-        $scope.attandantRating.type = 'attandant'
-        $scope.active = 'departments'
-        $scope.startTimer(15000)
+        if ($scope.currentStore.showReverse == true){
+            d = {
+                rating: rating,
+                storeId: storeId,
+                type: 'attandant'
+            }
+            $scope.attandantRating = Object.assign({}, d, $scope.attandantRating);
+            $scope.active = 'thankyou'
+            $scope.startTimer(5000, rate=true)
+        }
+        else{
+            $scope.offset = 0
+            $scope.attandantRating = {}
+            $scope.attandantRating.rating = rating
+            $scope.attandantRating.storeId = storeId
+            $scope.attandantRating.type = 'attandant'
+            $scope.active = 'departments'
+            $scope.startTimer(15000)
+        }
     }
 
     $scope.attandantReview2 = (attandant) => {
-        $scope.attandantRating = Object.assign({}, attandant, $scope.attandantRating);
-        $scope.active = 'thankyou'
-        $scope.startTimer(5000, rate=true)
+        if ($scope.currentStore.showReverse == true){
+            $scope.attandantRating = attandant;
+            $scope.active = 'attandants'
+        }
+        else {
+            $scope.attandantRating = Object.assign({}, attandant, $scope.attandantRating);
+            $scope.active = 'thankyou'
+            $scope.startTimer(5000, rate=true)
+        }
     }
     
     $scope.leaveComment = () => {
@@ -85,7 +103,12 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
                 if ($scope.currentStore.attandants.length == 0){
                     $scope.active = 'NoAttandants'
                 } else {
-                    $scope.active = 'attandants'
+                    if ($scope.currentStore.showReverse == false || $scope.currentStore.showReverse == undefined){
+                        $scope.active = 'attandants'
+                    }
+                    else{
+                        $scope.active = "departments"
+                    }
                 }
                 $scope.showCommentBox = true
             }
@@ -103,7 +126,12 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
                 if ($scope.currentStore.attandants.length == 0){
                     $scope.active = 'NoAttandants'
                 } else {
-                    $scope.active = 'attandants'
+                    if ($scope.currentStore.showReverse == false || $scope.currentStore.showReverse == undefined){
+                        $scope.active = 'attandants'
+                    }
+                    else{
+                        $scope.active = "departments"
+                    }
                 }
                 $scope.showCommentBox = true
             }
@@ -152,12 +180,68 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
 
     $scope.getDepartments = () => {
         all_dpets = $scope.currentStore.departments.split(',')
-        if ($scope.currentStore.showReverse == true){
-            return all_dpets.reverse()
-        }
-        else {
-            return all_dpets
-        }
+        return all_dpets
     }
+
+    $scope.$watch('currentStore', function(){
+        if ($scope.currentStore != undefined){
+            var myDynamicManifest = {
+                "name": "WFeedback",
+                "short_name": "WFeedback",
+                "theme_color": "#2196f3",
+                "background_color": "#2196f3",
+                "display": "fullscreen",
+                "Scope": "/",
+                "start_url": `/${$window.location.pathname}`,
+                "icons": [
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "72x72",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "96x96",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "128x128",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "144x144",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "152x152",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "384x384",
+                    "type": "image/png"
+                  },
+                  {
+                    "src": "img/logo.png",
+                    "sizes": "512x512",
+                    "type": "image/png"
+                  }
+                ],
+                "splash_pages": null
+            }
+            const stringManifest = JSON.stringify(myDynamicManifest);
+            const blob = new Blob([stringManifest], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blob);
+            document.querySelector('#my-manifest-placeholder').setAttribute('href', manifestURL);
+        }
+    })
     
 })

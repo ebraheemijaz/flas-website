@@ -195,6 +195,61 @@ def updateAttandant():
     return data
 
 
+@app.route('/stores/get/getmanifest.json', methods=['GET'])
+def getStoreManifest():
+    return jsonify({
+        "name": "WFeedback",
+        "short_name": "WFeedback",
+        "theme_color": "#2196f3",
+        "background_color": "#2196f3",
+        "display": "fullscreen",
+        "Scope": "/",
+        "start_url": request.headers['Referer'],
+        "icons": [
+        {
+            "src": "img/logo.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "96x96",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        },
+        {
+            "src": "images/icons/icon-152x152.png",
+            "sizes": "152x152",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "384x384",
+            "type": "image/png"
+        },
+        {
+            "src": "img/logo.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+        ],
+        "splash_pages": ''
+  })
+
 @app.route('/getStore', methods=['POST'])
 def getStore():
     data = request.json
