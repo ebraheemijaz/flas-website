@@ -184,15 +184,20 @@
                                 </div>
                                 <div>
                                     <div class="row">
+                                        <div ng-show="attandantsDepartment.length == 0" class="col-md-12 text-center">
+                                            <h2 class="card-title text-center" style="margin-bottom: 25px;font-family: 'Playfair', serif;font-style: italic;font-size: 40px;color: black;font-weight: 1;">
+                                                No Data Found.
+                                            </h2>
+                                        </div>
                                         <div class="col-md-4 text-center" ng-click='attandantReview2(eachAttandant)' ng-repeat="eachAttandant in attandantsDepartment | limitTo:6:6*offset">
                                             <img ng-src="../[[eachAttandant.file]]"  class="avatar img-raised" style="width: 75%;">
                                             <h3>[[eachAttandant.name]]</h3>
                                         </div>
                                     </div>
-                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="offset == 0" ng-click="changeOffset(-1)" class="btn btn-primary text-center" style="float: left;">
+                                    <button ng-hide="attandantsDepartment.length <=6" ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="offset == 0" ng-click="changeOffset(-1)" class="btn btn-primary text-center" style="float: left;">
                                         <i class="material-icons">skip_previous</i>
                                     </button>
-                                    <button ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="(offset+1)*6 >= currentStore.attandants.length " ng-click="changeOffset(1)" class="btn btn-primary text-center" style="float: right;">
+                                    <button ng-hide="attandantsDepartment.length <=6" ng-style="{ 'background-color' : '[[currentStore.color]]' }" ng-disabled="(offset+1)*6 >= currentStore.attandants.length " ng-click="changeOffset(1)" class="btn btn-primary text-center" style="float: right;">
                                         <i class="material-icons">skip_next</i>
                                     </button>
                                 </div>

@@ -36,6 +36,17 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         })
     }
 
+    $scope.replicate = (id) => {
+        adminApi.replicate(id).then(function(){
+            swal("Success", 'Dublicated successfully', "success");
+            adminApi.allStores().then(function(data){
+                $scope.allStores = data.data.data
+            })
+        }, function(){
+            swal("Error", 'Dublicated Failed.', "error");
+        })
+    }
+
     $scope.deleteStore = (id) => {  
         swal({
             title: "Are you sure?",

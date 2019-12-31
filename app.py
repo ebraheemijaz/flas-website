@@ -9,6 +9,8 @@ import datetime
 from database import databaseclass
 from bson.objectid import ObjectId
 from dateutil.relativedelta import relativedelta
+from bson.objectid import ObjectId
+
 
 app = Flask(__name__)
 app.secret_key = "any random string"
@@ -284,7 +286,18 @@ def getAttandantStats():
 def showAttandantComment():
     query = request.json
     query['comment'] =  { '$ne': '' }
-    return getData('rating', query, all=True, makeResponse=True)
+    dataArray = getData('rating', query, all=True, makeResponse=False)
+    dataArray = dataArray[::-1]
+    return make_response(jsonify({"data":dataArray, "msg":"done"}), 200)
+
+@app.route('/replicate', methods=['POST'])
+def replicate():
+    query = request.json
+    pstore = db.find("stores", {'_id': ObjectId(query['_id'])})[0]
+    pstore.pop('_id')
+    db.insert("stores", pstore)
+    return 'make_response(jsonify({"data":dataArray, "msg":"done"}), 200)'
+
     
 
 @app.route('/getStoreComment', methods=['POST'])

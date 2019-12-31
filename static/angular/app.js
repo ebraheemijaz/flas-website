@@ -6,7 +6,7 @@ app = angular.module('wfeedBackApp', ['ngCookies', 'ngRoute', 'ngFileUpload'], f
 app.filter('myDateFilter', function() {
     return function(x) {
       d = new Date(x)
-      txt = d.getDate() + "/" + Number(d.getMonth()+1) + "/" + d.getFullYear()
+      txt = d.getDate() + "/" + Number(d.getMonth()+1) + "/" + d.getFullYear() + " " + d.getHours() + ":" + d.getMinutes()
       return txt;
     };
   });

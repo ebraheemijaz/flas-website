@@ -86,6 +86,10 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
         return $http.post('/updateAttandant', data, config)
     }   
     
+    function replicate(id){
+        return $http.post('/replicate', {_id: id}, config)
+    } 
+    
     return {
         getUser:getUser,
         update:update,
@@ -105,6 +109,7 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
         getAttandantStats:getAttandantStats,
         showAttandantComment:showAttandantComment,
         deleteAttandant:deleteAttandant,
-        updateAttandant:updateAttandant
+        updateAttandant:updateAttandant,
+        replicate:replicate
     }
 }]);
