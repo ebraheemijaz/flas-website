@@ -11,10 +11,18 @@ app.filter('myDateFilter', function() {
     };
   });
 
+app.filter('myonlyDateFilter', function() {
+  return function(x) {
+    d = new Date(x)
+    txt = d.getDate() + "/" + Number(d.getMonth()+1) + "/" + d.getFullYear()
+    return txt;
+  };
+});
+  
 app.filter('myTimeFilter', function() {
   return function(x) {
     d = new Date(x)
-    txt = d.getHours() + ":" + d.getMinutes()
+    txt = ("0" + d.getHours()).slice(-2) + ":" + ("0" + d.getMinutes()).slice(-2);
     return txt;
   };
 });

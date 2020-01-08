@@ -69,7 +69,11 @@
             </div>
             <div class="card-body">
                 <div class="text-center">
-                        [[ eactMonth.nps = ( (eactMonth["100"] - eactMonth["33"]) / eactMonth.count ) * 100 | number : 2]] %
+                    <h3 style="margin: 0 !important;">
+                        <strong>
+                            [[ eactMonth.nps = ( (eactMonth["100"] - eactMonth["33"]) / eactMonth.count ) * 100 | number : 2]] %
+                        </strong>
+                    </h3>
                 </div>
                 <div class="row text-center">
                     <div class="col-md-12 text-center">
@@ -86,30 +90,44 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-md-12">
-                        <h4> [[eactMonth.count]] feedbacks</h4>
+                        <h3 style="margin: 0 !important;">
+                            <strong>
+                                [[eactMonth.count]] feedbacks
+                            </strong>
+                        </h3>
                     </div>
                     <div class="col-sm-4 col-md-4"><i
-                            class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;font-size: 24px;">
+                            class="img-raised rounded-circle img-fluid material-icons dissatisfied" style="color: red;font-size: 33px;">
                             sentiment_very_dissatisfied
                         </i>
-                        <h6>[[ eactMonth["33"] ]] </h6>
+                        <h3 style="margin: 0 !important;">
+                            <strong>
+                                [[ eactMonth["33"] ]] 
+                            </strong>
+                        </h3>
                     </div>
 
                     <div class="col-sm-4 col-md-4"><i
-                            class="img-raised rounded-circle img-fluid material-icons satisfied" style="color: orange;font-size: 24px;">
+                            class="img-raised rounded-circle img-fluid material-icons satisfied" style="color: orange;font-size: 33px;">
                             sentiment_satisfied
                         </i>
-                        <h6>[[ eactMonth["66"] ]] </h6>
+                        <h3 style="margin: 0 !important;">
+                            <strong>
+                                [[ eactMonth["66"] ]] 
+                            </strong>
+                        </h3>
                     </div>
                     <div class="col-sm-4 col-md-4"><i
-                            class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 24px;">
+                            class="img-raised rounded-circle img-fluid material-icons verysatisfied" style="color: green;font-size: 33px;">
                             sentiment_very_satisfied
                         </i>
-                        <h6>[[ eactMonth["100"] ]] </h6>
+                        <h3 style="margin: 0 !important;">
+                            <strong>
+                                [[ eactMonth["100"] ]] 
+                            </strong>
+                        </h3>
                     </div>
-
                 </div>
-
             </div>
         </div>
     </div>
@@ -135,7 +153,7 @@
                                 <td>[[eachComment.email | uppercase ]]</td>
                                 <td>[[eachComment.tel]]</td>
                                 <td>[[eachComment.comment]]</td>
-                                <td>[[ eachComment.created_at | myDateFilter ]]</td>
+                                <td>[[ eachComment.created_at | myonlyDateFilter ]]</td>
                                 <td>[[ eachComment.created_at | myTimeFilter ]]</td>
                             </tr>
                         </tbody>

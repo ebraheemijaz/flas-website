@@ -21,20 +21,23 @@ language = {
         "thank":"Thank You",
         "leavecomment":"Leave a Comment",
         "comment":"Comment",
-        "next":"Next"
+        "next":"Next",
+        "telephone": "Telephone/Whatsapp"
 
     },
     "sp":{
         "thank":"Gracias",
         "leavecomment":"Deje su comentario",
         "comment":"Comentario",
-        "next":"Siguiente"
+        "next":"Siguiente",
+        "telephone": "Telephone/Whatsapp"
     },
     "pg":{
         "thank":"Obrigado",
         "leavecomment":"Deixe o seu comentário",
         "comment":"Comente",
-        "next":"Próximo"
+        "next":"Próximo",
+        "telephone": "Telefone/Whatsapp"
     }
 }
 
@@ -268,7 +271,9 @@ def getStore():
 @app.route('/addRating', methods=['POST'])
 def addRating():
     data = request.json
-    data['created_at'] = parser.parse(data.get('created_at'))
+    import datetime;
+    data['created_at'] = datetime.datetime.utcnow()
+    print(data['created_at'])
     data= db.insert('rating', data)
     return "done"
 
