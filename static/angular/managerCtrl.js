@@ -211,6 +211,66 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         })
     }
 
+    $scope.showstatsattandant = (attandantId) => {
+        adminApi.showstatsattandant({"id":attandantId}).then(function(data){
+            $scope.attandantGraphs = data.data.data
+            $scope.attandantGraphs.hourlyattandseries = gerateDatahourlyattandant($scope.attandantGraphs.hourly)
+            Highcharts.chart('hourlyattandantchart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Hourly Rating'
+                },
+                xAxis: {
+                    categories: $scope.attandantGraphs.hourlyattandseries.convertedtimeseries
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Ratings'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: ( // theme
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || 'gray'
+                        }
+                    }
+                },
+                legend: {
+                    align: 'right',
+                    x: -30,
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: $scope.attandantGraphs.hourlyattandseries.series
+            });
+            $scope.active = "attandantGraphs"
+        })
+    }
+
     $scope.editAttandant = (store) => {
         $scope.attandantStoreEditModal = store
         $('#editAttandant').modal(true)
@@ -256,9 +316,43 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
     }
 
     $scope.showEditDepartments = (storeId) => {
-        debugger
         index= $scope.allStores.findIndex(x=>x._id === storeId)
         $scope.allEditDepartments  = $scope.allStores[index].departments.split(',') 
     }
     
+    function gerateDatahourlyattandant(rawvalue){
+        nowtimeconverted = {}
+        now = new Date()
+        offsetValue = -(now.getTimezoneOffset()/60)
+        for (each of Object.keys(rawvalue)){
+            keyofobject = (Number(each) + 5)%24
+            nowtimeconverted[String(keyofobject)+":00-" + String((keyofobject+3)%24)+":00"] = rawvalue[each]
+        }
+        array33=[]
+        array66=[]
+        array100=[]
+        for (each of Object.keys(nowtimeconverted)){
+            array33.push(nowtimeconverted[each]["33"])
+            array66.push(nowtimeconverted[each]["66"])
+            array100.push(nowtimeconverted[each]["100"])
+        }
+        hourlySeris = [
+            {
+                'name': 'Green',
+                'data': array33,
+                'color': '#45ed71'
+            },
+            {
+                'name': 'Yellow',
+                'data': array66,
+                'color': '#edb945'
+            },
+            {
+                'name': 'Red',
+                'data': array100,
+                'color': '#ed4545'
+            }
+        ]
+        return {series: hourlySeris, convertedtimeseries:Object.keys(nowtimeconverted)}
+    }
 })

@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row" ng-show="active == 'attandant'">
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
@@ -96,10 +96,11 @@
                         <thead class="text-center text-primary">
                             <tr>
                                 <th style="width: 10%;">Image</th>
-                                <th style="width: 60%;">Reviews</th>
+                                <th style="width: 50%;">Reviews</th>
                                 <th style="width: 10%;">Total</th>
                                 <th style="width: 10%;">Ranking</th>
                                 <th style="width: 10%;">Comments</th>
+                                <th style="width: 10%;">Graphics</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -156,6 +157,11 @@
                                             [[ eachattandant.comment ]]
                                     </span>
                                 </td>
+                                <td ng-click="showstatsattandant(eachattandant._id)" class="text-center">
+                                    <i class="img-fluid material-icons">
+                                        equalizer
+                                    </i>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -165,6 +171,19 @@
     </div>
 </div>
 
+<div class="row" ng-show="active == 'attandantGraphs'">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="hourlyattandantchart"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" id="attandantAllComment" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">

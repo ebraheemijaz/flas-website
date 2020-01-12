@@ -295,6 +295,54 @@ def showAttandantComment():
     dataArray = dataArray[::-1]
     return make_response(jsonify({"data":dataArray, "msg":"done"}), 200)
 
+@app.route('/showstatsattandant', methods=['POST'])
+def showstatsattandant():
+    dataArray = db.getratings('attandant', request.json['id'])
+    resData = {}
+    resData['hourly'] = {
+         "0" :{ "33":0, "66":0, "100":0 },
+         "3" :{ "33":0, "66":0, "100":0 },
+         "6" :{ "33":0, "66":0, "100":0 },
+         "9" :{ "33":0, "66":0, "100":0 },
+         "12":{ "33":0, "66":0, "100":0 },
+         "15":{ "33":0, "66":0, "100":0 },
+         "18":{ "33":0, "66":0, "100":0 },
+         "21":{ "33":0, "66":0, "100":0 },
+    }
+    for x in dataArray:
+        try:
+            hour = ''
+            if x['created_at'].hour >= 0 and x['created_at'].hour < 3:
+                hour = "0" 
+            elif x['created_at'].hour >= 3 and x['created_at'].hour < 6:
+                hour = "3" 
+            elif x['created_at'].hour >= 6 and x['created_at'].hour < 9:
+                hour = "6" 
+            elif x['created_at'].hour >= 9 and x['created_at'].hour < 12:
+                hour = "9" 
+            elif x['created_at'].hour >= 12 and x['created_at'].hour < 15:
+                hour = "12"
+            elif x['created_at'].hour >= 15 and x['created_at'].hour < 18:
+                hour = "15"
+            elif x['created_at'].hour >= 18 and x['created_at'].hour < 21:
+                hour = "18"
+            elif x['created_at'].hour >= 21 and x['created_at'].hour < 24:
+                hour = "21"
+
+            if hour != '':
+                if x['rating'] == 33:
+                    resData['hourly'][hour]["33"] = resData['hourly'][hour]["33"] + 1
+                elif x['rating'] == 66:
+                    resData['hourly'][hour]["66"] = resData['hourly'][hour]["66"] + 1
+                elif x['rating'] == 100:
+                    resData['hourly'][hour]["100"] = resData['hourly'][hour]["100"] + 1
+            
+            
+        except Exception as ex:
+            print(ex)
+    return make_response(jsonify({"data":resData, "msg":"done"}), 200)
+
+
 @app.route('/replicate', methods=['POST'])
 def replicate():
     query = request.json

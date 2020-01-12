@@ -96,10 +96,10 @@
                         <div ng-show="active == 'stores'">
                             <div ng-include src="'sectionstores'"></div>
                         </div>
-                        <div ng-if="active == 'attandant'">
+                        <div ng-show="active == 'attandant' || active == 'attandantGraphs'">
                             <div ng-include src="'sectionattandants'"></div>
                         </div>
-                        <div ng-if="active == 'questionstats'">
+                        <div ng-show="active == 'questionstats'">
                             <div ng-include src="'questionstats'"></div>
                         </div>
                     </div>

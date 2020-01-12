@@ -128,3 +128,11 @@ class databaseclass():
         id = data.get('attandantId', '')
         mycol.delete_many({'id':id})
         return 'done'
+
+    def getratings(self, TYPE, STOREID):
+        mycol = self.mydb['rating']
+        query = {
+            'type':TYPE,
+            'id':STOREID
+        }
+        return mycol.find(query)
