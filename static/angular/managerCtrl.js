@@ -211,8 +211,8 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         })
     }
 
-    $scope.showstatsattandant = (attandantId) => {
-        adminApi.showstatsattandant({"id":attandantId}).then(function(data){
+    $scope.showstatsattandant = (attandantId, month, year) => {
+        adminApi.showstatsattandant({"id":attandantId, month:month, year:year}).then(function(data){
             $scope.attandantGraphs = data.data.data
             $scope.attandantGraphs.hourlyattandseries = gerateDatahourlyattandant($scope.attandantGraphs.hourly)
             Highcharts.chart('hourlyattandantchart', {
@@ -339,7 +339,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         hourlySeris = [
             {
                 'name': 'Green',
-                'data': array33,
+                'data': array100,
                 'color': '#45ed71'
             },
             {
@@ -349,7 +349,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
             },
             {
                 'name': 'Red',
-                'data': array100,
+                'data': array33,
                 'color': '#ed4545'
             }
         ]

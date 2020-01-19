@@ -129,10 +129,41 @@ class databaseclass():
         mycol.delete_many({'id':id})
         return 'done'
 
-    def getratings(self, TYPE, STOREID):
+    def getratings(self, TYPE, STOREID, MONTH, YEAR):
         mycol = self.mydb['rating']
-        query = {
-            'type':TYPE,
-            'id':STOREID
-        }
-        return mycol.find(query)
+        query = [
+            {
+                '$match': {
+                    'type': TYPE, 
+                    'id': STOREID
+                }
+            }, 
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$created_at'
+                    }, 
+                    'year': {
+                        '$year': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            },
+            {
+                '$match': {
+                    'month': int(MONTH), 
+                    'year': int(YEAR)
+                }
+            }
+        ]
+        return mycol.aggregate(query)

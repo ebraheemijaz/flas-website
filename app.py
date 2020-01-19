@@ -297,7 +297,7 @@ def showAttandantComment():
 
 @app.route('/showstatsattandant', methods=['POST'])
 def showstatsattandant():
-    dataArray = db.getratings('attandant', request.json['id'])
+    dataArray = db.getratings('attandant', request.json['id'], request.json.get('month'), request.json.get('year'))
     resData = {}
     resData['hourly'] = {
          "0" :{ "33":0, "66":0, "100":0 },
