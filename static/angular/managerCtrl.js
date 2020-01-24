@@ -323,9 +323,9 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
     function gerateDatahourlyattandant(rawvalue){
         nowtimeconverted = {}
         now = new Date()
-        offsetValue = -(now.getTimezoneOffset()/60)
+        offsetValue = - (now.getTimezoneOffset()/60)
         for (each of Object.keys(rawvalue)){
-            keyofobject = (Number(each) + 5)%24
+            keyofobject = (Number(each) + offsetValue)%24
             nowtimeconverted[String(keyofobject)+":00-" + String((keyofobject+3)%24)+":00"] = rawvalue[each]
         }
         array33=[]
