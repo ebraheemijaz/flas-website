@@ -297,50 +297,28 @@ def showAttandantComment():
 
 @app.route('/showstatsattandant', methods=['POST'])
 def showstatsattandant():
-    dataArray = db.getratings('attandant', request.json['id'], request.json.get('month'), request.json.get('year'))
-    resData = {}
-    resData['hourly'] = {
-         "0" :{ "33":0, "66":0, "100":0 },
-         "3" :{ "33":0, "66":0, "100":0 },
-         "6" :{ "33":0, "66":0, "100":0 },
-         "9" :{ "33":0, "66":0, "100":0 },
-         "12":{ "33":0, "66":0, "100":0 },
-         "15":{ "33":0, "66":0, "100":0 },
-         "18":{ "33":0, "66":0, "100":0 },
-         "21":{ "33":0, "66":0, "100":0 },
-    }
-    for x in dataArray:
-        try:
-            hour = ''
-            if x['created_at'].hour >= 0 and x['created_at'].hour < 3:
-                hour = "0" 
-            elif x['created_at'].hour >= 3 and x['created_at'].hour < 6:
-                hour = "3" 
-            elif x['created_at'].hour >= 6 and x['created_at'].hour < 9:
-                hour = "6" 
-            elif x['created_at'].hour >= 9 and x['created_at'].hour < 12:
-                hour = "9" 
-            elif x['created_at'].hour >= 12 and x['created_at'].hour < 15:
-                hour = "12"
-            elif x['created_at'].hour >= 15 and x['created_at'].hour < 18:
-                hour = "15"
-            elif x['created_at'].hour >= 18 and x['created_at'].hour < 21:
-                hour = "18"
-            elif x['created_at'].hour >= 21 and x['created_at'].hour < 24:
-                hour = "21"
+    dataArrayhourly = db.getratingshourly('attandant', request.json['id'], request.json.get('month'), request.json.get('year'))
+    dataArraydays = db.dataArraydays('attandant', request.json['id'], request.json.get('month'), request.json.get('year'))
+    final_data = {"hourly": [], "days":[]}
+    for each in dataArrayhourly:
+        final_data['hourly'].append(each)
+    for each in dataArraydays:
+        final_data['days'].append(each)
+    return make_response(jsonify({"data":final_data, "msg":"done"}), 200)
 
-            if hour != '':
-                if x['rating'] == 33:
-                    resData['hourly'][hour]["33"] = resData['hourly'][hour]["33"] + 1
-                elif x['rating'] == 66:
-                    resData['hourly'][hour]["66"] = resData['hourly'][hour]["66"] + 1
-                elif x['rating'] == 100:
-                    resData['hourly'][hour]["100"] = resData['hourly'][hour]["100"] + 1
-            
-            
-        except Exception as ex:
-            print(ex)
-    return make_response(jsonify({"data":resData, "msg":"done"}), 200)
+@app.route('/showgraphsquestionmonth', methods=['POST'])
+def showgraphsquestionmonth():
+    dataArrayhourly = db.getratingquestionsday('question', request.json['id'], request.json.get('month'), request.json.get('year'))
+    dataArraydays = db.getratingquestionsdaywise('question', request.json['id'], request.json.get('month'), request.json.get('year'))
+    dataArraycompare= db.getratingquestionscompare('question', request.json['id'], request.json.get('month'), request.json.get('year'))
+    final_data = {"hourly": [], "days":[], "compare":[]}
+    for each in dataArrayhourly:
+        final_data['hourly'].append(each)
+    for each in dataArraydays:
+        final_data['days'].append(each)
+    for each in dataArraycompare:
+        final_data['compare'].append(each)
+    return make_response(jsonify({"data":final_data, "msg":"done"}), 200)
 
 
 @app.route('/replicate', methods=['POST'])

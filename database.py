@@ -129,15 +129,113 @@ class databaseclass():
         mycol.delete_many({'id':id})
         return 'done'
 
-    def getratings(self, TYPE, STOREID, MONTH, YEAR):
+    def getratingshourly(self, TYPE, STOREID, MONTH, YEAR):
         mycol = self.mydb['rating']
         query = [
             {
                 '$match': {
-                    'type': TYPE, 
-                    'id': STOREID
+                    'id': STOREID, 
+                    'type': TYPE
                 }
             }, 
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$created_at'
+                    }, 
+                    'year': {
+                        '$year': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            }, 
+            {
+                '$match': {
+                    'month': int(MONTH), 
+                    'year': int(YEAR)
+                }
+            }, 
+            {
+                '$project': {
+                    'hour': {
+                        '$hour': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            }, 
+            {
+                '$group': {
+                    '_id': '$hour', 
+                    'count': {
+                        '$sum': 1
+                    }, 
+                    '100': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 100
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '66': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 66
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '33': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 33
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+        return mycol.aggregate(query)
+    
+    def dataArraydays(self, TYPE, STOREID, MONTH, YEAR):
+        mycol = self.mydb['rating']
+        query = [
+            {
+                '$match': {
+                    'id': STOREID, 
+                    'type': TYPE
+                }
+            },
             {
                 '$project': {
                     'month': {
@@ -163,6 +261,359 @@ class databaseclass():
                 '$match': {
                     'month': int(MONTH), 
                     'year': int(YEAR)
+                }
+            },
+            {
+                '$project': {
+                    'day': {
+                        '$dayOfWeek': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            },
+            {
+                '$group': {
+                    '_id': '$day', 
+                    'count': {
+                        '$sum': 1
+                    }, 
+                    '100': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        100
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }, 
+                    '66': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        66
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }, 
+                    '33': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        33
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+        return mycol.aggregate(query)
+    
+    def getratingquestionsday(self, TYPE, STOREID, MONTH, YEAR):
+        mycol = self.mydb['rating']
+        query = [
+            {
+                '$match': {
+                    'storeId': STOREID, 
+                    'type': TYPE
+                }
+            }, 
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$created_at'
+                    }, 
+                    'year': {
+                        '$year': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            }, 
+            {
+                '$match': {
+                    'month': int(MONTH), 
+                    'year': int(YEAR)
+                }
+            }, 
+            {
+                '$project': {
+                    'hour': {
+                        '$hour': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            }, 
+            {
+                '$group': {
+                    '_id': '$hour', 
+                    'count': {
+                        '$sum': 1
+                    }, 
+                    '100': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 100
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '66': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 66
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '33': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 33
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+        return mycol.aggregate(query)
+
+    def getratingquestionscompare(self, TYPE, STOREID, MONTH, YEAR):
+        mycol = self.mydb['rating']
+        query = [
+            {
+                '$match': {
+                    'storeId': STOREID, 
+                    'type': TYPE
+                }
+            }, 
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$created_at'
+                    }, 
+                    'year': {
+                        '$year': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            }, 
+            {
+                '$match': {
+                    'month': int(MONTH), 
+                    'year': int(YEAR)
+                }
+            }, 
+            {
+                '$group': {
+                    '_id': '$id', 
+                    'count': {
+                        '$sum': 1
+                    }, 
+                    '100': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 100
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '66': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 66
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }, 
+                    '33': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating', 33
+                                    ]
+                                }, 1, 0
+                            ]
+                        }
+                    }
+                }
+            }
+        ]
+        return mycol.aggregate(query)
+
+    def getratingquestionsdaywise(self, TYPE, STOREID, MONTH, YEAR):
+        mycol = self.mydb['rating']
+        query = [
+            {
+                '$match': {
+                    'storeId': STOREID, 
+                    'type': TYPE
+                }
+            },
+            {
+                '$project': {
+                    'month': {
+                        '$month': '$created_at'
+                    }, 
+                    'year': {
+                        '$year': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            },
+            {
+                '$match': {
+                    'month': int(MONTH), 
+                    'year': int(YEAR)
+                }
+            },
+            {
+                '$project': {
+                    'day': {
+                        '$dayOfWeek': '$created_at'
+                    }, 
+                    'department': 1, 
+                    'file': 1, 
+                    'id': 1, 
+                    'name': 1, 
+                    'rating': 1, 
+                    'storeId': 1, 
+                    'type': 1, 
+                    'created_at': 1, 
+                    'comment': 1, 
+                    'email': 1, 
+                    'tel': 1
+                }
+            },
+            {
+                '$group': {
+                    '_id': '$day', 
+                    'count': {
+                        '$sum': 1
+                    }, 
+                    '100': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        100
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }, 
+                    '66': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        66
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }, 
+                    '33': {
+                        '$sum': {
+                            '$cond': [
+                                {
+                                    '$eq': [
+                                        '$rating',
+                                        33
+                                    ]
+                                },
+                                1,
+                                0
+                            ]
+                        }
+                    }
                 }
             }
         ]

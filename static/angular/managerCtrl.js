@@ -19,6 +19,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
     $scope.storeStatRzlt = []
     $scope.storeStatComment = []
     $scope.storeAttandantRzlt = []
+    $scope.stats = {}
 
     $scope.addQuestion = (newStore) => {
         newStore.questions.push({'title':'', 'id':Math.random().toString(36).substring(2)})
@@ -223,7 +224,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                     text: 'Hourly Rating'
                 },
                 xAxis: {
-                    categories: $scope.attandantGraphs.hourlyattandseries.convertedtimeseries
+                    categories: ["00:03","03:06","06:09","09:12","12:15","15:18","18:21","21:24"]
                 },
                 yAxis: {
                     min: 0,
@@ -267,7 +268,205 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                 },
                 series: $scope.attandantGraphs.hourlyattandseries.series
             });
+
+            $scope.attandantGraphs.dayattandseries = gerateDatadaysyattandant($scope.attandantGraphs.days)
+            Highcharts.chart('daysattandantchart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Day Wise Rating'
+                },
+                xAxis: {
+                    categories: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Ratings'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: ( // theme
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || 'gray'
+                        }
+                    }
+                },
+                legend: {
+                    align: 'right',
+                    x: -30,
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: $scope.attandantGraphs.dayattandseries.series
+            });
+
             $scope.active = "attandantGraphs"
+        })
+    }
+
+    $scope.showgraphsquestionmonth = (month, year) => {
+        storeID = $scope.stats.storeId
+        adminApi.showgraphsquestionmonth({"id":storeID, month:month, year:year}).then(function(data){
+            $scope.questionGraphs = data.data.data
+            $scope.questionGraphs.hourlyattandseries = gerateDatahourlquestion($scope.questionGraphs.hourly)
+            Highcharts.chart('hourlyquestionchart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Hourly Rating (All Questions)'
+                },
+                xAxis: {
+                    categories: ["00:03","03:06","06:09","09:12","12:15","15:18","18:21","21:24"]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Ratings'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: ( // theme
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || 'gray'
+                        }
+                    }
+                },
+                legend: {
+                    align: 'right',
+                    x: -30,
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: $scope.questionGraphs.hourlyattandseries.series
+            });
+
+            $scope.questionGraphs.dayquestionseries = gerateDatadaysyquestion($scope.questionGraphs.days)
+            Highcharts.chart('daysquestionchart', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Day Wise Rating (All Question)'
+                },
+                xAxis: {
+                    categories: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Ratings'
+                    },
+                    stackLabels: {
+                        enabled: true,
+                        style: {
+                            fontWeight: 'bold',
+                            color: ( // theme
+                                Highcharts.defaultOptions.title.style &&
+                                Highcharts.defaultOptions.title.style.color
+                            ) || 'gray'
+                        }
+                    }
+                },
+                legend: {
+                    align: 'right',
+                    x: -30,
+                    verticalAlign: 'top',
+                    y: 25,
+                    floating: true,
+                    backgroundColor:
+                        Highcharts.defaultOptions.legend.backgroundColor || 'white',
+                    borderColor: '#CCC',
+                    borderWidth: 1,
+                    shadow: false
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y}<br/>Total: {point.stackTotal}'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                series: $scope.questionGraphs.dayquestionseries.series
+            });
+
+            $scope.questionGraphs.comparequestionseries = gerateDatacompareyquestion($scope.questionGraphs.compare)
+            Highcharts.chart('comparequestionchart', {
+                chart: {
+                    type: 'bar'
+                },
+                title: {
+                    text: 'Comparison Graph'
+                },
+                xAxis: {
+                    categories: $scope.questionGraphs.comparequestionseries.categories
+                },
+                yAxis: {
+                    min: 0,
+                    title: {
+                        text: 'Total Rating'
+                    }
+                },
+                legend: {
+                    reversed: false
+                },
+                plotOptions: {
+                    series: {
+                        stacking: 'normal'
+                    }
+                },
+                series: $scope.questionGraphs.comparequestionseries.series
+            });
+            $scope.active = "questionGraphs"
         })
     }
 
@@ -321,20 +520,29 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
     }
     
     function gerateDatahourlyattandant(rawvalue){
-        nowtimeconverted = {}
+        convertedData = []
         now = new Date()
         offsetValue = - (now.getTimezoneOffset()/60)
-        for (each of Object.keys(rawvalue)){
-            keyofobject = (Number(each) + offsetValue)%24
-            nowtimeconverted[String(keyofobject)+":00-" + String((keyofobject+3)%24)+":00"] = rawvalue[each]
+        for (each of rawvalue){
+            key = (each._id + offsetValue)%24
+            convertedData.push({_id:key, 33: each['33'], 66: each['66'], 100: each['100']})
         }
         array33=[]
         array66=[]
         array100=[]
-        for (each of Object.keys(nowtimeconverted)){
-            array33.push(nowtimeconverted[each]["33"])
-            array66.push(nowtimeconverted[each]["66"])
-            array100.push(nowtimeconverted[each]["100"])
+        for (i=0;i<24;i=i+3){
+            filteredData = convertedData.filter(function(item){ return item._id >= i && item._id < i+3})
+            v33 = 0
+            v66 = 0
+            v100 = 0
+            for (eachfilterdata of filteredData){
+                v33 = v33 + eachfilterdata[33]
+                v66 = v66 + eachfilterdata[66]
+                v100 = v100 + eachfilterdata[100]
+            }
+            array33.push(v33)
+            array66.push(v66)
+            array100.push(v100)
         }
         hourlySeris = [
             {
@@ -353,6 +561,146 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                 'color': '#ed4545'
             }
         ]
-        return {series: hourlySeris, convertedtimeseries:Object.keys(nowtimeconverted)}
+        return {series: hourlySeris}
+    }
+    function gerateDatadaysyattandant(rawvalue){
+        array33=[0,0,0,0,0,0,0]
+        array66=[0,0,0,0,0,0,0]
+        array100=[0,0,0,0,0,0,0]
+        for (each of rawvalue){
+            array33[each._id -1] = array33[each._id -1] + each["33"]
+            array66[each._id -1] = array66[each._id -1] + each["66"]
+            array100[each._id -1] = array100[each._id -1] + each["100"]
+        }
+        daySeris = [
+            {
+                'name': 'Green',
+                'data': array100,
+                'color': '#45ed71'
+            },
+            {
+                'name': 'Yellow',
+                'data': array66,
+                'color': '#edb945'
+            },
+            {
+                'name': 'Red',
+                'data': array33,
+                'color': '#ed4545'
+            }
+        ]
+        return {series: daySeris}
+    }
+
+    function gerateDatahourlquestion(rawvalue){
+        convertedData = []
+        now = new Date()
+        offsetValue = - (now.getTimezoneOffset()/60)
+        for (each of rawvalue){
+            key = (each._id + offsetValue)%24
+            convertedData.push({_id:key, 33: each['33'], 66: each['66'], 100: each['100']})
+        }
+        array33=[]
+        array66=[]
+        array100=[]
+        for (i=0;i<24;i=i+3){
+            filteredData = convertedData.filter(function(item){ return item._id >= i && item._id < i+3})
+            v33 = 0
+            v66 = 0
+            v100 = 0
+            for (eachfilterdata of filteredData){
+                v33 = v33 + eachfilterdata[33]
+                v66 = v66 + eachfilterdata[66]
+                v100 = v100 + eachfilterdata[100]
+            }
+            array33.push(v33)
+            array66.push(v66)
+            array100.push(v100)
+        }
+        hourlySeris = [
+            {
+                'name': 'Green',
+                'data': array100,
+                'color': '#45ed71'
+            },
+            {
+                'name': 'Yellow',
+                'data': array66,
+                'color': '#edb945'
+            },
+            {
+                'name': 'Red',
+                'data': array33,
+                'color': '#ed4545'
+            }
+        ]
+        return {series: hourlySeris}
+    }
+
+    function gerateDatadaysyquestion(rawvalue){
+        array33=[0,0,0,0,0,0,0]
+        array66=[0,0,0,0,0,0,0]
+        array100=[0,0,0,0,0,0,0]
+        for (each of rawvalue){
+            array33[each._id -1] = array33[each._id -1] + each["33"]
+            array66[each._id -1] = array66[each._id -1] + each["66"]
+            array100[each._id -1] = array100[each._id -1] + each["100"]
+        }
+        daySeris = [
+            {
+                'name': 'Green',
+                'data': array100,
+                'color': '#45ed71'
+            },
+            {
+                'name': 'Yellow',
+                'data': array66,
+                'color': '#edb945'
+            },
+            {
+                'name': 'Red',
+                'data': array33,
+                'color': '#ed4545'
+            }
+        ]
+        return {series: daySeris}
+    }
+
+    function gerateDatacompareyquestion(rawvalue){
+        debugger
+        store = $scope.allStores.filter(function(item){ return item._id == $scope.stats.storeId})
+        categories = []
+        carray33=[]
+        carray66=[]
+        carray100=[]
+        for (eachQuestion of store[0].questions){
+            question_id = eachQuestion.id
+            questn_row = rawvalue.filter(function(item){ return item._id == question_id})
+            if (questn_row){
+                categories.push(eachQuestion.title)
+                carray33.push(questn_row[0]['33'])
+                carray66.push(questn_row[0]['66'])
+                carray100.push(questn_row[0]['100'])
+            }
+        }
+
+        compareSeris = [
+            {
+                'name': 'Green',
+                data: carray100,
+                'color': '#45ed71'
+            }, 
+            {
+                'name': 'Yellow',
+                data: carray66,
+                'color': '#edb945'
+            }, 
+            {
+                'name': 'Red',
+                data: carray33,
+                'color': '#ed4545'
+            }
+        ]
+        return {series: compareSeris, categories: categories}
     }
 })

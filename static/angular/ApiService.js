@@ -82,6 +82,10 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
         return $http.post('/showstatsattandant', data, config)
     }
 
+    function showgraphsquestionmonth(data){
+        return $http.post('/showgraphsquestionmonth', data, config)
+    }
+
     function deleteAttandant(data){
         return $http.post('/deleteAttandant', data, config)
     }   
@@ -113,6 +117,7 @@ app.factory('adminApi', ['$http', '$cookies', function($http, $cookies) {
         getAttandantStats:getAttandantStats,
         showAttandantComment:showAttandantComment,
         showstatsattandant:showstatsattandant,
+        showgraphsquestionmonth:showgraphsquestionmonth,
         deleteAttandant:deleteAttandant,
         updateAttandant:updateAttandant,
         replicate:replicate
