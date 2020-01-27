@@ -224,7 +224,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                     text: 'Hourly Rating'
                 },
                 xAxis: {
-                    categories: ["00:03","03:06","06:09","09:12","12:15","15:18","18:21","21:24"]
+                    categories: ["00-03h","03-06h","06-09h","09-12h","12-15h","15-18h","18-21h","21-00h"]
                 },
                 yAxis: {
                     min: 0,
@@ -340,7 +340,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
                     text: 'Hourly Rating (All Questions)'
                 },
                 xAxis: {
-                    categories: ["00:03","03:06","06:09","09:12","12:15","15:18","18:21","21:24"]
+                    categories: ["00-03h","03-06h","06-09h","09-12h","12-15h","15-18h","18-21h","21-00h"]
                 },
                 yAxis: {
                     min: 0,
