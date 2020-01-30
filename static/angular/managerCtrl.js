@@ -671,7 +671,6 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
     }
 
     function gerateDatacompareyquestion(rawvalue){
-        debugger
         store = $scope.allStores.filter(function(item){ return item._id == $scope.stats.storeId})
         categories = []
         carray33=[]
