@@ -706,4 +706,9 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         ]
         return {series: compareSeris, categories: categories}
     }
+
+    $scope.back = () => {
+        $scope.active = "questionstats"
+    }
+
 })
