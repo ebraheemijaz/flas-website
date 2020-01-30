@@ -25,6 +25,10 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         newStore.questions.push({'title':'', 'id':Math.random().toString(36).substring(2)})
     }
 
+    $scope.removeQuestion = (index) => {
+        $scope.editStoreData.questions.splice(index, 1)
+    }
+
     $scope.editStore = (store) => {
         $scope.editStoreData = store
         console.log(store)
@@ -676,7 +680,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         for (eachQuestion of store[0].questions){
             question_id = eachQuestion.id
             questn_row = rawvalue.filter(function(item){ return item._id == question_id})
-            if (questn_row){
+            if (questn_row.length!=0){
                 categories.push(eachQuestion.title)
                 carray33.push(questn_row[0]['33'])
                 carray66.push(questn_row[0]['66'])
