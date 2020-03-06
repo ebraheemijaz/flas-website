@@ -4,6 +4,9 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
     $scope.pendingRequests = 0
     getstoreData()
     $scope.questionReview = (question, rating) => {
+        if (question.id == $scope.currentStore.mainquestion){
+            question.mainquestion = true
+        }
         question.rating = rating
         question.storeId = storeId
         question.type = 'question'

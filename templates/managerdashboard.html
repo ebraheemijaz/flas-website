@@ -82,6 +82,11 @@
 
                                     <label for="exampleInputEmail1">logo</label>
                                     <br>
+                                    <div class="form-group">
+                                        <label >Email For Notification</label>
+                                        <input type="email" ng-model="user.email" class="form-control" 
+                                            placeholder="Email For Notification">
+                                    </div>
                                     <button type="file" ngf-select="uploadFiles($file, $invalidFiles, 'store')" accept="image/*"
                                         ngf-max-height="1000" ngf-max-size="1MB">
                                         Select File</button>

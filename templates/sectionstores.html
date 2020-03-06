@@ -161,6 +161,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
+                                    <label>Select Main Question</label>
+                                    <select class="form-control selectpicker" data-style="btn btn-link" ng-model="editStoreData.mainquestion">
+                                        <option ng-repeat="q in editStoreData.questions" value="[[q.id]]">[[q.title]]</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <img ng-if="editStoreData.file" ng-src="[[editStoreData.file]]" style="width:10%;" alt="logo"
                                         class="img-raised rounded img-fluid">
                                 </div>
