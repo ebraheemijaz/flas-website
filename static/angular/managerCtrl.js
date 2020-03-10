@@ -335,7 +335,11 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         storeID = $scope.stats.storeId
         adminApi.showgraphsquestionmonth({"id":storeID, month:month, year:year}).then(function(data){
             $scope.questionGraphs = data.data.data
-            $scope.questionGraphs.hourlyattandseries = gerateDatahourlquestion($scope.questionGraphs.hourly)
+            let count = 0
+            for (let each of $scope.questionGraphs.days){
+                count = count + each.count
+            }
+            $scope.questionGraphs.hourlyattandseries = gerateDatahourlquestion($scope.questionGraphs.hourly, count)
             Highcharts.chart('hourlyquestionchart', {
                 chart: {
                     type: 'column'
@@ -596,7 +600,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         return {series: daySeris}
     }
 
-    function gerateDatahourlquestion(rawvalue){
+    function gerateDatahourlquestion(rawvalue, tcount){
         convertedData = []
         now = new Date()
         offsetValue = - (now.getTimezoneOffset()/60)
@@ -620,6 +624,19 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
             array33.push(v33)
             array66.push(v66)
             array100.push(v100)
+        }
+        sum100 = array100.reduce(function (result, item) {
+            return result + item;
+        }, 0);
+        sum66 = array66.reduce(function (result, item) {
+            return result + item;
+        }, 0);
+        sum33 = array33.reduce(function (result, item) {
+            return result + item;
+        }, 0);
+        if (sum100+sum66+sum33 != tcount){
+            let diff = tcount-sum100+sum66+sum33
+            array100[0] = array100[0]+diff
         }
         hourlySeris = [
             {
