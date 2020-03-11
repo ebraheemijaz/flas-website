@@ -625,19 +625,19 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
             array66.push(v66)
             array100.push(v100)
         }
-        sum100 = array100.reduce(function (result, item) {
-            return result + item;
-        }, 0);
-        sum66 = array66.reduce(function (result, item) {
-            return result + item;
-        }, 0);
-        sum33 = array33.reduce(function (result, item) {
-            return result + item;
-        }, 0);
-        if (sum100+sum66+sum33 != tcount){
-            let diff = tcount-sum100+sum66+sum33
-            array100[0] = array100[0]+diff
-        }
+        // sum100 = array100.reduce(function (result, item) {
+        //     return result + item;
+        // }, 0);
+        // sum66 = array66.reduce(function (result, item) {
+        //     return result + item;
+        // }, 0);
+        // sum33 = array33.reduce(function (result, item) {
+        //     return result + item;
+        // }, 0);
+        // if (sum100+sum66+sum33 != tcount){
+        //     let diff = tcount-sum100+sum66+sum33
+        //     array100[0] = array100[0]+diff
+        // }
         hourlySeris = [
             {
                 'name': 'Green',
