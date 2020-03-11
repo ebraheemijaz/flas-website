@@ -605,7 +605,7 @@ app.controller('managerdashboard', function($scope, $rootScope, $route, $cookies
         now = new Date()
         offsetValue = - (now.getTimezoneOffset()/60)
         for (each of rawvalue){
-            key = (each._id + offsetValue)%24
+            key = Math.abs((each._id + offsetValue)%24)
             convertedData.push({_id:key, 33: each['33'], 66: each['66'], 100: each['100']})
         }
         array33=[]
