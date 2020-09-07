@@ -152,12 +152,12 @@ app.controller('storeController', function($scope, $window, adminApi, $timeout, 
     }
 
     console.log($window.location)
-    var socket = io.connect('http://' + $window.location.host + ':' + $window.location.port);
-    socket.on( 'connect', function() {
-      socket.emit( 'storeconnected', {
-            id: storeId
-        } 
-    )})
+//     var socket = io.connect('http://' + $window.location.host + ':' + $window.location.port);
+//     socket.on( 'connect', function() {
+//       socket.emit( 'storeconnected', {
+//             id: storeId
+//         } 
+//     )})
 
 
     function storeLocally(data){
